@@ -1,6 +1,6 @@
 ---
 language: c
-script: ./configure && make all check distcheck
+script: ./autogen.sh && make all check distcheck
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq gjs
