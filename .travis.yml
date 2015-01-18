@@ -1,0 +1,6 @@
+---
+language: c
+script: ./configure && make all check distcheck
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq gjs

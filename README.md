@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ptomato/jasmine-gjs.png?branch=master)](https://travis-ci.org/ptomato/jasmine-gjs)
+
 # Jasmine for GJS
 
 [Jasmine](https://github.com/jasmine/jasmine) is a BDD (behavior-driven
