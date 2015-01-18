@@ -9,6 +9,6 @@ before_install:
   - wget http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mozjs24/libmozjs-24-0_24.2.0-1_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-0_2.40.2-0ubuntu1_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/gobject-introspection/libgirepository-1.0-1_1.40.0-1ubuntu0.2_amd64.deb
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/universe/g/gjs/libgjs0e_1.39.91-0ubuntu1_amd64.deb
+  - wget http://de.archive.ubuntu.com/ubuntu/pool/universe/g/gjs/libgjs0e_1.40.1-0ubuntu0.3_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/universe/g/gjs/gjs_1.40.1-0ubuntu0.3_amd64.deb
-  - sudo dpkg -i libnspr4_4.10.7-0ubuntu0.14.04.1_amd64.deb libmozjs-24-0_24.2.0-1_amd64.deb libglib2.0-0_2.40.2-0ubuntu1_amd64.deb libgirepository-1.0-1_1.40.0-1ubuntu0.2_amd64.deb libgjs0e_1.39.91-0ubuntu1_amd64.deb gjs_1.40.1-0ubuntu0.3_amd64.deb
+  - sudo dpkg -i libnspr4_4.10.7-0ubuntu0.14.04.1_amd64.deb libmozjs-24-0_24.2.0-1_amd64.deb libglib2.0-0_2.40.2-0ubuntu1_amd64.deb libgirepository-1.0-1_1.40.0-1ubuntu0.2_amd64.deb libgjs0e_1.40.1-0ubuntu0.3_amd64.deb gjs_1.40.1-0ubuntu0.3_amd64.deb
