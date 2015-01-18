@@ -1,0 +1,458 @@
+--- jasmine/lib/jasmine-core/jasmine.js	2015-01-17 20:42:22.000000000 -0800
++++ jasmine-gjs/lib/jasmine.js	2015-01-16 23:08:56.000000000 -0800
+@@ -1,3 +1,4 @@
++/* jscs:disable */
+ /*
+ Copyright (c) 2008-2014 Pivotal Labs
+ 
+@@ -20,13 +21,16 @@
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+-getJasmineRequireObj = (function (jasmineGlobal) {
++var getJasmineRequireObj = (function (jasmineGlobal) {
+   var jasmineRequire;
+ 
+   if (typeof module !== 'undefined' && module.exports) {
+     jasmineGlobal = global;
+     jasmineRequire = exports;
+   } else {
++    if (typeof window !== 'undefined') {
++      jasmineGlobal = window;
++    }
+     jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
+   }
+ 
+@@ -465,6 +469,10 @@
+     };
+ 
+     var expectationFactory = function(actual, spec) {
++      function addExpectationResult(passed, result) {
++        return spec.addExpectationResult(passed, result);
++      }
++
+       return j$.Expectation.Factory({
+         util: j$.matchersUtil,
+         customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
+@@ -472,10 +480,6 @@
+         actual: actual,
+         addExpectationResult: addExpectationResult
+       });
+-
+-      function addExpectationResult(passed, result) {
+-        return spec.addExpectationResult(passed, result);
+-      }
+     };
+ 
+     var defaultResourcesForRunnable = function(id, parentRunnableId) {
+@@ -622,6 +626,12 @@
+     };
+ 
+     var suiteFactory = function(description) {
++      function suiteStarted(suite) {
++        currentlyExecutingSuites.push(suite);
++        defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
++        reporter.suiteStarted(suite.result);
++      }
++
+       var suite = new j$.Suite({
+         env: self,
+         id: getNextSuiteId(),
+@@ -642,12 +652,6 @@
+ 
+       runnableLookupTable[suite.id] = suite;
+       return suite;
+-
+-      function suiteStarted(suite) {
+-        currentlyExecutingSuites.push(suite);
+-        defaultResourcesForRunnable(suite.id, suite.parentSuite.id);
+-        reporter.suiteStarted(suite.result);
+-      }
+     };
+ 
+     this.describe = function(description, specDefinitions) {
+@@ -746,14 +750,6 @@
+         }
+       });
+ 
+-      runnableLookupTable[spec.id] = spec;
+-
+-      if (!self.specFilter(spec)) {
+-        spec.disable();
+-      }
+-
+-      return spec;
+-
+       function specResultCallback(result) {
+         clearResourcesForRunnable(spec.id);
+         currentSpec = null;
+@@ -765,6 +761,14 @@
+         defaultResourcesForRunnable(spec.id, suite.id);
+         reporter.specStarted(spec.result);
+       }
++
++      runnableLookupTable[spec.id] = spec;
++
++      if (!self.specFilter(spec)) {
++        spec.disable();
++      }
++
++      return spec;
+     };
+ 
+     this.it = function(description, fn, timeout) {
+@@ -1091,8 +1095,6 @@
+       }
+     };
+ 
+-    return self;
+-
+     function legacyIE() {
+       //if these methods are polyfilled, apply will be present
+       return !(realTimingFunctions.setTimeout || realTimingFunctions.setInterval).apply;
+@@ -1123,6 +1125,8 @@
+     function argSlice(argsObj, n) {
+       return Array.prototype.slice.call(argsObj, n);
+     }
++
++    return self;
+   }
+ 
+   return Clock;
+@@ -1209,8 +1213,6 @@
+       delayedFnCount = 0;
+     };
+ 
+-    return self;
+-
+     function indexOfFirstToPass(array, testFn) {
+       var index = -1;
+ 
+@@ -1270,6 +1272,8 @@
+                  currentTime !== endTime  &&
+                  scheduledLookup[0] <= endTime);
+     }
++
++    return self;
+   }
+ 
+   return DelayedFunctionScheduler;
+@@ -1417,8 +1421,6 @@
+       result.actual = options.actual;
+     }
+ 
+-    return result;
+-
+     function message() {
+       if (options.passed) {
+         return 'Passed.';
+@@ -1445,6 +1447,8 @@
+       }
+       return stackFormatter(error);
+     }
++
++    return result;
+   }
+ 
+   return buildExpectationResult;
+@@ -1486,8 +1490,6 @@
+ 
+     createDateProperties();
+ 
+-    return self;
+-
+     function FakeDate() {
+       switch(arguments.length) {
+         case 0:
+@@ -1506,7 +1508,7 @@
+         case 6:
+           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
+                                 arguments[4], arguments[5]);
+-        case 7:
++        default:
+           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
+                                 arguments[4], arguments[5], arguments[6]);
+       }
+@@ -1528,7 +1530,9 @@
+       FakeDate.parse = GlobalDate.parse;
+       FakeDate.UTC = GlobalDate.UTC;
+     }
+-	}
++
++    return self;
++  }
+ 
+   return MockDate;
+ };
+@@ -1738,11 +1742,11 @@
+       self = this,
+       iterativeIndex;
+ 
+-
+     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
+       var queueableFn = queueableFns[iterativeIndex];
+       if (queueableFn.fn.length > 0) {
+-        return attemptAsync(queueableFn);
++        attemptAsync(queueableFn);
++        return;
+       } else {
+         attemptSync(queueableFn);
+       }
+@@ -1830,8 +1834,6 @@
+       reporters.push(reporter);
+     };
+ 
+-    return this;
+-
+     function dispatch(method, args) {
+       for (var i = 0; i < reporters.length; i++) {
+         var reporter = reporters[i];
+@@ -1840,6 +1842,8 @@
+         }
+       }
+     }
++
++    return this;
+   }
+ 
+   return ReportDispatcher;
+@@ -2178,56 +2182,6 @@
+ getJasmineRequireObj().matchersUtil = function(j$) {
+   // TODO: what to do about jasmine.pp not being inject? move to JSON.stringify? gut PrettyPrinter?
+ 
+-  return {
+-    equals: function(a, b, customTesters) {
+-      customTesters = customTesters || [];
+-
+-      return eq(a, b, [], [], customTesters);
+-    },
+-
+-    contains: function(haystack, needle, customTesters) {
+-      customTesters = customTesters || [];
+-
+-      if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
+-        (!!haystack && !haystack.indexOf))
+-      {
+-        for (var i = 0; i < haystack.length; i++) {
+-          if (eq(haystack[i], needle, [], [], customTesters)) {
+-            return true;
+-          }
+-        }
+-        return false;
+-      }
+-
+-      return !!haystack && haystack.indexOf(needle) >= 0;
+-    },
+-
+-    buildFailureMessage: function() {
+-      var args = Array.prototype.slice.call(arguments, 0),
+-        matcherName = args[0],
+-        isNot = args[1],
+-        actual = args[2],
+-        expected = args.slice(3),
+-        englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
+-
+-      var message = 'Expected ' +
+-        j$.pp(actual) +
+-        (isNot ? ' not ' : ' ') +
+-        englishyPredicate;
+-
+-      if (expected.length > 0) {
+-        for (var i = 0; i < expected.length; i++) {
+-          if (i > 0) {
+-            message += ',';
+-          }
+-          message += ' ' + j$.pp(expected[i]);
+-        }
+-      }
+-
+-      return message + '.';
+-    }
+-  };
+-
+   // Equality function lovingly adapted from isEqual in
+   //   [Underscore](http://underscorejs.org)
+   function eq(a, b, aStack, bStack, customTesters) {
+@@ -2348,8 +2302,6 @@
+     aStack.pop();
+     bStack.pop();
+ 
+-    return result;
+-
+     function has(obj, key) {
+       return obj.hasOwnProperty(key);
+     }
+@@ -2357,7 +2309,59 @@
+     function isFunction(obj) {
+       return typeof obj === 'function';
+     }
++
++    return result;
+   }
++
++  return {
++    equals: function(a, b, customTesters) {
++      customTesters = customTesters || [];
++
++      return eq(a, b, [], [], customTesters);
++    },
++
++    contains: function(haystack, needle, customTesters) {
++      customTesters = customTesters || [];
++
++      if ((Object.prototype.toString.apply(haystack) === '[object Array]') ||
++        (!!haystack && !haystack.indexOf))
++      {
++        for (var i = 0; i < haystack.length; i++) {
++          if (eq(haystack[i], needle, [], [], customTesters)) {
++            return true;
++          }
++        }
++        return false;
++      }
++
++      return !!haystack && haystack.indexOf(needle) >= 0;
++    },
++
++    buildFailureMessage: function() {
++      var args = Array.prototype.slice.call(arguments, 0),
++        matcherName = args[0],
++        isNot = args[1],
++        actual = args[2],
++        expected = args.slice(3),
++        englishyPredicate = matcherName.replace(/[A-Z]/g, function(s) { return ' ' + s.toLowerCase(); });
++
++      var message = 'Expected ' +
++        j$.pp(actual) +
++        (isNot ? ' not ' : ' ') +
++        englishyPredicate;
++
++      if (expected.length > 0) {
++        for (var i = 0; i < expected.length; i++) {
++          if (i > 0) {
++            message += ',';
++          }
++          message += ' ' + j$.pp(expected[i]);
++        }
++      }
++
++      return message + '.';
++    }
++  };
+ };
+ 
+ getJasmineRequireObj().toBe = function() {
+@@ -2686,56 +2690,6 @@
+ 
+ getJasmineRequireObj().toThrowError = function(j$) {
+   function toThrowError (util) {
+-    return {
+-      compare: function(actual) {
+-        var threw = false,
+-          pass = {pass: true},
+-          fail = {pass: false},
+-          thrown;
+-
+-        if (typeof actual != 'function') {
+-          throw new Error('Actual is not a Function');
+-        }
+-
+-        var errorMatcher = getMatcher.apply(null, arguments);
+-
+-        try {
+-          actual();
+-        } catch (e) {
+-          threw = true;
+-          thrown = e;
+-        }
+-
+-        if (!threw) {
+-          fail.message = 'Expected function to throw an Error.';
+-          return fail;
+-        }
+-
+-        if (!(thrown instanceof Error)) {
+-          fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
+-          return fail;
+-        }
+-
+-        if (errorMatcher.hasNoSpecifics()) {
+-          pass.message = 'Expected function not to throw an Error, but it threw ' + fnNameFor(thrown) + '.';
+-          return pass;
+-        }
+-
+-        if (errorMatcher.matches(thrown)) {
+-          pass.message = function() {
+-            return 'Expected function not to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() + '.';
+-          };
+-          return pass;
+-        } else {
+-          fail.message = function() {
+-            return 'Expected function to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() +
+-              ', but it threw ' + errorMatcher.thrownDescription(thrown) + '.';
+-          };
+-          return fail;
+-        }
+-      }
+-    };
+-
+     function getMatcher() {
+       var expected = null,
+           errorType = null;
+@@ -2818,6 +2772,56 @@
+       Surrogate.prototype = type.prototype;
+       return (new Surrogate()) instanceof Error;
+     }
++
++    return {
++      compare: function(actual) {
++        var threw = false,
++          pass = {pass: true},
++          fail = {pass: false},
++          thrown;
++
++        if (typeof actual != 'function') {
++          throw new Error('Actual is not a Function');
++        }
++
++        var errorMatcher = getMatcher.apply(null, arguments);
++
++        try {
++          actual();
++        } catch (e) {
++          threw = true;
++          thrown = e;
++        }
++
++        if (!threw) {
++          fail.message = 'Expected function to throw an Error.';
++          return fail;
++        }
++
++        if (!(thrown instanceof Error)) {
++          fail.message = function() { return 'Expected function to throw an Error, but it threw ' + j$.pp(thrown) + '.'; };
++          return fail;
++        }
++
++        if (errorMatcher.hasNoSpecifics()) {
++          pass.message = 'Expected function not to throw an Error, but it threw ' + fnNameFor(thrown) + '.';
++          return pass;
++        }
++
++        if (errorMatcher.matches(thrown)) {
++          pass.message = function() {
++            return 'Expected function not to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() + '.';
++          };
++          return pass;
++        } else {
++          fail.message = function() {
++            return 'Expected function to throw ' + errorMatcher.errorTypeDescription + errorMatcher.messageDescription() +
++              ', but it threw ' + errorMatcher.thrownDescription(thrown) + '.';
++          };
++          return fail;
++        }
++      }
++    };
+   }
+ 
+   return toThrowError;

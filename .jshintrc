@@ -1,0 +1,32 @@
+{
+    "esnext": true,
+    "evil": false,
+    "indent": 4,
+    "moz": true,
+    "multistr": true,
+    "sub": true,
+    "trailing": true,
+    "undef": true,
+    "predef": [
+        "addCustomEqualityTester",
+        "afterAll",
+        "afterEach",
+        "ARGV",
+        "beforeAll",
+        "beforeEach",
+        "describe",
+        "expect",
+        "fdescribe",
+        "fit",
+        "imports",
+        "it",
+        "jasmine",
+        "pending",
+        "print",
+        "printerr",
+        "spyOn",
+        "window",
+        "xdescribe",
+        "xit"
+    ]
+}

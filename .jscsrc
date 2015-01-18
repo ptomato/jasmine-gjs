@@ -1,0 +1,41 @@
+{
+    "disallowEmptyBlocks": true,
+    "disallowMixedSpacesAndTabs": true,
+    "disallowSpaceAfterObjectKeys": true,
+    "disallowSpaceAfterPrefixUnaryOperators": ["!", "~", "++", "--", "+", "-"],
+    "disallowSpaceBeforeBinaryOperators": [","],
+    "disallowSpacesInNamedFunctionExpression": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowSpacesInsideParentheses": true,
+    "disallowTrailingWhitespace": true,
+    "disallowPaddingNewlinesInBlocks": true,
+    "requireCapitalizedConstructors": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireLineFeedAtFileEnd": true,
+    "requireParenthesesAroundIIFE": true,
+    "requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "return",
+        "try",
+        "catch",
+        "function"
+    ],
+    "requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpacesInAnonymousFunctionExpression": {
+        "beforeOpeningRoundBrace": true,
+        "beforeOpeningCurlyBrace": true
+    },
+    "requireSpacesInFunctionDeclaration": {
+        "beforeOpeningCurlyBrace": true
+    },
+    "validateIndentation": 4,
+    "validateLineBreaks": "LF"
+}

@@ -1,0 +1,18 @@
+#!@GJS_PATH@
+
+const System = imports.system;
+
+imports.searchPath.unshift('@pkgdatadir@');
+
+const Command = imports.command;
+
+const Timer = imports.timer;
+Timer.installAPI(window);
+
+// Do not conflict with global "jasmine" object
+const JasmineBoot = imports.jasmineBoot;
+let _jasmine = new JasmineBoot.Jasmine();
+_jasmine.installAPI(window);
+
+Command.run(_jasmine, ARGV);
+System.exit(0);

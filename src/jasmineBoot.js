@@ -1,0 +1,152 @@
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
+const Lang = imports.lang;
+
+let ConsoleReporter = imports.consoleReporter;
+
+GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
+
+const Jasmine = new Lang.Class({
+    Name: 'Jasmine',
+    Extends: GObject.Object,
+
+    Properties: {
+        'project-base-dir': GObject.ParamSpec.object('project-base-dir',
+            'Project base directory',
+            'File object for root directory of project with tests',
+            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.Object.$gtype),  // should be Gio.File.$gtype
+        'version': GObject.ParamSpec.string('version', 'Version',
+            'Version of Jasmine library',
+            GObject.ParamFlags.READABLE,
+            ''),
+    },
+
+    _init: function (props) {
+        props = props || {};
+
+        let jasmineCore;
+        if (props.hasOwnProperty('jasmineCore')) {
+            jasmineCore = props.jasmineCore;
+            delete props.jasmineCore;
+        } else {
+            jasmineCore = imports.jasmine;
+        }
+
+        this.parent(props);
+
+        if (this.project_base_dir === null)
+            this._projectBaseDir = Gio.File.new_for_path(GLib.get_current_dir());
+
+        let jasmineCorePath = jasmineCore.__file__;
+        this._jasmineCoreFile = Gio.File.new_for_path(jasmineCorePath);
+
+        let jasmineRequire = jasmineCore.getJasmineRequireObj();
+        this._jasmine = jasmineRequire.core(jasmineRequire);
+        this.env = this._jasmine.getEnv();
+        this._jasmineInterface = jasmineRequire.interface(this._jasmine, this.env);
+
+        this.specFiles = [];
+        this._reportersCount = 0;
+    },
+
+    get project_base_dir() {
+        return this._projectBaseDir;
+    },
+
+    set project_base_dir(value) {
+        if (this._projectBaseDir !== value) {
+            this._projectBaseDir = value;
+            this.notify('project-base-dir');
+        }
+    },
+
+    get version() {
+        return this._jasmine.version;
+    },
+
+    addReporter: function (reporter) {
+        reporter.jasmine_core_path = this._jasmineCoreFile.get_parent().get_path();
+        this.env.addReporter(reporter);
+        this._reportersCount++;
+    },
+
+    configureDefaultReporter: function (options) {
+        options.timer = options.timer || new this._jasmine.Timer();
+        let consoleReporter = new ConsoleReporter.DefaultReporter(options);
+        this.addReporter(consoleReporter);
+    },
+
+    _addSpecFile: function (file) {
+        let absolutePath = file.get_path();
+        if (this.specFiles.indexOf(absolutePath) === -1)
+            this.specFiles.push(absolutePath);
+    },
+
+    addSpecFiles: function (filePaths) {
+        filePaths.forEach((filePath) => {
+            let file = Gio.File.new_for_path(filePath);
+            let type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
+
+            switch (type) {
+            case Gio.FileType.REGULAR:
+                this._addSpecFile(file);
+                break;
+            case Gio.FileType.DIRECTORY:
+                recurseDirectory(file, this._addSpecFile.bind(this));
+                break;
+            default:
+                // ignore
+            }
+        });
+    },
+
+    loadSpecs: function () {
+        let oldSearchPath = imports.searchPath.slice();  // make a copy
+        this.specFiles.forEach(function (file) {
+            let modulePath = GLib.path_get_dirname(file);
+            let moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
+            imports.searchPath.unshift(modulePath);
+            let dummy = imports[moduleName];
+            imports.searchPath = oldSearchPath;
+        });
+    },
+
+    execute: function (files) {
+        if (this._reportersCount === 0)
+            this.configureDefaultReporter({});
+
+        if (files && files.length > 0) {
+            this._specDir = this.project_base_dir;
+            this.specFiles = [];
+            this.addSpecFiles(files);
+        }
+
+        this.loadSpecs();
+        this.env.execute();
+    },
+
+    // Install Jasmine API on the global object
+    installAPI: function (global) {
+        Lang.copyProperties(this._jasmineInterface, global);
+    },
+});
+
+function recurseDirectory(directory, func) {
+    let enumerator = directory.enumerate_children('standard::*',
+        Gio.FileQueryInfoFlags.NONE, null);
+
+    let info;
+    while ((info = enumerator.next_file(null))) {
+        let file = enumerator.get_child(info);
+
+        if (info.get_file_type() === Gio.FileType.DIRECTORY) {
+            recurseDirectory(file, func);
+        } else {
+            let filename = file.get_basename();
+            if (filename.endsWith('.js'))
+                func(file);
+        }
+    }
+}
