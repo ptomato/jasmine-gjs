@@ -26,6 +26,9 @@ describe('Verbose console reporter', function () {
             show_colors: false,
             timer: timerSpy,
         });
+
+        // disable indentation for test purposes
+        spyOn(VerboseReporter.ConsoleReporter, 'indent').and.returnValue('');
     });
 
     it('reports that the suite has started to the console', function () {
@@ -38,7 +41,7 @@ describe('Verbose console reporter', function () {
             status: 'passed',
             description: 'A passing spec',
         });
-        expect(out.getOutput()).toEqual('  ✓ A passing spec\n');
+        expect(out.getOutput()).toEqual('✓ A passing spec\n');
     });
 
     it('reports a disabled spec with an "x"', function () {
@@ -46,7 +49,7 @@ describe('Verbose console reporter', function () {
             status: 'disabled',
             description: 'A disabled spec',
         });
-        expect(out.getOutput()).toEqual('  x A disabled spec\n');
+        expect(out.getOutput()).toEqual('x A disabled spec\n');
     });
 
     it('reports a failing spec with a number', function () {
@@ -54,7 +57,7 @@ describe('Verbose console reporter', function () {
             status: 'failed',
             description: 'A failing spec',
         });
-        expect(out.getOutput()).toEqual('  1) A failing spec\n');
+        expect(out.getOutput()).toEqual('1) A failing spec\n');
     });
 
     it('reports a failing spec with the number of that failure in sequence', function () {
@@ -67,7 +70,7 @@ describe('Verbose console reporter', function () {
             status: 'failed',
             description: 'Another failing spec',
         });
-        expect(out.getOutput()).toEqual('  2) Another failing spec\n');
+        expect(out.getOutput()).toEqual('2) Another failing spec\n');
     });
 
     it('reports a pending spec as a dash', function () {
@@ -75,7 +78,7 @@ describe('Verbose console reporter', function () {
             status: 'pending',
             description: 'A pending spec',
         });
-        expect(out.getOutput()).toEqual('  - A pending spec\n');
+        expect(out.getOutput()).toEqual('- A pending spec\n');
     });
 
     it('reports a summary when done', function () {
@@ -155,7 +158,7 @@ describe('Verbose console reporter', function () {
                 status: 'passed',
                 description: 'A passing spec',
             });
-            expect(out.getOutput()).toEqual('  \x1b[32m✓\x1b[0m A passing spec\n');
+            expect(out.getOutput()).toEqual('\x1b[32m✓\x1b[0m A passing spec\n');
         });
 
         it('reports a disabled spec with an "x"', function () {
@@ -163,7 +166,7 @@ describe('Verbose console reporter', function () {
                 status: 'disabled',
                 description: 'A disabled spec',
             });
-            expect(out.getOutput()).toEqual('  x A disabled spec\n');
+            expect(out.getOutput()).toEqual('x A disabled spec\n');
         });
 
         it('reports a failing spec with a number', function () {
@@ -171,7 +174,7 @@ describe('Verbose console reporter', function () {
                 status: 'failed',
                 description: 'A failing spec',
             });
-            expect(out.getOutput()).toEqual('  \x1b[31m1)\x1b[0m A failing spec\n');
+            expect(out.getOutput()).toEqual('\x1b[31m1)\x1b[0m A failing spec\n');
         });
     });
 
