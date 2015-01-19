@@ -1,4 +1,4 @@
-const ConsoleReporter = imports.consoleReporter;
+const VerboseReporter = imports.verboseReporter;
 
 describe('Verbose console reporter', function () {
     let out, reporter, timerSpy;
@@ -21,7 +21,7 @@ describe('Verbose console reporter', function () {
 
         timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
 
-        reporter = new ConsoleReporter.VerboseReporter({
+        reporter = new VerboseReporter.VerboseReporter({
             print: out.print,
             show_colors: false,
             timer: timerSpy,
@@ -139,7 +139,7 @@ describe('Verbose console reporter', function () {
 
     describe('with color', function () {
         beforeEach(function () {
-            reporter = new ConsoleReporter.VerboseReporter({
+            reporter = new VerboseReporter.VerboseReporter({
                 print: out.print,
                 showColors: true
             });

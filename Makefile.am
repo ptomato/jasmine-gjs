@@ -24,6 +24,7 @@ dist_pkgdata_DATA = \
 	src/jasmineBoot.js \
 	src/options.js \
 	src/timer.js \
+	src/verboseReporter.js \
 	$(NULL)
 
 # Jasmine library

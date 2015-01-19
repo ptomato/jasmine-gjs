@@ -2,7 +2,6 @@ const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
 
-const ConsoleReporter = imports.consoleReporter;
 const Options = imports.options;
 const Timer = imports.timer;
 
@@ -24,10 +23,12 @@ function run(_jasmine, argv) {
         timer: Timer.defaultTimer,
     };
 
-    if (options.verbose)
-        _jasmine.addReporter(new ConsoleReporter.VerboseReporter(reporterOptions));
-    else
+    if (options.verbose) {
+        const VerboseReporter = imports.verboseReporter;
+        _jasmine.addReporter(new VerboseReporter.VerboseReporter(reporterOptions));
+    } else {
         _jasmine.configureDefaultReporter(reporterOptions);
+    }
 
     // This should start after the main loop starts, otherwise we will hit
     // Mainloop.run() only after several tests have already run. For consistency
