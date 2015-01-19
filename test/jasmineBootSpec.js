@@ -50,13 +50,14 @@ let customMatchers = {
 };
 
 describe('Jasmine boot', function () {
-    JasmineBoot.ConsoleReporter = {
-        ConsoleReporter: function () { return {}; },
-        DefaultReporter: function () { return {}; },
-    };
     let testJasmine;
 
     beforeEach(function () {
+        JasmineBoot.ConsoleReporter = jasmine.createSpyObj('ConsoleReporter', [
+            'ConsoleReporter',
+            'DefaultReporter',
+        ]);
+
         let bootedJasmine = {
             getEnv: jasmine.createSpy('getEnv').and.returnValue({
                 addReporter: jasmine.createSpy('addReporter'),
@@ -133,7 +134,7 @@ describe('Jasmine boot', function () {
 
     describe('#configureDefaultReporter', function () {
         beforeEach(function () {
-            spyOn(JasmineBoot.ConsoleReporter, 'DefaultReporter').and.returnValue({
+            JasmineBoot.ConsoleReporter.DefaultReporter.and.returnValue({
                 someProperty: 'some value',
             });
         });
