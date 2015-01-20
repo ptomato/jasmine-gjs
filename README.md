@@ -55,6 +55,9 @@ output.
 (The default output is formatted the same as Jasmine's Node.JS runner's
 output.)
 
+`--tap`: Output according to the
+[Test Anything Protocol](http://testanything.org/).
+
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into

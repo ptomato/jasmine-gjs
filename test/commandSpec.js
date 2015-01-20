@@ -1,6 +1,8 @@
 const Mainloop = imports.mainloop;
 
 const Command = imports.command;
+const TapReporter = imports.tapReporter;
+const VerboseReporter = imports.verboseReporter;
 
 describe('Jasmine command', function () {
     let fakeJasmine;
@@ -23,10 +25,20 @@ describe('Jasmine command', function () {
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
         });
 
-        it('can load a different reporter', function () {
+        it('loads the verbose reporter', function () {
             Command.run(fakeJasmine, ['--verbose']);
             expect(fakeJasmine.configureDefaultReporter).not.toHaveBeenCalled();
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
+            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
+        });
+
+        it('loads the TAP reporter', function () {
+            Command.run(fakeJasmine, ['--tap']);
+            expect(fakeJasmine.configureDefaultReporter).not.toHaveBeenCalled();
+            expect(fakeJasmine.addReporter).toHaveBeenCalled();
+            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            expect(reporter.constructor).toBe(TapReporter.TapReporter);
         });
 
         it('executes the Jasmine suite', function (done) {

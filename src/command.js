@@ -26,6 +26,9 @@ function run(_jasmine, argv) {
     if (options.verbose) {
         const VerboseReporter = imports.verboseReporter;
         _jasmine.addReporter(new VerboseReporter.VerboseReporter(reporterOptions));
+    } else if (options.tap) {
+        const TapReporter = imports.tapReporter;
+        _jasmine.addReporter(new TapReporter.TapReporter(reporterOptions));
     } else {
         _jasmine.configureDefaultReporter(reporterOptions);
     }
@@ -37,9 +40,14 @@ function run(_jasmine, argv) {
         try {
             _jasmine.execute(files);
         } catch (e) {
-            printerr('Exception occurred inside Jasmine:');
-            printerr(e);
-            printerr(e.stack);
+            if (options.tap) {
+                // "Bail out!" has a special meaning to TAP harnesses
+                print('Bail out! Exception occurred inside Jasmine:', e);
+            } else {
+                printerr('Exception occurred inside Jasmine:');
+                printerr(e);
+                printerr(e.stack);
+            }
             System.exit(1);
         }
         return GLib.SOURCE_REMOVE;

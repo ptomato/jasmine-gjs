@@ -22,7 +22,11 @@ const ARGS = {
     'verbose': {
         help: 'print verbose results (similar to mocha)',
         action: 'store_true',
-    }
+    },
+    'tap': {
+        help: 'output results in TAP format',
+        action: 'store_true',
+    },
 };
 
 function parseOptions(argv) {
