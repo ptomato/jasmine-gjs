@@ -12,6 +12,10 @@ describe('Console reporter base class', function () {
         });
     });
 
+    it('can be instantiated', function () {
+        reporter = new ConsoleReporter.ConsoleReporter();
+    });
+
     it('starts the provided timer when jasmine starts', function () {
         reporter.jasmineStarted();
         expect(timerSpy.start).toHaveBeenCalled();

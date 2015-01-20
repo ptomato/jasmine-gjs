@@ -42,6 +42,8 @@ const ConsoleReporter = new Lang.Class({
     },
 
     _init: function (props) {
+        props = props || {};
+
         if (props.hasOwnProperty('print')) {
             this._print = props.print;
             delete props.print;
