@@ -4,6 +4,8 @@ AM_SILENT_RULES([yes])
 
 # Check for programs we need during build
 
+AC_PROG_AWK
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_PROG_MKDIR_P
 PKG_PROG_PKG_CONFIG
 

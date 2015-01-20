@@ -44,6 +44,9 @@ EXTRA_DIST += lib/local-modifications.patch
 
 # Tests
 
+JS_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
+JS_LOG_DRIVER_FLAGS = --comments
+
 TESTS = \
 	test/commandSpec.js \
 	test/consoleReporterSpec.js \
@@ -60,8 +63,9 @@ TEST_EXTENSIONS = .js
 ## This uses the local, uninstalled copy of Jasmine. If you were going to use
 ## this in your own package, you would do it like so and omit the -I flag:
 ##   JS_LOG_COMPILER = jasmine
+##   AM_JS_LOG_FLAGS = --tap
 JS_LOG_COMPILER = $(builddir)/bin/jasmine
-AM_JS_LOG_FLAGS = -I $(srcdir)/src -I $(srcdir)/lib
+AM_JS_LOG_FLAGS = -I $(srcdir)/src -I $(srcdir)/lib --tap
 AM_TESTS_ENVIRONMENT = export SRCDIR='$(srcdir)'; export RUN_THOROUGH_TESTS=yes;
 
 # Test fixtures
@@ -74,6 +78,6 @@ EXTRA_DIST += \
 
 # Git ignore files
 
-MAINTAINERCLEANFILES = $(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL)
+MAINTAINERCLEANFILES = $(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) tap-driver.sh
 
 -include $(top_srcdir)/git.mk

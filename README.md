@@ -57,21 +57,45 @@ output.)
 
 `--tap`: Output according to the
 [Test Anything Protocol](http://testanything.org/).
+This is useful when integrating with Automake (see below.)
 
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into
 your makefiles.
-Put this code in your `Makefile.am`:
+The TAP reporter produces output that Automake can parse and display
+while the tests are running.
+That way, you have more immediate feedback and can see problems directly
+from your build output.
+
+Put this code in `configure.ac`:
+
+```
+AC_PROG_AWK
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
+```
+
+Then re-run `autogen.sh` or `autoreconf` to install the TAP driver.
+
+Then, put this code in your `Makefile.am`:
 
 ```make
+JS_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
+JS_LOG_DRIVER_FLAGS = --comments
+
 TESTS = path/to/spec1.js path/to/spec2.js
 TEST_EXTENSIONS = .js
 JS_LOG_COMPILER = jasmine
+AM_JS_LOG_FLAGS = --tap
 ```
 
 Don't forget to `EXTRA_DIST` your spec files too. Now Jasmine will run
 your spec files one by one as part of `make check`.
+
+With this configuration, the TAP driver displays all the extra
+diagnostic information about suites starting and finishing, and
+expectation messages in case of failure.
+If you don't want that, remove the `JS_LOG_DRIVER_FLAGS` line.
 
 If you use on-disk test fixtures, you should note that someone may be
 building your software with separate source and build trees.
