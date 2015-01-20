@@ -89,16 +89,19 @@ JS_LOG_COMPILER = jasmine
 AM_JS_LOG_FLAGS = --tap
 ```
 
-Don't forget to `EXTRA_DIST` your spec files too. Now Jasmine will run
-your spec files one by one as part of `make check`.
+Don't forget to `EXTRA_DIST` your spec files too.
+Now Jasmine will run your spec files one by one as part of `make check`.
 
 With this configuration, the TAP driver displays all the extra
 diagnostic information about suites starting and finishing, and
 expectation messages in case of failure.
 If you don't want that, remove the `JS_LOG_DRIVER_FLAGS` line.
 
+### A note on extra files
+
 If you use on-disk test fixtures, you should note that someone may be
 building your software with separate source and build trees.
+Notably, `make distcheck` does this.
 In that case, you have to make sure that your fixtures can be found both
 when running tests from the source directory and from a separate build
 directory.
