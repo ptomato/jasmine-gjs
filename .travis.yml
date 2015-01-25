@@ -1,6 +1,6 @@
 ---
 language: c
-script: ./autogen.sh && make all check
+script: ./autogen.sh && make all check distcheck
 # Install a newer version of GJS than available in the default Ubuntu 12.04.
 before_install:
   - sudo apt-get update -qq
