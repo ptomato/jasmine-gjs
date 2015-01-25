@@ -35,13 +35,14 @@ let customMatchers = {
                     return retval;
                 });
                 if (result.pass) {
-                    result.message += 'not to match a list of files, but it did.';
+                    result.message += 'not to match a list of files ' +
+                        expected + ', but it did.';
                 } else if (unexpectedFile) {
-                    result.message += 'to match a list of files, but it ' +
-                        'contained the unexpected file ' + unexpectedFile;
+                    result.message += 'to match a list of files ' + expected +
+                        ', but it contained ' + unexpectedFile;
                 } else {
                     result.message += 'to match the list of files ' + expected +
-                        ', but it did not.';
+                        ', but it did not: ' + actual;
                 }
                 return result;
             },
