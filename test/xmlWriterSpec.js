@@ -53,10 +53,7 @@ describe('XML writer', function () {
 
     it('prints child nodes indented', function () {
         node.children.push(new XMLWriter.Node('child'));
-        let output = node.toString();
-        expect(output).toMatch('\n<node>\n');
-        expect(output).toMatch('\n  <child/>\n');
-        expect(output).toMatch('\n</node>\n');
+        expect(node.toString()).toMatch('<node>\n  <child/>\n</node>\n');
     });
 
     it('prints multiple levels of indentation', function () {

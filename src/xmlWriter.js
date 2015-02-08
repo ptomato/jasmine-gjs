@@ -23,9 +23,11 @@ function _prettyprint(node) {
     let elementTop = '<' + node.name + _attrsToString(node.attrs) + '>\n';
     let elementBottom = '</' + node.name + '>\n';
     let children = node.children.map(_prettyprint).join('');
+    let text = GLib.markup_escape_text(node.text, -1);
+    if (text.length !== 0)
+        text += '\n';
 
-    return elementTop + Utils.indent(children, 2) +
-        Utils.indent(GLib.markup_escape_text(node.text, -1), 2) + '\n' +
+    return elementTop + Utils.indent(children, 2) + Utils.indent(text, 2) +
         elementBottom;
 }
 
