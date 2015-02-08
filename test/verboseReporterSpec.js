@@ -144,7 +144,7 @@ describe('Verbose console reporter', function () {
         beforeEach(function () {
             reporter = new VerboseReporter.VerboseReporter({
                 print: out.print,
-                showColors: true
+                showColors: true,
             });
         });
 
