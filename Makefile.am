@@ -27,6 +27,7 @@ dist_pkgdata_DATA = \
 	src/timer.js \
 	src/utils.js \
 	src/verboseReporter.js \
+	src/xmlWriter.js \
 	$(NULL)
 
 # Jasmine library
@@ -58,6 +59,7 @@ TESTS = \
 	test/tapReporterSpec.js \
 	test/utilsSpec.js \
 	test/verboseReporterSpec.js \
+	test/xmlWriterSpec.js \
 	$(NULL)
 EXTRA_DIST += $(TESTS)
 TEST_EXTENSIONS = .js
