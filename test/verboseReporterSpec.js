@@ -176,6 +176,14 @@ describe('Verbose console reporter', function () {
             });
             expect(out.getOutput()).toEqual('\x1b[31m1)\x1b[0m A failing spec\n');
         });
+
+        it('reports a disabled suite with "disabled"', function () {
+            reporter.suiteDone({
+                status: 'disabled',
+                description: 'A disabled suite',
+            });
+            expect(out.getOutput()).toEqual('\x1b[33m(disabled)\x1b[0m\n');
+        });
     });
 
     it('displays all afterAll exceptions', function () {
