@@ -28,7 +28,7 @@ describe('Verbose console reporter', function () {
         });
 
         // disable indentation for test purposes
-        spyOn(VerboseReporter.ConsoleReporter, 'indent').and.callFake((str) => str);
+        spyOn(VerboseReporter.Utils, 'indent').and.callFake((str) => str);
     });
 
     it('reports that the suite has started to the console', function () {

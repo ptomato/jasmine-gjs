@@ -1,6 +1,7 @@
 const Lang = imports.lang;
 
 const ConsoleReporter = imports.consoleReporter;
+const Utils = imports.utils;
 
 const GRAY = '\x1b[38;5;246m';
 const YELLOW = '\x1b[33m';
@@ -38,14 +39,14 @@ const VerboseReporter = new Lang.Class({
 
     suiteStarted: function (result) {
         this.parent(result);
-        this._print(indent(this._color(result.description, GRAY),
+        this._print(Utils.indent(this._color(result.description, GRAY),
             this._suiteLevel * 2));
         this._print('\n');
     },
 
     suiteDone: function (result) {
         if (result.status === 'disabled')
-            this._print(indent(this._color('(disabled)', YELLOW) + '\n',
+            this._print(Utils.indent(this._color('(disabled)', YELLOW) + '\n',
                 this._suiteLevel * 2 + 2));
 
         this.parent(result);
@@ -70,7 +71,7 @@ const VerboseReporter = new Lang.Class({
             failed: this._failureCount + ')',
             disabled: 'x',
         };
-        this._print(indent(this._color(symbols[result.status],
+        this._print(Utils.indent(this._color(symbols[result.status],
             colors[result.status]), this._suiteLevel * 2 + 2));
         this._print(' %s\n'.format(result.description));
     },
@@ -79,9 +80,9 @@ const VerboseReporter = new Lang.Class({
         this._print(this._color('%d) %s\n\n'.format(index + 1, result.fullName), RED));
 
         result.failedExpectations.forEach((failedExpectation) => {
-            this._print(indent(this._color(failedExpectation.message, GRAY), 2));
+            this._print(Utils.indent(this._color(failedExpectation.message, GRAY), 2));
             this._print('\n');
-            this._print(indent(this.filterStack(failedExpectation.stack), 4));
+            this._print(Utils.indent(this.filterStack(failedExpectation.stack), 4));
             this._print('\n\n');
         });
     },

@@ -25,6 +25,7 @@ dist_pkgdata_DATA = \
 	src/options.js \
 	src/tapReporter.js \
 	src/timer.js \
+	src/utils.js \
 	src/verboseReporter.js \
 	$(NULL)
 
@@ -55,6 +56,7 @@ TESTS = \
 	test/jasmineBootSpec.js \
 	test/jasmineIntegrationTest.js \
 	test/tapReporterSpec.js \
+	test/utilsSpec.js \
 	test/verboseReporterSpec.js \
 	$(NULL)
 EXTRA_DIST += $(TESTS)

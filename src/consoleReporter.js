@@ -4,6 +4,8 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
+const Utils = imports.utils;
+
 GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 String.prototype.format = Format.format;
 
@@ -11,14 +13,6 @@ const YELLOW = '\x1b[33m';
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const NORMAL = '\x1b[0m';
-
-function indent(str, spaces) {
-    return str.split('\n').map((line) => {
-        if (line === '')
-            return line;
-        return ' '.repeat(spaces) + line;
-    }).join('\n');
-}
 
 const noopTimer = {
     start: function () {},
@@ -215,7 +209,7 @@ const DefaultReporter = new Lang.Class({
         result.failedExpectations.forEach((failedExpectation) => {
             let report = 'Message:\n' + this._color(failedExpectation.message, RED) +
                 '\nStack:\n' + this.filterStack(failedExpectation.stack) + '\n';
-            this._print(indent(report, 2));
+            this._print(Utils.indent(report, 2));
         });
     },
 
