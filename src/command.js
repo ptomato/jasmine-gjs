@@ -20,7 +20,7 @@ function run(_jasmine, argv) {
             Mainloop.quit('jasmine');
         },
         show_colors: options.color,
-        timer: Timer.defaultTimer,
+        timerFactory: Timer.createDefaultTimer,
     };
 
     if (options.verbose) {

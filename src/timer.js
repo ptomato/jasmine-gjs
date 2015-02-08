@@ -22,7 +22,7 @@ function installAPI(global) {
 }
 
 // Measures elapsed time in milliseconds.
-const defaultTimer = (function () {
+function createDefaultTimer() {
     let startTime;
     return {
         start: function () {
@@ -33,4 +33,4 @@ const defaultTimer = (function () {
             return (endTime - startTime) / 1000;
         },
     };
-})();
+}

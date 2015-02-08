@@ -1,13 +1,18 @@
 const ConsoleReporter = imports.consoleReporter;
 
 describe('Console reporter base class', function () {
-    let reporter, timerSpy;
+    let reporter, timerSpies;
     let jasmineCorePath = 'path/to/jasmine/core/jasmine.js';
 
     beforeEach(function () {
-        timerSpy = jasmine.createSpyObj('timer', ['start']);
+        timerSpies = [];
+        let timerSpy = () => {
+            let timer = jasmine.createSpyObj('timer', ['start']);
+            timerSpies.push(timer);
+            return timer;
+        };
         reporter = new ConsoleReporter.ConsoleReporter({
-            timer: timerSpy,
+            timerFactory: timerSpy,
             jasmineCorePath: jasmineCorePath,
         });
     });
@@ -18,7 +23,7 @@ describe('Console reporter base class', function () {
 
     it('starts the provided timer when jasmine starts', function () {
         reporter.jasmineStarted();
-        expect(timerSpy.start).toHaveBeenCalled();
+        expect(timerSpies[0].start).toHaveBeenCalled();
     });
 
     it('purges Jasmine internals from stack traces', function () {

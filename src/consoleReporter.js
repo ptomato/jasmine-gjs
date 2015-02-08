@@ -14,10 +14,12 @@ const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const NORMAL = '\x1b[0m';
 
-const noopTimer = {
-    start: function () {},
-    elapsed: function () { return 0; },
-};
+function createNoopTimer() {
+    return {
+        start: function () {},
+        elapsed: function () { return 0; },
+    };
+}
 
 const ConsoleReporter = new Lang.Class({
     Name: 'ConsoleReporter',
@@ -43,10 +45,10 @@ const ConsoleReporter = new Lang.Class({
             delete props.print;
         }
 
-        this._timer = noopTimer;
-        if (props.hasOwnProperty('timer')) {
-            this._timer = props.timer;
-            delete props.timer;
+        this._timerFactory = createNoopTimer;
+        if (props.hasOwnProperty('timerFactory')) {
+            this._timerFactory = props.timerFactory;
+            delete props.timerFactory;
         }
 
         if (props.hasOwnProperty('onComplete')) {
@@ -56,6 +58,7 @@ const ConsoleReporter = new Lang.Class({
 
         this.parent(props);
 
+        this._timer = this._timerFactory();
         this._failedSpecs = [];
         this._failedSuites = [];
         this._suiteLevel = 0;

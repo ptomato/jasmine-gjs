@@ -1,7 +1,7 @@
 const VerboseReporter = imports.verboseReporter;
 
 describe('Verbose console reporter', function () {
-    let out, reporter, timerSpy;
+    let out, reporter, timerSpies;
 
     beforeEach(function () {
         out = (function () {
@@ -19,12 +19,17 @@ describe('Verbose console reporter', function () {
             };
         }());
 
-        timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+        timerSpies = [];
+        let timerSpy = () => {
+            let timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            timerSpies.push(timer);
+            return timer;
+        };
 
         reporter = new VerboseReporter.VerboseReporter({
             print: out.print,
             show_colors: false,
-            timer: timerSpy,
+            timerFactory: timerSpy,
         });
 
         // disable indentation for test purposes
@@ -100,7 +105,7 @@ describe('Verbose console reporter', function () {
 
         out.clear();
 
-        timerSpy.elapsed.and.returnValue(100);
+        timerSpies[0].elapsed.and.returnValue(100);
 
         reporter.jasmineDone();
 
@@ -111,7 +116,7 @@ describe('Verbose console reporter', function () {
 
     it('reports a summary when done even if there are no specs', function () {
         reporter.jasmineStarted();
-        timerSpy.elapsed.and.returnValue(100);
+        timerSpies[0].elapsed.and.returnValue(100);
         out.clear();
         reporter.jasmineDone();
         expect(out.getOutput()).toMatch(/0 passing \(0.1 s\)/);

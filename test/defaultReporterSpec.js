@@ -1,7 +1,7 @@
 const ConsoleReporter = imports.consoleReporter;
 
 describe('Default console reporter', function () {
-    let out, reporter, timerSpy;
+    let out, reporter, timerSpies;
 
     beforeEach(function () {
         out = (function () {
@@ -19,12 +19,17 @@ describe('Default console reporter', function () {
             };
         }());
 
-        timerSpy = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+        timerSpies = [];
+        let timerSpy = function () {
+            let timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            timerSpies.push(timer);
+            return timer;
+        };
 
         reporter = new ConsoleReporter.DefaultReporter({
             print: out.print,
             show_colors: false,
-            timer: timerSpy,
+            timerFactory: timerSpy,
         });
     });
 
@@ -65,7 +70,7 @@ describe('Default console reporter', function () {
         reporter.specStarted({});
         reporter.specDone({status: 'passed'});
 
-        timerSpy.elapsed.and.returnValue(1000);
+        timerSpies[0].elapsed.and.returnValue(1000);
 
         out.clear();
         reporter.jasmineDone();
@@ -97,7 +102,7 @@ describe('Default console reporter', function () {
 
         out.clear();
 
-        timerSpy.elapsed.and.returnValue(100);
+        timerSpies[0].elapsed.and.returnValue(100);
 
         reporter.jasmineDone();
 

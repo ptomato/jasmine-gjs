@@ -73,7 +73,7 @@ const Jasmine = new Lang.Class({
     },
 
     configureDefaultReporter: function (options) {
-        options.timer = options.timer || new this._jasmine.Timer();
+        options.timerFactory = options.timerFactory || (() => new this._jasmine.Timer());
         let consoleReporter = new ConsoleReporter.DefaultReporter(options);
         this.addReporter(consoleReporter);
     },

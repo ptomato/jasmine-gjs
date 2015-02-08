@@ -145,7 +145,7 @@ describe('Jasmine boot', function () {
                 print: 'printer',
                 onComplete: 'on complete method',
                 show_colors: true,
-                timer: 'timer',
+                timerFactory: 'timer factory',
             };
 
             let expectedReporterOptions = Object.keys(reporterOptions).reduce(function (options, key) {
@@ -168,10 +168,10 @@ describe('Jasmine boot', function () {
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
         });
 
-        it('creates a reporter with a default timer if a timer is not specified', function () {
+        it('creates a reporter with a default timer factory if a timer factory is not specified', function () {
             testJasmine.configureDefaultReporter({});
             expect(JasmineBoot.ConsoleReporter.DefaultReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ timer: jasmine.any(Object) }));
+                .toHaveBeenCalledWith(jasmine.objectContaining({ timerFactory: jasmine.any(Function) }));
             expect(testJasmine.env.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ someProperty: 'some value' }));
         });
