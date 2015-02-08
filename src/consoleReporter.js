@@ -12,12 +12,12 @@ const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const NORMAL = '\x1b[0m';
 
-function indent(spaces) {
-    return ' '.repeat(spaces * 2);
-}
-
-function indentLines(str, spaces) {
-    return str.split('\n').map((line) => indent(spaces) + line).join('\n');
+function indent(str, spaces) {
+    return str.split('\n').map((line) => {
+        if (line === '')
+            return line;
+        return ' '.repeat(spaces) + line;
+    }).join('\n');
 }
 
 const noopTimer = {
@@ -213,11 +213,9 @@ const DefaultReporter = new Lang.Class({
     _printSpecFailureDetails: function (result, index) {
         this._print('\n%d) %s\n'.format(index + 1, result.fullName));
         result.failedExpectations.forEach((failedExpectation) => {
-            this._print(indent(1) + 'Message:\n');
-            this._print(this._color(indent(2) + failedExpectation.message, RED));
-            this._print('\n' + indent(1) + 'Stack:\n');
-            this._print(indentLines(this.filterStack(failedExpectation.stack), 2));
-            this._print('\n');
+            let report = 'Message:\n' + this._color(failedExpectation.message, RED) +
+                '\nStack:\n' + this.filterStack(failedExpectation.stack) + '\n';
+            this._print(indent(report, 2));
         });
     },
 
