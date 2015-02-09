@@ -32,7 +32,16 @@ const PASSING_SPEC_INFO = {
     description: 'passes a test',
     fullName: 'A suite passes a test',
     failedExpectations: [],
-    passedExpectations: [],
+    passedExpectations: [
+        {
+            matcherName: 'toBe',
+            message: 'Expected true to be true',
+        },
+        {
+            matcherName: 'toContain',
+            message: 'Expected [1] to contain 1',
+        }
+    ],
     status: 'passed',
 };
 const NESTED_PASSING_SPEC_INFO = {
@@ -417,5 +426,24 @@ describe('The JUnit reporter', function () {
                 value: 'surprise',
             },
         }));
+    });
+
+    it('reports the total number of assertions', function () {
+        runSuite(SUITE_INFO, [PASSING_SPEC_INFO, ERROR_SPEC_INFO]);
+        reporter.jasmineDone();
+
+        let tree = JSON.parse(out.getOutput());
+        let testsuite = findSuite(tree, 0);
+        expect(testsuite.children[0].attrs['assertions']).toBe(2);
+        expect(testsuite.children[1].attrs['assertions']).toBe(2);
+    });
+
+    it('reports the total number of assertions in an afterAll() suite', function () {
+        runSuite(FAILED_SUITE_INFO, [PASSING_SPEC_INFO]);
+        reporter.jasmineDone();
+
+        let tree = JSON.parse(out.getOutput());
+        let afterAllSuite = findSuite(tree, 1);
+        expect(afterAllSuite.children[0].attrs['assertions']).toBe(1);
     });
 });

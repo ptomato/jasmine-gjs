@@ -49,6 +49,7 @@ const JUnitReporter = new Lang.Class({
                 afterAllCase.attrs = {
                     name: failure.description,
                     classname: 'AfterAll',
+                    assertions: failure.failedExpectations.length,
                 };
                 afterAllCase.children = failure.failedExpectations.map((result) => {
                     let error = new XMLWriter.Node('error');
@@ -108,6 +109,8 @@ const JUnitReporter = new Lang.Class({
         spec.attrs = {
             name: result.description,
             classname: this._currentSuite.attrs['name'],
+            assertions: result.failedExpectations.length +
+                result.passedExpectations.length,
         };
 
         switch (result.status) {
