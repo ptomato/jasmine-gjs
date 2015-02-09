@@ -23,7 +23,7 @@ function _prettyprint(node) {
     let elementTop = '<' + node.name + _attrsToString(node.attrs) + '>\n';
     let elementBottom = '</' + node.name + '>\n';
     let children = node.children.map(_prettyprint).join('');
-    let text = GLib.markup_escape_text(node.text, -1);
+    let text = GLib.markup_escape_text(node.text, -1).trim();
     if (text.length !== 0)
         text += '\n';
 

@@ -78,6 +78,11 @@ describe('XML writer', function () {
         expect(node.toString()).toMatch('\n  A very fine day\n');
     });
 
+    it('trims text content', function () {
+        node.text = '     \nA very fine day\n     ';
+        expect(node.toString()).toMatch('<node>\n  A very fine day\n</node>');
+    });
+
     it('escapes text content', function () {
         node.text = '"<>&\'';
         expect(node.toString()).toMatch('&quot;&lt;&gt;&amp;&apos;');
