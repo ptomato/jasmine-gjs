@@ -1,3 +1,5 @@
+const GLib = imports.gi.GLib;
+
 const JUnitReporter = imports.junitReporter;
 
 const SUITE_INFO = {
@@ -398,6 +400,22 @@ describe('The JUnit reporter', function () {
                 }),
                 text: 'file.js:113\nfile.js:72\nfile.js:17\n',
             })],
+        }));
+    });
+
+    it('adds the environment in a <properties> element', function () {
+        GLib.setenv('JASMINE_TESTS_BOGUS_VARIABLE', 'surprise', true);
+        reporter.jasmineStarted(); // restart
+        reporter.jasmineDone();
+
+        let tree = JSON.parse(out.getOutput());
+        let properties = tree.children.filter((child) => child.name === 'properties')[0];
+        expect(properties.children).toContain(jasmine.objectContaining({
+            name: 'property',
+            attrs: {
+                name: 'JASMINE_TESTS_BOGUS_VARIABLE',
+                value: 'surprise',
+            },
         }));
     });
 });

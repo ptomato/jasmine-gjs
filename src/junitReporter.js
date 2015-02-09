@@ -21,6 +21,17 @@ const JUnitReporter = new Lang.Class({
         this._tree = new XMLWriter.Node('testsuites');
         this._suiteCount = 0;
         this._activeSuites = [];
+
+        let properties = new XMLWriter.Node('properties');
+        properties.children = GLib.listenv().map((key) => {
+            let property = new XMLWriter.Node('property');
+            property.attrs = {
+                name: key,
+                value: GLib.getenv(key),
+            };
+            return property;
+        });
+        this._tree.children.push(properties);
     },
 
     jasmineDone: function () {
