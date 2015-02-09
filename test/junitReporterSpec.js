@@ -141,6 +141,20 @@ describe('The JUnit reporter', function () {
         reporter.suiteDone(suiteInfo);
     }
 
+    // Find the <testsuite> element with the given ID inside the <testsuites>
+    // element given by tree. This is necessary because other elements may be
+    // present such as, <properties>, so we cannot rely on the element with ID 0
+    // being the first child of <testsuites>.
+    function findSuite(tree, id) {
+        let retval;
+        for (let index = 0; index < tree.children.length; index++) {
+            let child = tree.children[index];
+            if (child.name === 'testsuite' && child.attrs['id'] === id)
+                return child;
+        }
+        return undefined;
+    }
+
     // For XML builder reasons, the report is only output at the end of all the
     // test suites. Therefore all tests must call jasmineDone().
 
@@ -156,7 +170,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.name).toBe('testsuite');
         expect(testsuite.attrs['name']).toBe('A suite');
         expect(testsuite.attrs['tests']).toBe(0);
@@ -167,7 +181,8 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testcase = tree.children[0].children[0];
+        let testsuite = findSuite(tree, 0);
+        let testcase = testsuite.children[0];
         expect(testcase.name).toBe('testcase');
         expect(testcase.attrs['name']).toBe('passes a test');
         expect(testcase.attrs['classname']).toBe('A suite');
@@ -178,7 +193,8 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testcase = tree.children[0].children[0];
+        let testsuite = findSuite(tree, 0);
+        let testcase = testsuite.children[0];
         expect(testcase.children[0].name).toBe('skipped');
     });
 
@@ -190,7 +206,8 @@ describe('The JUnit reporter', function () {
             reporter.jasmineDone();
 
             let tree = JSON.parse(out.getOutput());
-            failure = tree.children[0].children[0].children[0];
+            let testsuite = findSuite(tree, 0);
+            failure = testsuite.children[0].children[0];
         });
 
         it('reports it as failed', function () {
@@ -222,8 +239,9 @@ describe('The JUnit reporter', function () {
             reporter.jasmineDone();
 
             let tree = JSON.parse(out.getOutput());
-            error1 = tree.children[0].children[0].children[0];
-            error2 = tree.children[0].children[0].children[1];
+            let testsuite = findSuite(tree, 0);
+            error1 = testsuite.children[0].children[0];
+            error2 = testsuite.children[0].children[1];
         });
 
         it('reports it as errored', function () {
@@ -255,7 +273,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.children.length).toBe(0);
     });
 
@@ -266,7 +284,8 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        tree.children.forEach((child, index) => {
+        tree.children.filter((child) => child.name === 'testsuite')
+        .forEach((child, index) => {
             expect(child.attrs['id']).toBe(index);
         });
     });
@@ -284,7 +303,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.attrs['tests']).toBe(3);
     });
 
@@ -293,7 +312,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.attrs['disabled']).toBe(1);
     });
 
@@ -302,7 +321,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.attrs['errors']).toBe(1);
     });
 
@@ -311,7 +330,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.attrs['failures']).toBe(1);
     });
 
@@ -320,7 +339,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(testsuite.attrs['skipped']).toBe(1);
     });
 
@@ -329,7 +348,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let testsuite = tree.children[0];
+        let testsuite = findSuite(tree, 0);
         expect(function () {
             let date = Date.parse(testsuite.attrs['timestamp']);
         }).not.toThrow();
@@ -346,8 +365,8 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let suite1 = tree.children[0];
-        let suite2 = tree.children[1];
+        let suite1 = findSuite(tree, 0);
+        let suite2 = findSuite(tree, 1);
         expect(suite1.attrs['tests']).toBe(3);
         expect(suite2.attrs['tests']).toBe(2);
     });
@@ -357,8 +376,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let suite = tree.children[0];
-        let afterAllSuite = tree.children[1];
+        let afterAllSuite = findSuite(tree, 1);
         expect(afterAllSuite.attrs['tests']).toBe(1);
         expect(afterAllSuite.attrs['errors']).toBe(1);
     });
@@ -368,7 +386,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let afterAllSuite = tree.children[1];
+        let afterAllSuite = findSuite(tree, 1);
         expect(afterAllSuite.children[0]).toEqual(jasmine.objectContaining({
             name: 'testcase',
             attrs: jasmine.any(Object),
