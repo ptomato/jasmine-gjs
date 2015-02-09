@@ -22,6 +22,7 @@ dist_pkgdata_DATA = \
 	src/command.js \
 	src/consoleReporter.js \
 	src/jasmineBoot.js \
+	src/junitReporter.js \
 	src/options.js \
 	src/tapReporter.js \
 	src/timer.js \
@@ -56,6 +57,7 @@ TESTS = \
 	test/focusedSpecIntegrationTest.js \
 	test/jasmineBootSpec.js \
 	test/jasmineIntegrationTest.js \
+	test/junitReporterSpec.js \
 	test/tapReporterSpec.js \
 	test/utilsSpec.js \
 	test/verboseReporterSpec.js \
