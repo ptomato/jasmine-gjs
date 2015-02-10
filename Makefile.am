@@ -58,6 +58,7 @@ TESTS = \
 	test/jasmineBootSpec.js \
 	test/jasmineIntegrationTest.js \
 	test/junitReporterSpec.js \
+	test/optionsSpec.js \
 	test/tapReporterSpec.js \
 	test/utilsSpec.js \
 	test/verboseReporterSpec.js \

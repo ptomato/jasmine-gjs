@@ -27,6 +27,12 @@ const ARGS = {
         help: 'output results in TAP format',
         action: 'store_true',
     },
+    'junit': {
+        help: 'output a JUnit report to the given file [report.xml]',
+        action: 'store',
+        nargs: '?',
+        const: 'report.xml',
+    }
 };
 
 function parseOptions(argv) {
@@ -64,6 +70,20 @@ function parseOptions(argv) {
             break;
         case 'store_false':
             namespace[dest] = false;
+            break;
+        case 'store':
+            let value = argv.shift();
+            if (typeof value !== 'undefined' && value.startsWith('--')) {
+                argv.unshift(value);
+                value = undefined;
+            }
+            if (typeof value === 'undefined' && arg_info.nargs === '?')
+                value = arg_info.const;
+            if (typeof value === 'undefined') {
+                printerr('warning: Missing value for argument "%s"'.format(arg_name));
+                continue;
+            }
+            namespace[dest] = value;
             break;
         }
     }
