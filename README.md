@@ -59,6 +59,11 @@ output.)
 [Test Anything Protocol](http://testanything.org/).
 This is useful when integrating with Automake (see below.)
 
+`--junit [file]`: In addition to the console output, print a JUnit-style
+XML report to `file`.
+If no file is given, the default is `report.xml` in the current working
+directory.
+
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into
