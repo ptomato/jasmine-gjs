@@ -1,6 +1,9 @@
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 
 const Command = imports.command;
+const JUnitReporter = imports.junitReporter;
 const TapReporter = imports.tapReporter;
 const VerboseReporter = imports.verboseReporter;
 
@@ -39,6 +42,24 @@ describe('Jasmine command', function () {
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
             let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
             expect(reporter.constructor).toBe(TapReporter.TapReporter);
+        });
+
+        it('loads the JUnit reporter alongside the usual reporter', function () {
+            // Unfortunately /dev/null can't be opened as a GFile, so we need to
+            // write to a temporary file.
+            let [tmpFile, stream] = Gio.File.new_tmp('junitreportXXXXXX');
+            let tmpPath = tmpFile.get_path();
+            stream.close(null);
+
+            Command.run(fakeJasmine, ['--junit', tmpPath]);
+            expect(fakeJasmine.configureDefaultReporter).toHaveBeenCalled();
+            expect(fakeJasmine.addReporter).toHaveBeenCalled();
+            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            expect(reporter.constructor).toBe(JUnitReporter.JUnitReporter);
+
+            tmpFile.delete(null);
+            // COMPAT in GLib >= 2.34:
+            // tmpFile.delete_async(GLib.PRIORITY_DEFAULT, null, function () {});
         });
 
         it('executes the Jasmine suite', function (done) {

@@ -1,3 +1,4 @@
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
@@ -11,6 +12,25 @@ function run(_jasmine, argv) {
     if (options.version) {
         print('Jasmine', _jasmine.version);
         System.exit(0);
+    }
+
+    if (options.junit) {
+        const JUnitReporter = imports.junitReporter;
+        let junitFile = Gio.File.new_for_commandline_arg(options.junit);
+        let rawStream = junitFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
+        let junitStream = new Gio.DataOutputStream({
+            base_stream: rawStream,
+        });
+
+        _jasmine.addReporter(new JUnitReporter.JUnitReporter({
+            timerFactory: Timer.createDefaultTimer,
+            print: function (str) {
+                junitStream.put_string(str, null);
+            },
+            onComplete: function (success) {
+                junitStream.close(null);
+            }
+        }));
     }
 
     let reporterOptions = {
