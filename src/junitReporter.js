@@ -64,7 +64,7 @@ const JUnitReporter = new Lang.Class({
 
         // Timer inherited from ConsoleReporter
         this._tree.attrs = {
-            time: this._timer.elapsed() / 1000,
+            time: this.elapsedTime('main') / 1000,
         };
 
         this._print(this._tree.toString());

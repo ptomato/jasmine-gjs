@@ -22,7 +22,7 @@ const VerboseReporter = new Lang.Class({
     jasmineDone: function () {
         this._print('\n');
         this._failedSpecs.forEach(this._printSpecFailureDetails, this);
-        let seconds = Math.round(this._timer.elapsed()) / 1000;
+        let seconds = Math.round(this.elapsedTime('main')) / 1000;
 
         this._print(this._color('  %d passing'.format(this._passingCount), GREEN));
         this._print(' (%f s)\n'.format(seconds));

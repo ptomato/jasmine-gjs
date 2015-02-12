@@ -58,7 +58,11 @@ const ConsoleReporter = new Lang.Class({
 
         this.parent(props);
 
-        this._timer = this._timerFactory();
+        // The main timer should return 0 if the run hasn't started yet
+        this._timers = {
+            'main': createNoopTimer(),
+        };
+
         this._failedSpecs = [];
         this._failedSuites = [];
         this._suiteLevel = 0;
@@ -91,10 +95,27 @@ const ConsoleReporter = new Lang.Class({
         };
     })(),
 
+    // Used to start a timer associated with a particular ID. Subclasses can use
+    // this to time actions that the base class doesn't time if they wish.
+    startTimer: function (id) {
+        this._timers[id] = this._timerFactory(id);
+        this._timers[id].start();
+    },
+
+    // Used to get the elapsed time from a timer with the given ID. Subclasses
+    // can use this to time actions not timed by the base class. The base class
+    // uses timers with the following IDs:
+    //   main - times the whole suite
+    //   suite:foo - times the suite with ID "foo"
+    //   spec:bar - times the spec with ID "bar"
+    elapsedTime: function (id) {
+        return this._timers[id].elapsed();
+    },
+
     // Called with an "info" object with the following property:
     //   totalSpecsDefined - number of specs to be run
     jasmineStarted: function (info) {
-        this._timer.start();
+        this.startTimer('main');
     },
 
     jasmineDone: function () {
@@ -181,7 +202,7 @@ const DefaultReporter = new Lang.Class({
         }
 
         this._print('\n');
-        let seconds = Math.round(this._timer.elapsed()) / 1000;
+        let seconds = Math.round(this.elapsedTime('main')) / 1000;
         this._print('\nFinished in %f s\n'.format(seconds));
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
