@@ -129,17 +129,23 @@ const ConsoleReporter = new Lang.Class({
     //   fullName - the full name including the names of parent suites
     //   failedExpectations - a list of failures in this suite
     suiteStarted: function (result) {
+        if (result.id)
+            this.startTimer('suite:' + result.id);
         this._suiteLevel++;
     },
 
     // Called with the same object as suiteStarted(), with an extra property:
     //   status - "disabled", "failed", or "finished"
+    // Adds another extra property if the suite was started properly with ID:
+    //   time - time taken to execute the suite, in milliseconds
     suiteDone: function (result) {
         this._suiteLevel--;
         if (result.failedExpectations && result.failedExpectations.length > 0) {
             this._failureCount++;
             this._failedSuites.push(result);
         }
+        if (result.id)
+            result.time = this.elapsedTime('suite:' + result.id);
     },
 
     // Called with a "result" object with the following properties:
@@ -149,11 +155,15 @@ const ConsoleReporter = new Lang.Class({
     //   failedExpectations - a list of failures in this spec
     //   passedExpectations - a list of succeeded expectations in this spec
     specStarted: function (result) {
+        if (result.id)
+            this.startTimer('spec:' + result.id);
         this._specCount++;
     },
 
     // Called with the same object as specStarted(), with an extra property:
     //   status - "disabled", "pending", "failed", or "passed"
+    // Adds another extra property if the spec was started properly with ID:
+    //   time - time taken to execute the spec, in milliseconds
     specDone: function (result) {
         if (result.status === 'passed') {
             this._passingCount++;
@@ -163,6 +173,8 @@ const ConsoleReporter = new Lang.Class({
             this._failureCount++;
             this._failedSpecs.push(result);
         }
+        if (result.id)
+            result.time = this.elapsedTime('spec:' + result.id);
     },
 
     filterStack: function (stack) {

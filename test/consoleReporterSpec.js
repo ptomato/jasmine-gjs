@@ -67,6 +67,26 @@ describe('Console reporter base class', function () {
         });
     });
 
+    it('times individual suites', function () {
+        let suiteInfo = {id: 'foo'};
+        reporter.suiteStarted(suiteInfo);
+        expect(timerSpies['suite:foo'].start).toHaveBeenCalled();
+
+        timerSpies['suite:foo'].elapsed.and.returnValue(800);
+        reporter.suiteDone(suiteInfo);
+        expect(suiteInfo.time).toBe(800);
+    });
+
+    it('times individual specs', function () {
+        let specInfo = {id: 'foo'};
+        reporter.specStarted(specInfo);
+        expect(timerSpies['spec:foo'].start).toHaveBeenCalled();
+
+        timerSpies['spec:foo'].elapsed.and.returnValue(800);
+        reporter.specDone(specInfo);
+        expect(specInfo.time).toBe(800);
+    });
+
     it('starts a timer', function () {
         reporter.startTimer('foobar');
         expect(timerSpies['foobar'].start).toHaveBeenCalled();
