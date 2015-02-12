@@ -60,6 +60,7 @@ TESTS = \
 	test/junitReporterSpec.js \
 	test/optionsSpec.js \
 	test/tapReporterSpec.js \
+	test/timerSpec.js \
 	test/utilsSpec.js \
 	test/verboseReporterSpec.js \
 	test/xmlWriterSpec.js \

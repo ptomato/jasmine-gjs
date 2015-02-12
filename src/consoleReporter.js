@@ -119,6 +119,7 @@ const ConsoleReporter = new Lang.Class({
     },
 
     jasmineDone: function () {
+        this.elapsedTime('main');  // Stop the timer
         if (this._onComplete)
             this._onComplete(this._failureCount === 0);
     },

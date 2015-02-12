@@ -23,14 +23,15 @@ function installAPI(global) {
 
 // Measures elapsed time in milliseconds.
 function createDefaultTimer() {
-    let startTime;
+    let startTime, elapsedTime;
     return {
         start: function () {
             startTime = GLib.get_monotonic_time();
         },
         elapsed: function () {
-            let endTime = GLib.get_monotonic_time();
-            return (endTime - startTime) / 1000;
+            if (!elapsedTime)
+                elapsedTime = (GLib.get_monotonic_time() - startTime) / 1000;
+            return elapsedTime;
         },
     };
 }
