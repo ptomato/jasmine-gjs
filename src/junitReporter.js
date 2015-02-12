@@ -94,6 +94,7 @@ const JUnitReporter = new Lang.Class({
 
     suiteDone: function (result) {
         this.parent(result);
+        this._currentSuite.attrs.time = result.time / 1000;  // in seconds
         this._currentSuite = this._activeSuites.pop();
     },
 
@@ -111,6 +112,7 @@ const JUnitReporter = new Lang.Class({
             classname: this._currentSuite.attrs['name'],
             assertions: result.failedExpectations.length +
                 result.passedExpectations.length,
+            time: result.time / 1000,  // in seconds
         };
 
         switch (result.status) {

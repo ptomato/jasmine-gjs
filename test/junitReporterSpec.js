@@ -308,6 +308,31 @@ describe('The JUnit reporter', function () {
         expect(tree.attrs['time']).toBeCloseTo(1.2, 4);
     });
 
+    it('times individual suites', function () {
+        reporter.suiteStarted(SUITE_INFO);
+        timerSpies['suite:' + SUITE_INFO.id].elapsed.and.returnValue(100);
+        reporter.suiteDone(SUITE_INFO);
+        reporter.jasmineDone();
+
+        let tree = JSON.parse(out.getOutput());
+        let testsuite = findSuite(tree, 0);
+        expect(testsuite.attrs['time']).toBeCloseTo(0.1, 4);
+    });
+
+    it('times individual specs', function () {
+        reporter.suiteStarted(SUITE_INFO);
+        reporter.specStarted(PASSING_SPEC_INFO);
+        timerSpies['spec:' + PASSING_SPEC_INFO.id].elapsed.and.returnValue(100);
+        reporter.specDone(PASSING_SPEC_INFO);
+        reporter.suiteDone(SUITE_INFO);
+        reporter.jasmineDone();
+
+        let tree = JSON.parse(out.getOutput());
+        let testsuite = findSuite(tree, 0);
+        let testcase = testsuite.children[0];
+        expect(testcase.attrs['time']).toBeCloseTo(0.1, 4);
+    });
+
     it('counts all tests in a suite', function () {
         runSuite(SUITE_INFO, [PASSING_SPEC_INFO, PASSING_SPEC_INFO, PASSING_SPEC_INFO]);
         reporter.jasmineDone();
