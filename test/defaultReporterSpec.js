@@ -19,11 +19,10 @@ describe('Default console reporter', function () {
             };
         }());
 
-        timerSpies = [];
-        let timerSpy = function () {
-            let timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-            timerSpies.push(timer);
-            return timer;
+        timerSpies = {};
+        let timerSpy = (id) => {
+            timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            return timerSpies[id];
         };
 
         reporter = new ConsoleReporter.DefaultReporter({
@@ -70,7 +69,7 @@ describe('Default console reporter', function () {
         reporter.specStarted({});
         reporter.specDone({status: 'passed'});
 
-        timerSpies[0].elapsed.and.returnValue(1000);
+        timerSpies['main'].elapsed.and.returnValue(1000);
 
         out.clear();
         reporter.jasmineDone();
@@ -102,7 +101,7 @@ describe('Default console reporter', function () {
 
         out.clear();
 
-        timerSpies[0].elapsed.and.returnValue(100);
+        timerSpies['main'].elapsed.and.returnValue(100);
 
         reporter.jasmineDone();
 

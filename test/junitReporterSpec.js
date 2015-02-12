@@ -127,11 +127,10 @@ describe('The JUnit reporter', function () {
             };
         }());
 
-        timerSpies = [];
-        let timerSpy = () => {
-            let timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-            timerSpies.push(timer);
-            return timer;
+        timerSpies = {};
+        let timerSpy = (id) => {
+            timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            return timerSpies[id];
         };
 
         reporter = new JUnitReporter.JUnitReporter({
@@ -302,7 +301,7 @@ describe('The JUnit reporter', function () {
     });
 
     it('times all suites together', function () {
-        timerSpies[0].elapsed.and.returnValue(1200);
+        timerSpies['main'].elapsed.and.returnValue(1200);
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());

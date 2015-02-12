@@ -5,11 +5,10 @@ describe('Console reporter base class', function () {
     let jasmineCorePath = 'path/to/jasmine/core/jasmine.js';
 
     beforeEach(function () {
-        timerSpies = [];
-        let timerSpy = () => {
-            let timer = jasmine.createSpyObj('timer', ['start']);
-            timerSpies.push(timer);
-            return timer;
+        timerSpies = {};
+        let timerSpy = (id) => {
+            timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            return timerSpies[id];
         };
         reporter = new ConsoleReporter.ConsoleReporter({
             timerFactory: timerSpy,
@@ -21,9 +20,9 @@ describe('Console reporter base class', function () {
         reporter = new ConsoleReporter.ConsoleReporter();
     });
 
-    it('starts the provided timer when jasmine starts', function () {
+    it('starts the main timer when Jasmine starts', function () {
         reporter.jasmineStarted();
-        expect(timerSpies[0].start).toHaveBeenCalled();
+        expect(timerSpies['main'].start).toHaveBeenCalled();
     });
 
     it('purges Jasmine internals from stack traces', function () {
@@ -66,5 +65,16 @@ describe('Console reporter base class', function () {
             reporter.jasmineDone();
             expect(onComplete).toHaveBeenCalledWith(false);
         });
+    });
+
+    it('starts a timer', function () {
+        reporter.startTimer('foobar');
+        expect(timerSpies['foobar'].start).toHaveBeenCalled();
+    });
+
+    it('gets the elapsed time from a timer', function () {
+        reporter.startTimer('foobar');
+        timerSpies['foobar'].elapsed.and.returnValue(500);
+        expect(reporter.elapsedTime('foobar')).toBe(500);
     });
 });

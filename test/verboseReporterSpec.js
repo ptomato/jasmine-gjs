@@ -19,11 +19,10 @@ describe('Verbose console reporter', function () {
             };
         }());
 
-        timerSpies = [];
-        let timerSpy = () => {
-            let timer = jasmine.createSpyObj('timer', ['start', 'elapsed']);
-            timerSpies.push(timer);
-            return timer;
+        timerSpies = {};
+        let timerSpy = (id) => {
+            timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
+            return timerSpies[id];
         };
 
         reporter = new VerboseReporter.VerboseReporter({
@@ -105,7 +104,7 @@ describe('Verbose console reporter', function () {
 
         out.clear();
 
-        timerSpies[0].elapsed.and.returnValue(100);
+        timerSpies['main'].elapsed.and.returnValue(100);
 
         reporter.jasmineDone();
 
@@ -116,7 +115,7 @@ describe('Verbose console reporter', function () {
 
     it('reports a summary when done even if there are no specs', function () {
         reporter.jasmineStarted();
-        timerSpies[0].elapsed.and.returnValue(100);
+        timerSpies['main'].elapsed.and.returnValue(100);
         out.clear();
         reporter.jasmineDone();
         expect(out.getOutput()).toMatch(/0 passing \(0.1 s\)/);
