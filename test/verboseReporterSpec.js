@@ -1,7 +1,7 @@
 const VerboseReporter = imports.verboseReporter;
 
 describe('Verbose console reporter', function () {
-    let out, reporter, timerSpies;
+    let out, reporter, timerSpy, timerSpies;
 
     beforeEach(function () {
         out = (function () {
@@ -20,7 +20,7 @@ describe('Verbose console reporter', function () {
         }());
 
         timerSpies = {};
-        let timerSpy = (id) => {
+        timerSpy = (id) => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
@@ -144,11 +144,20 @@ describe('Verbose console reporter', function () {
         expect(out.getOutput()).toMatch(/1\) A suite with a failing spec/);
     });
 
+    it('prints a warning when a spec takes over 40 ms', function () {
+        reporter.specStarted({id: 'foo'});
+        timerSpies['spec:foo'].elapsed.and.returnValue(50);
+        reporter.specDone({id: 'foo'});
+
+        expect(out.getOutput()).toMatch('(50 ms)');
+    });
+
     describe('with color', function () {
         beforeEach(function () {
             reporter = new VerboseReporter.VerboseReporter({
                 print: out.print,
                 showColors: true,
+                timerFactory: timerSpy,
             });
         });
 
@@ -187,6 +196,22 @@ describe('Verbose console reporter', function () {
                 description: 'A disabled suite',
             });
             expect(out.getOutput()).toEqual('\x1b[33m(disabled)\x1b[0m\n');
+        });
+
+        it('prints a mild warning when a spec takes over 40 ms', function () {
+            reporter.specStarted({id: 'foo'});
+            timerSpies['spec:foo'].elapsed.and.returnValue(50);
+            reporter.specDone({id: 'foo'});
+
+            expect(out.getOutput()).toMatch(/\x1b\[33m\(50 ms\)\x1b\[0m/);
+        });
+
+        it('prints a loud warning when a spec takes over 75 ms', function () {
+            reporter.specStarted({id: 'foo'});
+            timerSpies['spec:foo'].elapsed.and.returnValue(80);
+            reporter.specDone({id: 'foo'});
+
+            expect(out.getOutput()).toMatch(/\x1b\[31m\(80 ms\)\x1b\[0m/);
         });
     });
 

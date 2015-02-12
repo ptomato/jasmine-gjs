@@ -73,7 +73,12 @@ const VerboseReporter = new Lang.Class({
         };
         this._print(Utils.indent(this._color(symbols[result.status],
             colors[result.status]), this._suiteLevel * 2 + 2));
-        this._print(' %s\n'.format(result.description));
+        this._print(' %s'.format(result.description));
+        if (result.time > 75)
+            this._print(' ' + this._color('(%d ms)'.format(result.time), RED));
+        else if (result.time > 40)
+            this._print(' ' + this._color('(%d ms)'.format(result.time), YELLOW));
+        this._print('\n');
     },
 
     _printSpecFailureDetails: function (result, index) {
