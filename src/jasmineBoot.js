@@ -1,9 +1,11 @@
+/* global jasmineImporter */
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
-let ConsoleReporter = imports.consoleReporter;
+let ConsoleReporter = jasmineImporter.consoleReporter;
 
 GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 
@@ -31,7 +33,7 @@ const Jasmine = new Lang.Class({
             jasmineCore = props.jasmineCore;
             delete props.jasmineCore;
         } else {
-            jasmineCore = imports.jasmine;
+            jasmineCore = jasmineImporter.jasmine;
         }
 
         this.parent(props);

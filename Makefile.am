@@ -6,7 +6,7 @@ CLEANFILES =
 dist_bin_SCRIPTS = bin/jasmine
 
 do_subst = sed \
-	-e 's,[@]pkgdatadir[@],$(pkgdatadir),g' \
+	-e 's,[@]datadir[@],$(datadir),g' \
 	-e 's,[@]GJS_PATH[@],$(GJS_PATH),g'\
 	$(NULL)
 bin/jasmine: bin/jasmine.in Makefile
@@ -55,6 +55,7 @@ TESTS = \
 	test/consoleReporterSpec.js \
 	test/defaultReporterSpec.js \
 	test/focusedSpecIntegrationTest.js \
+	test/importerSpec.js \
 	test/jasmineBootSpec.js \
 	test/jasmineIntegrationTest.js \
 	test/junitReporterSpec.js \
@@ -69,12 +70,15 @@ EXTRA_DIST += $(TESTS)
 TEST_EXTENSIONS = .js
 
 ## This uses the local, uninstalled copy of Jasmine. If you were going to use
-## this in your own package, you would do it like so and omit the -I flags:
+## this in your own package, you would do it like so:
 ##   JS_LOG_COMPILER = jasmine
-##   AM_JS_LOG_FLAGS = --tap
 JS_LOG_COMPILER = $(builddir)/bin/jasmine
-AM_JS_LOG_FLAGS = -I $(srcdir)/src -I $(srcdir)/lib --tap
-AM_TESTS_ENVIRONMENT = export SRCDIR='$(srcdir)'; export RUN_THOROUGH_TESTS=yes;
+AM_JS_LOG_FLAGS = --tap
+AM_TESTS_ENVIRONMENT = \
+	export SRCDIR='$(srcdir)'; \
+	export JASMINE_UNINSTALLED=yes; \
+	export RUN_THOROUGH_TESTS=yes; \
+	$(NULL)
 
 # Test fixtures
 
@@ -82,6 +86,7 @@ EXTRA_DIST += \
 	test/fixtures/notASpec.txt \
 	test/fixtures/someSpec.js \
 	test/fixtures/otherSpec.js \
+	test/utils.js \
 	$(NULL)
 
 # Git ignore files

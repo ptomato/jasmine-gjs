@@ -1,4 +1,6 @@
-const ConsoleReporter = imports.consoleReporter;
+/* global jasmineImporter */
+
+const ConsoleReporter = jasmineImporter.consoleReporter;
 
 describe('Default console reporter', function () {
     let out, reporter, timerSpies;

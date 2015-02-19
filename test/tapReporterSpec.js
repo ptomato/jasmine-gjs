@@ -1,4 +1,6 @@
-const TapReporter = imports.tapReporter;
+/* global jasmineImporter */
+
+const TapReporter = jasmineImporter.tapReporter;
 
 describe('The TAP reporter', function () {
     let out, reporter;

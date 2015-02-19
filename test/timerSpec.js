@@ -1,4 +1,6 @@
-const Timer = imports.timer;
+/* global jasmineImporter */
+
+const Timer = jasmineImporter.timer;
 
 describe('The default timer', function () {
     it('stops timing when elapsed() is called', function () {

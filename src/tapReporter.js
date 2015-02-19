@@ -1,10 +1,12 @@
 // Reporter that outputs according to the Test Anything Protocol
 // See http://testanything.org/tap-specification.html
 
+/* global jasmineImporter */
+
 const Format = imports.format;
 const Lang = imports.lang;
 
-const ConsoleReporter = imports.consoleReporter;
+const ConsoleReporter = jasmineImporter.consoleReporter;
 
 String.prototype.format = Format.format;
 

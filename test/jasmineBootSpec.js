@@ -1,7 +1,9 @@
+/* global jasmineImporter */
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
-let JasmineBoot = imports.jasmineBoot;
+let JasmineBoot = jasmineImporter.jasmineBoot;
 
 // This is in case we are running the tests from a build tree that is different
 // from the source tree, for example during 'make distcheck'.

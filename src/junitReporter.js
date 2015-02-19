@@ -2,11 +2,13 @@
 // See http://llg.cubic.org/docs/junit/
 // Unfortunately, the JUnit format is woefully underspecified.
 
+/* global jasmineImporter */
+
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 
-const ConsoleReporter = imports.consoleReporter;
-const XMLWriter = imports.xmlWriter;
+const ConsoleReporter = jasmineImporter.consoleReporter;
+const XMLWriter = jasmineImporter.xmlWriter;
 
 const JUnitReporter = new Lang.Class({
     Name: 'JUnitReporter',

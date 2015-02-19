@@ -1,10 +1,12 @@
+/* global jasmineImporter */
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
 
-const Options = imports.options;
-const Timer = imports.timer;
+const Options = jasmineImporter.options;
+const Timer = jasmineImporter.timer;
 
 function run(_jasmine, argv) {
     let [files, options] = Options.parseOptions(argv);
@@ -15,7 +17,7 @@ function run(_jasmine, argv) {
     }
 
     if (options.junit) {
-        const JUnitReporter = imports.junitReporter;
+        const JUnitReporter = jasmineImporter.junitReporter;
         let junitFile = Gio.File.new_for_commandline_arg(options.junit);
         let rawStream = junitFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
         let junitStream = new Gio.DataOutputStream({
@@ -44,10 +46,10 @@ function run(_jasmine, argv) {
     };
 
     if (options.verbose) {
-        const VerboseReporter = imports.verboseReporter;
+        const VerboseReporter = jasmineImporter.verboseReporter;
         _jasmine.addReporter(new VerboseReporter.VerboseReporter(reporterOptions));
     } else if (options.tap) {
-        const TapReporter = imports.tapReporter;
+        const TapReporter = jasmineImporter.tapReporter;
         _jasmine.addReporter(new TapReporter.TapReporter(reporterOptions));
     } else {
         _jasmine.configureDefaultReporter(reporterOptions);

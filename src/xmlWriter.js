@@ -1,6 +1,8 @@
+/* global jasmineImporter */
+
 const GLib = imports.gi.GLib;
 
-const Utils = imports.utils;
+const Utils = jasmineImporter.utils;
 
 function Node(name) {
     this.name = name;

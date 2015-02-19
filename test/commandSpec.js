@@ -1,11 +1,13 @@
+/* global jasmineImporter */
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 
-const Command = imports.command;
-const JUnitReporter = imports.junitReporter;
-const TapReporter = imports.tapReporter;
-const VerboseReporter = imports.verboseReporter;
+const Command = jasmineImporter.command;
+const JUnitReporter = jasmineImporter.junitReporter;
+const TapReporter = jasmineImporter.tapReporter;
+const VerboseReporter = jasmineImporter.verboseReporter;
 
 describe('Jasmine command', function () {
     let fakeJasmine;

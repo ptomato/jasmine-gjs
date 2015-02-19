@@ -1,7 +1,9 @@
+/* global jasmineImporter */
+
 const Lang = imports.lang;
 
-const ConsoleReporter = imports.consoleReporter;
-const Utils = imports.utils;
+const ConsoleReporter = jasmineImporter.consoleReporter;
+const Utils = jasmineImporter.utils;
 
 const GRAY = '\x1b[38;5;246m';
 const YELLOW = '\x1b[33m';

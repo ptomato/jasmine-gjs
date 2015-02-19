@@ -1,4 +1,6 @@
-const Utils = imports.utils;
+/* global jasmineImporter */
+
+const Utils = jasmineImporter.utils;
 
 describe('Indent', function () {
     it('prepends spaces to a string', function () {

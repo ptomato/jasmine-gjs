@@ -1,10 +1,12 @@
+/* global jasmineImporter */
+
 const Format = imports.format;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
-const Utils = imports.utils;
+const Utils = jasmineImporter.utils;
 
 GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 String.prototype.format = Format.format;

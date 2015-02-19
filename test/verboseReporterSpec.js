@@ -1,4 +1,6 @@
-const VerboseReporter = imports.verboseReporter;
+/* global jasmineImporter */
+
+const VerboseReporter = jasmineImporter.verboseReporter;
 
 describe('Verbose console reporter', function () {
     let out, reporter, timerSpy, timerSpies;

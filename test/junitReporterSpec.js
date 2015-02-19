@@ -1,6 +1,8 @@
+/* global jasmineImporter */
+
 const GLib = imports.gi.GLib;
 
-const JUnitReporter = imports.junitReporter;
+const JUnitReporter = jasmineImporter.junitReporter;
 
 const SUITE_INFO = {
     id: 'foo',

@@ -1,4 +1,6 @@
-const ConsoleReporter = imports.consoleReporter;
+/* global jasmineImporter */
+
+const ConsoleReporter = jasmineImporter.consoleReporter;
 
 describe('Console reporter base class', function () {
     let reporter, timerSpies;

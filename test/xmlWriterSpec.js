@@ -1,4 +1,6 @@
-const XMLWriter = imports.xmlWriter;
+/* global jasmineImporter */
+
+const XMLWriter = jasmineImporter.xmlWriter;
 
 describe('XML writer', function () {
     let node;
