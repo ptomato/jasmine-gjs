@@ -19,6 +19,10 @@ const ARGS = {
         action: 'store_false',
         default: true,
     },
+    'color': {
+        help: 'turn on color in spec output',
+        action: 'store_true',
+    },
     'verbose': {
         help: 'print verbose results (similar to mocha)',
         action: 'store_true',

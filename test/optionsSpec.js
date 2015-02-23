@@ -17,4 +17,9 @@ describe('Argument parser', function () {
         expect(files).toEqual([]);
         expect(namespace['junit']).toEqual('report.xml');
     });
+
+    it('stores values in the order they are given on the command line', function () {
+        let [files, namespace] = Options.parseOptions(['--no-color', '--color']);
+        expect(namespace['color']).toBe(true);
+    });
 });
