@@ -45,6 +45,10 @@ $(srcdir)/lib/jasmine.js:
 	patch <$(srcdir)/lib/local-modifications.patch $@
 EXTRA_DIST += lib/local-modifications.patch
 
+# Config files
+
+EXTRA_DIST += jasmine.json
+
 # Tests
 
 JS_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/tap-driver.sh
@@ -73,7 +77,7 @@ TEST_EXTENSIONS = .js
 ## this in your own package, you would do it like so:
 ##   JS_LOG_COMPILER = jasmine
 JS_LOG_COMPILER = $(builddir)/bin/jasmine
-AM_JS_LOG_FLAGS = --tap
+AM_JS_LOG_FLAGS = --tap --no-config
 AM_TESTS_ENVIRONMENT = \
 	export SRCDIR='$(srcdir)'; \
 	export JASMINE_UNINSTALLED=yes; \

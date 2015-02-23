@@ -1,0 +1,5 @@
+{
+    "exclude": ["test/fixtures"],
+    "spec_files": "test",
+    "options": "--verbose"
+}
