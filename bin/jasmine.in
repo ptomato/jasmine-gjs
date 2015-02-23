@@ -39,5 +39,12 @@ const JasmineBoot = jasmineImporter.jasmineBoot;
 let _jasmine = new JasmineBoot.Jasmine();
 _jasmine.installAPI(window);
 
-Command.run(_jasmine, ARGV);
+let defaultConfig = {};
+try {
+    defaultConfig = Command.loadConfig('jasmine.json');
+} catch (e) {
+    // Don't complain if config file absent from default location
+}
+
+Command.run(_jasmine, ARGV, defaultConfig);
 System.exit(0);
