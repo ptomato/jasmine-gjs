@@ -137,8 +137,9 @@ Please file issues here at
 The idea of Jasmine for GJS was first explored by my coworkers Devin
 Ekins and Sam Spilsbury:
 [eos-jasmine](https://github.com/endlessm/eos-jasmine).
-This code, however, is unashamedly cribbed from Pivotal Labs'
-[jasmine-npm](https://github.com/jasmine/jasmine-npm).
+This code, however, was unashamedly cribbed from Pivotal Labs'
+[jasmine-npm](https://github.com/jasmine/jasmine-npm), then expanded
+into what it is now.
 
 Copyright (c) 2015 Philip Chimento.
 This software is licensed under the MIT License &mdash; because Jasmine
