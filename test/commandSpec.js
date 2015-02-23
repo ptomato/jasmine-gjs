@@ -90,6 +90,12 @@ describe('Jasmine command', function () {
             Command.run(fakeJasmine, [], { exclude: 'file.js' });
             expect(fakeJasmine.exclusions).toEqual(['file.js']);
         });
+
+        it('ignores the default config if requested', function () {
+            Command.run(fakeJasmine, ['--no-config'], { options: '--no-color' });
+            expect(fakeJasmine.configureDefaultReporter)
+                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: true }));
+        });
     });
 
     describe('running specs', function () {

@@ -41,6 +41,10 @@ const ARGS = {
         help: 'load configuration from the given file',
         action: 'store',
     },
+    'no-config': {
+        help: 'ignore the default jasmine.json config file',
+        action: 'store_true',
+    },
 };
 
 function parseOptions(argv) {

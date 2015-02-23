@@ -33,6 +33,9 @@ function loadConfig(configFilePath) {
 function run(_jasmine, argv, config={}) {
     let [files, options] = Options.parseOptions(argv);
 
+    if (options['no-config'])
+        config = {};
+
     if (options.config)
         config = loadConfig(options.config);
 
