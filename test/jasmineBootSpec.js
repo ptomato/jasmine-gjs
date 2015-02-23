@@ -129,6 +129,26 @@ describe('Jasmine boot', function () {
         expect(testJasmine.specFiles.every((path) => path.indexOf('notASpec.txt') === -1)).toBe(true);
     });
 
+    it('respects excluded files', function () {
+        testJasmine.exclusions = ['otherSpec.js'];
+        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        expect(testJasmine.specFiles).toMatchAllFiles([
+            SRCDIR + 'test/fixtures/someSpec.js'
+        ]);
+    });
+
+    it('matches when the paths match', function () {
+        testJasmine.exclusions = ['test/fixtures'];
+        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        expect(testJasmine.specFiles).toMatchAllFiles([]);
+    });
+
+    it('can handle globs in excluded files', function () {
+        testJasmine.exclusions = ['*.js'];
+        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        expect(testJasmine.specFiles).toMatchAllFiles([]);
+    });
+
     it('adds the Jasmine path when adding a reporter', function () {
         let fakeReporter = {};
         testJasmine.addReporter(fakeReporter);

@@ -49,6 +49,7 @@ const Jasmine = new Lang.Class({
         this.env = this._jasmine.getEnv();
         this._jasmineInterface = jasmineRequire.interface(this._jasmine, this.env);
 
+        this.exclusions = [];
         this.specFiles = [];
         this._reportersCount = 0;
     },
@@ -82,6 +83,19 @@ const Jasmine = new Lang.Class({
 
     _addSpecFile: function (file) {
         let absolutePath = file.get_path();
+        let shouldSkip = this.exclusions.some((pattern) => {
+            // Match globs against the absolute path
+            if (GLib.pattern_match_simple(pattern, absolutePath))
+                return true;
+            // Also match if the string matches at the end
+            if (GLib.pattern_match_simple('*/' + pattern, absolutePath))
+                return true;
+            // Also match if the string matches the path at the end
+            return GLib.pattern_match_simple('*/' + pattern,
+                file.get_parent().get_path());
+        });
+        if (shouldSkip)
+            return;
         if (this.specFiles.indexOf(absolutePath) === -1)
             this.specFiles.push(absolutePath);
     },
