@@ -83,6 +83,8 @@ AM_TESTS_ENVIRONMENT = \
 # Test fixtures
 
 EXTRA_DIST += \
+	test/fixtures/invalid.json \
+	test/fixtures/jasmine.json \
 	test/fixtures/notASpec.txt \
 	test/fixtures/someSpec.js \
 	test/fixtures/otherSpec.js \

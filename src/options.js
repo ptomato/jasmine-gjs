@@ -36,7 +36,11 @@ const ARGS = {
         action: 'store',
         nargs: '?',
         const: 'report.xml',
-    }
+    },
+    'config': {
+        help: 'load configuration from the given file',
+        action: 'store',
+    },
 };
 
 function parseOptions(argv) {

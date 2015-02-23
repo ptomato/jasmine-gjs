@@ -8,8 +8,48 @@ const System = imports.system;
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
 
-function run(_jasmine, argv) {
+// Make it legal to specify "some_option": "single_value" in the config file as
+// well as "some_option": ["multiple", "values"]
+function _ensureArray(option) {
+    if (!(option instanceof Array))
+        return [option];
+    return option;
+}
+
+function loadConfig(configFilePath) {
+    let configFile = Gio.File.new_for_commandline_arg(configFilePath);
+    let config = {};
+
+    try {
+        let [success, contents, length, etag] = configFile.load_contents(null);
+        config = JSON.parse(contents);
+    } catch (e) {
+        throw new Error('Configuration not read from ' + configFile.get_path());
+    }
+    print('Configuration loaded from', configFile.get_path());
+    return config;
+}
+
+function run(_jasmine, argv, config={}) {
     let [files, options] = Options.parseOptions(argv);
+
+    if (options.config)
+        config = loadConfig(options.config);
+
+    if (config.options) {
+        let [configFiles, configOptions] = Options.parseOptions(_ensureArray(config.options));
+        // Command-line options should always override config file options
+        Object.keys(configOptions).forEach((key) => {
+            if (!(key in options))
+                options[key] = configOptions[key];
+        });
+    }
+
+    if (config.exclude)
+        _jasmine.exclusions = _ensureArray(config.exclude);
+
+    if (config.spec_files)
+        files = files.concat(_ensureArray(config.spec_files));
 
     if (options.version) {
         print('Jasmine', _jasmine.version);
