@@ -119,11 +119,8 @@ const Jasmine = new Lang.Class({
         if (this._reportersCount === 0)
             this.configureDefaultReporter({});
 
-        if (files && files.length > 0) {
-            this._specDir = this.project_base_dir;
-            this.specFiles = [];
+        if (files && files.length > 0)
             this.addSpecFiles(files);
-        }
 
         this.loadSpecs();
         this.env.execute();
