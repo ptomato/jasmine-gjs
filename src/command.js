@@ -51,8 +51,10 @@ function run(_jasmine, argv, config={}) {
     if (config.exclude)
         _jasmine.exclusions = _ensureArray(config.exclude);
 
-    if (config.spec_files)
-        files = files.concat(_ensureArray(config.spec_files));
+    // Specific tests given on the command line should always override the
+    // default tests in the config file
+    if (config.spec_files && files.length === 0)
+        files = _ensureArray(config.spec_files);
 
     if (options.version) {
         print('Jasmine', _jasmine.version);

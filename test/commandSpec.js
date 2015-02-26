@@ -81,6 +81,14 @@ describe('Jasmine command', function () {
             });
         });
 
+        it('overrides spec files from config if any are given on the command line', function (done) {
+            Command.run(fakeJasmine, ['spec1.js'], { spec_files: 'spec2.js' });
+            Mainloop.idle_add(function () {
+                expect(fakeJasmine.execute).toHaveBeenCalledWith(['spec1.js']);
+                done();
+            });
+        });
+
         it('adds exclusions from the config file', function () {
             Command.run(fakeJasmine, [], { exclude: ['a.js', 'b.js'] });
             expect(fakeJasmine.exclusions).toEqual(['a.js', 'b.js']);
