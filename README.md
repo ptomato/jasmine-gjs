@@ -49,6 +49,7 @@ jasmine path/to/spec.js
 ## Options
 
 `--no-color`: Don't output color in the terminal.
+(Opposite of `--color`.)
 
 `--verbose`: Output verbose results, formatted similarly to Mocha's
 output.
