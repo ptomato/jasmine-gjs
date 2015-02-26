@@ -65,6 +65,51 @@ XML report to `file`.
 If no file is given, the default is `report.xml` in the current working
 directory.
 
+`--config [file]`: Use `file` as Jasmine's configuration file instead of
+the default `jasmine.json`.
+
+`--no-config`: Don't load a configuration file, even if one is present.
+
+## Configuration file
+
+Maybe you don't want to keep typing the same options every time you run
+your tests.
+In that case, you can create a configuration file called `jasmine.json`.
+Jasmine will look for it in the current working directory by default.
+
+If you configure your test suites in the configuration file, then you
+can start Jasmine simply by running
+
+```bash
+jasmine
+```
+
+The file should be a JSON file.
+You can use the following keys:
+
+`include_paths`: (string or array of strings)
+Prepend these paths to GJS's include paths.
+(The same as specifying `-I` to GJS or defining the `GJS_PATH`
+environment variable.)
+
+`options`: (string or array of strings)
+Use these command-line options for Jasmine by default.
+Options given on the command line will override these in the event of a
+conflict.
+
+`exclude`: (string or array of strings)
+Don't run specs in these files or directories.
+They may contain `*` and `?` as wildcards.
+Useful if you specify a directory to run which also contains
+utility modules or tests which you don't always want to run.
+
+`spec_files`: (string or array of strings)
+Run specs in these files or directories.
+The same as specifying files or directories on the command line.
+If you specify any on the command line, then this option is entirely
+ignored; this is useful for running your entire test suite by default
+but retaining the ability to run just one spec file on the command line.
+
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into
@@ -92,7 +137,7 @@ JS_LOG_DRIVER_FLAGS = --comments
 TESTS = path/to/spec1.js path/to/spec2.js
 TEST_EXTENSIONS = .js
 JS_LOG_COMPILER = jasmine
-AM_JS_LOG_FLAGS = --tap
+AM_JS_LOG_FLAGS = --tap --no-config
 ```
 
 Don't forget to `EXTRA_DIST` your spec files too.
