@@ -106,6 +106,31 @@ describe('Jasmine command', function () {
         });
     });
 
+    describe('adding GJS search paths', function () {
+        let oldSearchPath;
+
+        beforeEach(function () {
+            oldSearchPath = imports.searchPath.slice();  // copy
+        });
+
+        afterEach(function () {
+            imports.searchPath = oldSearchPath;
+        });
+
+        it('works from the config file', function () {
+            Command.run(fakeJasmine, [], {
+                include_paths: ['/fake/path', '/another/fake/path'],
+            });
+            expect(imports.searchPath).toContain('/fake/path');
+            expect(imports.searchPath).toContain('/another/fake/path');
+        });
+
+        it('parses a single string as well as an array', function () {
+            Command.run(fakeJasmine, [], { include_paths: '/fake/path' });
+            expect(imports.searchPath).toContain('/fake/path');
+        });
+    });
+
     describe('running specs', function () {
         it('shows colors by default', function () {
             Command.run(fakeJasmine, []);

@@ -39,6 +39,12 @@ function run(_jasmine, argv, config={}) {
     if (options.config)
         config = loadConfig(options.config);
 
+    if (config.include_paths) {
+        _ensureArray(config.include_paths).forEach((path) => {
+            imports.searchPath.unshift(path);
+        });
+    }
+
     if (config.options) {
         let [configFiles, configOptions] = Options.parseOptions(_ensureArray(config.options));
         // Command-line options should always override config file options
