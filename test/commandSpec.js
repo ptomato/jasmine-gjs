@@ -44,6 +44,14 @@ describe('Jasmine command', function () {
                 Command.loadConfig(SRCDIR + 'test/fixtures/invalid.json');
             }).toThrow();
         });
+
+        it("resolves paths relative to the config file's location", function () {
+            let config = Command.loadConfig(SRCDIR + 'test/fixtures/path.json');
+            let location = Gio.File.new_for_path(SRCDIR + 'test/fixtures');
+
+            expect(config.include_paths).toContain(location.get_path());
+            expect(config.spec_files).toContain(location.get_child('someSpec.js').get_path());
+        });
     });
 
     describe('parsing config', function () {

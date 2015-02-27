@@ -91,6 +91,8 @@ You can use the following keys:
 Prepend these paths to GJS's include paths.
 (The same as specifying `-I` to GJS or defining the `GJS_PATH`
 environment variable.)
+Relative paths are resolved relative to the configuration file's
+location.
 
 `options`: (string or array of strings)
 Use these command-line options for Jasmine by default.
@@ -109,6 +111,8 @@ The same as specifying files or directories on the command line.
 If you specify any on the command line, then this option is entirely
 ignored; this is useful for running your entire test suite by default
 but retaining the ability to run just one spec file on the command line.
+Relative paths are resolved relative to the configuration file's
+location.
 
 ## Integration with Autotools
 

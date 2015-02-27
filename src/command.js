@@ -16,6 +16,14 @@ function _ensureArray(option) {
     return option;
 }
 
+function _makePathsAbsolute(configFile, paths) {
+    return paths.map((path) => {
+        if (GLib.path_is_absolute(path))
+            return path;
+        return configFile.get_parent().resolve_relative_path(path).get_path();
+    });
+}
+
 function loadConfig(configFilePath) {
     let configFile = Gio.File.new_for_commandline_arg(configFilePath);
     let config = {};
@@ -26,6 +34,14 @@ function loadConfig(configFilePath) {
     } catch (e) {
         throw new Error('Configuration not read from ' + configFile.get_path());
     }
+
+    if (config.include_paths)
+        config.include_paths = _makePathsAbsolute(configFile,
+            _ensureArray(config.include_paths));
+    if (config.spec_files)
+        config.spec_files = _makePathsAbsolute(configFile,
+            _ensureArray(config.spec_files));
+
     print('Configuration loaded from', configFile.get_path());
     return config;
 }

@@ -90,6 +90,7 @@ EXTRA_DIST += \
 	test/fixtures/invalid.json \
 	test/fixtures/jasmine.json \
 	test/fixtures/notASpec.txt \
+	test/fixtures/path.json \
 	test/fixtures/someSpec.js \
 	test/fixtures/otherSpec.js \
 	test/utils.js \
