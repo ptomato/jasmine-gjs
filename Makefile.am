@@ -96,6 +96,10 @@ EXTRA_DIST += \
 	test/utils.js \
 	$(NULL)
 
+# Documentation
+
+EXTRA_DIST += README.md
+
 # Git ignore files
 
 MAINTAINERCLEANFILES = $(GITIGNORE_MAINTAINERCLEANFILES_TOPLEVEL) tap-driver.sh
