@@ -6,3 +6,7 @@
 
 %:
 	dh $@  --with autotools-dev
+
+# Print out test log on failure, so that we can diagnose failures on OBS
+override_dh_auto_test:
+	dh_auto_test || (find . -name test-suite.log | xargs cat ; exit 1)
