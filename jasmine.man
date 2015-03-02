@@ -1,0 +1,93 @@
+.\" Copyright 2015 Philip Chimento <philip.chimento@gmail.com>
+.TH JASMINE 1 "March 1, 2015"
+.\" Please adjust this date whenever revising the manpage.
+.SH NAME
+jasmine \- run Jasmine test suites
+.SH SYNOPSIS
+.B jasmine
+.RB [ \-\-help ]
+.RB [ \-\-color ]
+.RB [ \-\-no\-color ]
+.RB [ \-\-config
+.IR file ]
+.RB [ \-\-no\-config ]
+.RB [ \-\-verbose ]
+.RB [ \-\-tap ]
+.RB [ \-\-junit
+.RI [ file "]] " files " ..."
+.SH DESCRIPTION
+Jasmine is a behavior-driven development framework for the GJS Javascript
+interpreter.
+The
+.B jasmine
+command is a test runner for Jasmine test suites that has several different
+output formats.
+.PP
+The
+.I files
+specified on the command line are imported and all Jasmine specs defined therein
+are executed.
+You may also specify whole directories in
+.IR files ,
+in which case the directories are searched recursively and files ending in
+.I .js
+will be imported.
+.SH OPTIONS
+.TP
+.B \-\-color
+Print output in color, if the chosen output format supports it.
+.TP
+.BI \-\-config " file"
+Use
+.I file
+as the configuration file, instead of
+.IR jasmine.json .
+.TP
+.B \-\-help
+Show summary of options.
+.TP
+.BI \-\-junit " file"
+In addition to the format used to report results to the console (default,
+.BR \-\-verbose ,
+or
+.BR \-\-tap ,)
+output test results to a JUnit-style XML file to
+.IR file ,
+suitable for integration with Jenkins.
+If
+.I file
+is not given, output to
+.I report.xml
+in the current directory.
+.TP
+.B \-\-no\-color
+Do not print output in color, even if the chosen output format supports it.
+.TP
+.B \-\-no\-config
+Don't use a configuration file, even if one is present.
+.TP
+.B \-\-tap
+Report results with the TAP (Test Anything Protocol) reporter, suitable for
+integration with Automake.
+.TP
+.B \-\-verbose
+Report results with the verbose reporter, similar to Mocha's default reporter.
+.SH EXIT STATUS
+The
+.B jasmine
+utility exits with 0 on success, or with 1 if any tests failed or an internal
+error occurred.
+.SH ENVIRONMENT
+The JASMINE_UNINSTALLED environment variable can be used for debugging Jasmine.
+It is not recommended to set this variable during normal use.
+.SH FILES
+By default, Jasmine reads from a configuration file called
+.I jasmine.json
+in the current directory, if such a file exists.
+This can be influenced with the
+.B \-\-config
+and
+.B \-\-no\-config
+options.
+.SH BUGS
+Report bugs at https://github.com/ptomato/jasmine-gjs/issues on GitHub.
