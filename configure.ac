@@ -18,8 +18,9 @@ AS_IF([pkg-config --exists gjs-1.0], [
     AC_MSG_RESULT([pkg-config file not found, will try to guess])
 ])
 AS_IF([test "x$gjs_pc_file" = xno],
-    [AC_PATH_PROG([GJS_PATH], [gjs],
-        [AC_MSG_ERROR([You need GJS to install Jasmine for GJS!])])])
+    [AC_PATH_PROG([GJS_PATH], [gjs], [notfound])])
+AS_IF([test "x$GJS_PATH" = xnotfound],
+    [AC_MSG_ERROR([You need GJS to install Jasmine for GJS!])])
 AC_SUBST([GJS_PATH])
 
 # Output build system
