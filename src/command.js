@@ -24,6 +24,18 @@ function _makePathsAbsolute(configFile, paths) {
     });
 }
 
+function _reportUncaughtException(reason, message, stack, useTap) {
+    if (useTap) {
+        // "Bail out!" has a special meaning to TAP harnesses
+        print('Bail out!', reason + ':', message);
+    } else {
+        printerr(reason + ':');
+        printerr(message);
+        printerr(stack);
+    }
+    System.exit(1);
+}
+
 function loadConfig(configFilePath) {
     let configFile = Gio.File.new_for_commandline_arg(configFilePath);
     let config = {};
@@ -122,6 +134,16 @@ function run(_jasmine, argv, config={}) {
         _jasmine.configureDefaultReporter(reporterOptions);
     }
 
+    GLib.log_set_handler('Gjs', GLib.LOG_LEVEL_WARNING, function (domain, level, message) {
+        if (message.startsWith('JS ERROR')) {
+            let lines = message.split('\n');
+            let errMessage = lines[0].slice('JS ERROR: '.length);
+            let stack = lines.slice(1).join('\n');
+            _reportUncaughtException('Exception occurred in signal handler',
+                errMessage, stack, options.tap);
+        }
+    });
+
     // This should start after the main loop starts, otherwise we will hit
     // Mainloop.run() only after several tests have already run. For consistency
     // we should guarantee that there is a main loop running during the tests.
@@ -129,15 +151,8 @@ function run(_jasmine, argv, config={}) {
         try {
             _jasmine.execute(files);
         } catch (e) {
-            if (options.tap) {
-                // "Bail out!" has a special meaning to TAP harnesses
-                print('Bail out! Exception occurred inside Jasmine:', e);
-            } else {
-                printerr('Exception occurred inside Jasmine:');
-                printerr(e);
-                printerr(e.stack);
-            }
-            System.exit(1);
+            _reportUncaughtException('Exception occurred inside Jasmine',
+                e.toString(), e.stack, options.tap);
         }
         return GLib.SOURCE_REMOVE;
     });

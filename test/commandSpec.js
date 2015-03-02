@@ -27,6 +27,12 @@ describe('Jasmine command', function () {
             spyOn(window, 'print');  // suppress message
         });
 
+        it('throws an exception in idle', function () {
+            Mainloop.idle_add(function () {
+                throw new Error('Gotcha!');
+            });
+        });
+
         it('loads from a file', function () {
             let config = Command.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
             expect(config.a).toEqual('b');
