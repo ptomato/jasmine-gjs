@@ -5,7 +5,7 @@ script: ./autogen.sh && make all check distcheck
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq gir1.2-gtk-3.0
-  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6_2.19-0ubuntu6.5_amd64.deb
+  - wget http://de.archive.ubuntu.com/ubuntu/pool/main/e/eglibc/libc6_2.19-0ubuntu6.6_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/main/n/nspr/libnspr4_4.10.7-0ubuntu0.14.04.1_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mozjs24/libmozjs-24-0_24.2.0-1_amd64.deb
   - wget http://de.archive.ubuntu.com/ubuntu/pool/main/g/glib2.0/libglib2.0-0_2.40.2-0ubuntu1_amd64.deb
