@@ -1,0 +1,19 @@
+Source: jasmine-gjs
+Section: devel
+Priority: optional
+Maintainer: Philip Chimento <philip.chimento@gmail.com>
+Build-Depends: autotools-dev,
+               debhelper (>= 9),
+               gir1.2-glib-2.0,
+               gjs (>= 1.39.3)
+Standards-Version: 3.9.5
+Homepage: https://github.com/ptomato/jasmine-gjs
+
+Package: jasmine-gjs
+Architecture: all
+Depends: ${misc:Depends},
+         gir1.2-glib-2.0,
+         gjs (>= 1.39.3)
+Description: Behavior-driven development framework for GJS
+ This module allows you to run Jasmine specs for your GJS code. The output will
+ be displayed in your terminal.
