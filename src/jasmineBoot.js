@@ -5,8 +5,6 @@ const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
-let ConsoleReporter = jasmineImporter.consoleReporter;
-
 GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 
 const Jasmine = new Lang.Class({
@@ -75,12 +73,6 @@ const Jasmine = new Lang.Class({
         this._reportersCount++;
     },
 
-    configureDefaultReporter: function (options) {
-        options.timerFactory = options.timerFactory || (() => new this._jasmine.Timer());
-        let consoleReporter = new ConsoleReporter.DefaultReporter(options);
-        this.addReporter(consoleReporter);
-    },
-
     _addSpecFile: function (file) {
         let absolutePath = file.get_path();
         let shouldSkip = this.exclusions.some((pattern) => {
@@ -130,9 +122,6 @@ const Jasmine = new Lang.Class({
     },
 
     execute: function (files) {
-        if (this._reportersCount === 0)
-            this.configureDefaultReporter({});
-
         if (files && files.length > 0)
             this.addSpecFiles(files);
 

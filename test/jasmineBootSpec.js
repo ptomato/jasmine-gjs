@@ -56,11 +56,6 @@ describe('Jasmine boot', function () {
     let testJasmine;
 
     beforeEach(function () {
-        JasmineBoot.ConsoleReporter = jasmine.createSpyObj('ConsoleReporter', [
-            'ConsoleReporter',
-            'DefaultReporter',
-        ]);
-
         let bootedJasmine = {
             getEnv: jasmine.createSpy('getEnv').and.returnValue({
                 addReporter: jasmine.createSpy('addReporter'),
@@ -153,75 +148,5 @@ describe('Jasmine boot', function () {
         let fakeReporter = {};
         testJasmine.addReporter(fakeReporter);
         expect(fakeReporter.jasmine_core_path).toMatch('fake/jasmine/path');
-    });
-
-    describe('#configureDefaultReporter', function () {
-        beforeEach(function () {
-            JasmineBoot.ConsoleReporter.DefaultReporter.and.returnValue({
-                someProperty: 'some value',
-            });
-        });
-
-        it('creates a reporter with the passed in options', function () {
-            let reporterOptions = {
-                print: 'printer',
-                onComplete: 'on complete method',
-                show_colors: true,
-                timerFactory: 'timer factory',
-            };
-
-            let expectedReporterOptions = Object.keys(reporterOptions).reduce(function (options, key) {
-                options[key] = reporterOptions[key];
-                return options;
-            }, {});
-
-            testJasmine.configureDefaultReporter(reporterOptions);
-
-            expect(JasmineBoot.ConsoleReporter.DefaultReporter).toHaveBeenCalledWith(expectedReporterOptions);
-            expect(testJasmine.env.addReporter).toHaveBeenCalledWith({
-                someProperty: 'some value',
-                jasmine_core_path: jasmine.any(String),
-            });
-        });
-
-        it('creates a reporter with color turned off', function () {
-            testJasmine.configureDefaultReporter({ show_colors: false });
-            expect(JasmineBoot.ConsoleReporter.DefaultReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
-        });
-
-        it('creates a reporter with a default timer factory if a timer factory is not specified', function () {
-            testJasmine.configureDefaultReporter({});
-            expect(JasmineBoot.ConsoleReporter.DefaultReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ timerFactory: jasmine.any(Function) }));
-            expect(testJasmine.env.addReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ someProperty: 'some value' }));
-        });
-    });
-
-    describe('#execute', function () {
-        it('uses the default console reporter if no reporters were added', function () {
-            spyOn(testJasmine, 'configureDefaultReporter');
-            spyOn(testJasmine, 'loadSpecs');
-
-            testJasmine.execute();
-
-            expect(testJasmine.configureDefaultReporter).toHaveBeenCalledWith({});
-            expect(testJasmine.loadSpecs).toHaveBeenCalled();
-            expect(testJasmine.env.execute).toHaveBeenCalled();
-        });
-
-        it('does not add a default reporter if a reporter was already added', function () {
-            testJasmine.addReporter(new JasmineBoot.ConsoleReporter.ConsoleReporter({}));
-
-            spyOn(testJasmine, 'configureDefaultReporter');
-            spyOn(testJasmine, 'loadSpecs');
-
-            testJasmine.execute();
-
-            expect(testJasmine.configureDefaultReporter).not.toHaveBeenCalled();
-            expect(testJasmine.loadSpecs).toHaveBeenCalled();
-            expect(testJasmine.env.execute).toHaveBeenCalled();
-        });
     });
 });

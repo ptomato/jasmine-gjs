@@ -112,15 +112,18 @@ function run(_jasmine, argv, config={}) {
         timerFactory: Timer.createDefaultTimer,
     };
 
+    let reporter;
     if (options.verbose) {
         const VerboseReporter = jasmineImporter.verboseReporter;
-        _jasmine.addReporter(new VerboseReporter.VerboseReporter(reporterOptions));
+        reporter = new VerboseReporter.VerboseReporter(reporterOptions);
     } else if (options.tap) {
         const TapReporter = jasmineImporter.tapReporter;
-        _jasmine.addReporter(new TapReporter.TapReporter(reporterOptions));
+        reporter = new TapReporter.TapReporter(reporterOptions);
     } else {
-        _jasmine.configureDefaultReporter(reporterOptions);
+        const ConsoleReporter = jasmineImporter.consoleReporter;
+        reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
     }
+    _jasmine.addReporter(reporter);
 
     // This should start after the main loop starts, otherwise we will hit
     // Mainloop.run() only after several tests have already run. For consistency

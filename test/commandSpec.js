@@ -63,14 +63,16 @@ describe('Jasmine command', function () {
 
         it('lets command line arguments override config options', function () {
             Command.run(fakeJasmine, ['--no-color'], { options: '--color' });
-            expect(fakeJasmine.configureDefaultReporter)
+            expect(fakeJasmine.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
         });
 
         it('parses an array of options as well as a single string', function () {
             Command.run(fakeJasmine, [], { options: ['--color', '--verbose'] });
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            expect(fakeJasmine.addReporter.calls.argsFor(0)[0].show_colors).toBeTruthy();
+            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            expect(reporter.show_colors).toBeTruthy();
+            expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
         });
 
         it('adds specs from the config file', function (done) {
@@ -109,7 +111,7 @@ describe('Jasmine command', function () {
 
         it('ignores the default config if requested', function () {
             Command.run(fakeJasmine, ['--no-config'], { options: '--no-color' });
-            expect(fakeJasmine.configureDefaultReporter)
+            expect(fakeJasmine.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: true }));
         });
     });
@@ -142,19 +144,18 @@ describe('Jasmine command', function () {
     describe('running specs', function () {
         it('shows colors by default', function () {
             Command.run(fakeJasmine, []);
-            expect(fakeJasmine.configureDefaultReporter)
+            expect(fakeJasmine.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: true }));
         });
 
         it('allows colors to be turned off', function () {
             Command.run(fakeJasmine, ['--no-color']);
-            expect(fakeJasmine.configureDefaultReporter)
+            expect(fakeJasmine.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
         });
 
         it('loads the verbose reporter', function () {
             Command.run(fakeJasmine, ['--verbose']);
-            expect(fakeJasmine.configureDefaultReporter).not.toHaveBeenCalled();
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
             let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
             expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
@@ -162,7 +163,6 @@ describe('Jasmine command', function () {
 
         it('loads the TAP reporter', function () {
             Command.run(fakeJasmine, ['--tap']);
-            expect(fakeJasmine.configureDefaultReporter).not.toHaveBeenCalled();
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
             let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
             expect(reporter.constructor).toBe(TapReporter.TapReporter);
@@ -176,10 +176,9 @@ describe('Jasmine command', function () {
             stream.close(null);
 
             Command.run(fakeJasmine, ['--junit', tmpPath]);
-            expect(fakeJasmine.configureDefaultReporter).toHaveBeenCalled();
-            expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
-            expect(reporter.constructor).toBe(JUnitReporter.JUnitReporter);
+            expect(fakeJasmine.addReporter.calls.count()).toBe(2);
+            let reporters = fakeJasmine.addReporter.calls.allArgs().map((args) => args[0].constructor);
+            expect(reporters).toContain(JUnitReporter.JUnitReporter);
 
             tmpFile.delete(null);
             // COMPAT in GLib >= 2.34:
