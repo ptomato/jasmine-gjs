@@ -46,7 +46,7 @@ function loadConfig(configFilePath) {
     return config;
 }
 
-function run(_jasmine, argv, config={}) {
+function run(_jasmine, argv, config={}, timeout=-1) {
     let [files, options] = Options.parseOptions(argv);
 
     if (options['no-config'])
@@ -101,6 +101,7 @@ function run(_jasmine, argv, config={}) {
         _jasmine.addReporter(junitReporter);
     }
 
+    let timeoutId;
     let reporterOptions = {
         show_colors: options.color,
         timerFactory: Timer.createDefaultTimer,
@@ -117,12 +118,25 @@ function run(_jasmine, argv, config={}) {
         const ConsoleReporter = jasmineImporter.consoleReporter;
         reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
     }
+    reporter.connect('started', () => Mainloop.source_remove(timeoutId));
     reporter.connect('complete', (success) => {
         if (!success)
             System.exit(1);
         Mainloop.quit('jasmine');
     });
     _jasmine.addReporter(reporter);
+
+    // This works around a limitation in GJS 1.40 where exceptions occurring
+    // during module import are swallowed.
+    if (timeout !== -1) {
+        timeoutId = Mainloop.timeout_add_seconds(timeout, function () {
+            if (options.tap)
+                print('Bail out! Test suite failed to start within 10 seconds');
+            else
+                printerr('Test suite failed to start within 10 seconds');
+            System.exit(1);
+        });
+    }
 
     // This should start after the main loop starts, otherwise we will hit
     // Mainloop.run() only after several tests have already run. For consistency
