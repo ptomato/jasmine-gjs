@@ -39,6 +39,12 @@ const ConsoleReporter = new Lang.Class({
             '/nowhere'),
     },
 
+    Signals: {
+        'complete': {
+            param_types: [GObject.TYPE_BOOLEAN],
+        },
+    },
+
     _init: function (props) {
         props = props || {};
 
@@ -51,11 +57,6 @@ const ConsoleReporter = new Lang.Class({
         if (props.hasOwnProperty('timerFactory')) {
             this._timerFactory = props.timerFactory;
             delete props.timerFactory;
-        }
-
-        if (props.hasOwnProperty('onComplete')) {
-            this._onComplete = props.onComplete;
-            delete props.onComplete;
         }
 
         this.parent(props);
@@ -122,8 +123,7 @@ const ConsoleReporter = new Lang.Class({
 
     jasmineDone: function () {
         this.elapsedTime('main');  // Stop the timer
-        if (this._onComplete)
-            this._onComplete(this._failureCount === 0);
+        this.emit('complete', this._failureCount === 0);
     },
 
     // Called with a "result" object with the following properties:

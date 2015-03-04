@@ -91,23 +91,17 @@ function run(_jasmine, argv, config={}) {
             base_stream: rawStream,
         });
 
-        _jasmine.addReporter(new JUnitReporter.JUnitReporter({
+        let junitReporter = new JUnitReporter.JUnitReporter({
             timerFactory: Timer.createDefaultTimer,
             print: function (str) {
                 junitStream.put_string(str, null);
             },
-            onComplete: function (success) {
-                junitStream.close(null);
-            }
-        }));
+        });
+        junitReporter.connect('complete', (success) => junitStream.close(null));
+        _jasmine.addReporter(junitReporter);
     }
 
     let reporterOptions = {
-        onComplete: function (success) {
-            if (!success)
-                System.exit(1);
-            Mainloop.quit('jasmine');
-        },
         show_colors: options.color,
         timerFactory: Timer.createDefaultTimer,
     };
@@ -123,6 +117,11 @@ function run(_jasmine, argv, config={}) {
         const ConsoleReporter = jasmineImporter.consoleReporter;
         reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
     }
+    reporter.connect('complete', (success) => {
+        if (!success)
+            System.exit(1);
+        Mainloop.quit('jasmine');
+    });
     _jasmine.addReporter(reporter);
 
     // This should start after the main loop starts, otherwise we will hit

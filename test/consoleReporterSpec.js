@@ -39,33 +39,39 @@ describe('Console reporter base class', function () {
         expect(stackTrace).not.toMatch(jasmineCorePath);
     });
 
-    describe('onComplete callback', function () {
-        let onComplete, reporter;
+    describe('complete signal', function () {
+        let reporter;
 
         beforeEach(function () {
-            onComplete = jasmine.createSpy('onComplete');
-            reporter = new ConsoleReporter.ConsoleReporter({
-                onComplete: onComplete,
-            });
+            reporter = new ConsoleReporter.ConsoleReporter();
             reporter.jasmineStarted();
         });
 
-        it('is called when the suite is done', function () {
+        it('is emitted with true when the suite is done', function (done) {
+            reporter.connect('complete', (reporter, success) => {
+                expect(success).toBeTruthy();
+                done();
+            });
             reporter.jasmineDone();
-            expect(onComplete).toHaveBeenCalledWith(true);
         });
 
-        it('is called with false if there are spec failures', function () {
+        it('is emitted with false if there are spec failures', function (done) {
+            reporter.connect('complete', (reporter, success) => {
+                expect(success).toBeFalsy();
+                done();
+            });
             reporter.specDone({status: 'failed', failedExpectations: []});
             reporter.jasmineDone();
-            expect(onComplete).toHaveBeenCalledWith(false);
         });
 
-        it('is called with false if there are suite failures', function () {
+        it('is emitted with false if there are suite failures', function (done) {
+            reporter.connect('complete', (reporter, success) => {
+                expect(success).toBeFalsy();
+                done();
+            });
             reporter.specDone({status: 'passed'});
             reporter.suiteDone({failedExpectations: [{ message: 'bananas' }] });
             reporter.jasmineDone();
-            expect(onComplete).toHaveBeenCalledWith(false);
         });
     });
 
