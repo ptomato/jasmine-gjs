@@ -40,6 +40,7 @@ const ConsoleReporter = new Lang.Class({
     },
 
     Signals: {
+        'started': {},
         'complete': {
             param_types: [GObject.TYPE_BOOLEAN],
         },
@@ -118,6 +119,7 @@ const ConsoleReporter = new Lang.Class({
     // Called with an "info" object with the following property:
     //   totalSpecsDefined - number of specs to be run
     jasmineStarted: function (info) {
+        this.emit('started');
         this.startTimer('main');
     },
 

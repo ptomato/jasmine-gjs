@@ -39,6 +39,19 @@ describe('Console reporter base class', function () {
         expect(stackTrace).not.toMatch(jasmineCorePath);
     });
 
+    describe('started signal', function () {
+        let reporter;
+
+        beforeEach(function () {
+            reporter = new ConsoleReporter.ConsoleReporter();
+        });
+
+        it('is emitted when the suite starts', function (done) {
+            reporter.connect('started', () => done());
+            reporter.jasmineStarted();
+        });
+    });
+
     describe('complete signal', function () {
         let reporter;
 
