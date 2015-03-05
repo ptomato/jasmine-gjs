@@ -42,10 +42,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %doc README.md
 %doc COPYING
+%doc %{_mandir}/man1/jasmine.1.gz
 %{_bindir}/jasmine
 %{_datadir}/%{name}/
 
 
 %changelog
-* Fri Feb 27 2015 Philip Chimento <philip.chimento@gmail.com> - 2.1.3-1
+* Wed Mar 4 2015 Philip Chimento <philip.chimento@gmail.com> - 2.1.3-1
 - Initial packaging.
