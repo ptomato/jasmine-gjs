@@ -56,7 +56,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         config = loadConfig(options.config);
 
     if (config.include_paths) {
-        _ensureArray(config.include_paths).forEach((path) => {
+        _ensureArray(config.include_paths).reverse().forEach((path) => {
             imports.searchPath.unshift(path);
         });
     }

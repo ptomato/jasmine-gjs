@@ -88,7 +88,8 @@ The file should be a JSON file.
 You can use the following keys:
 
 `include_paths`: (string or array of strings)
-Prepend these paths to GJS's include paths.
+Prepend these paths to GJS's include paths, in order of priority,
+highest first.
 (The same as specifying `-I` to GJS or defining the `GJS_PATH`
 environment variable.)
 Relative paths are resolved relative to the configuration file's

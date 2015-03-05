@@ -127,12 +127,12 @@ describe('Jasmine command', function () {
             imports.searchPath = oldSearchPath;
         });
 
-        it('works from the config file', function () {
+        it('does so in the right order', function () {
             Command.run(fakeJasmine, [], {
                 include_paths: ['/fake/path', '/another/fake/path'],
             });
-            expect(imports.searchPath).toContain('/fake/path');
-            expect(imports.searchPath).toContain('/another/fake/path');
+            expect(imports.searchPath[0]).toBe('/fake/path');
+            expect(imports.searchPath[1]).toBe('/another/fake/path');
         });
 
         it('parses a single string as well as an array', function () {
