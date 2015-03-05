@@ -9,20 +9,17 @@ const {GObject} = imports.gi;
 const {ConsoleReporter} = jasmineImporter.consoleReporter;
 
 var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporter {
+    jasmineStarted(info) {
+        super.jasmineStarted(info);
+        this._print(`1..${info.totalSpecsDefined}\n`);
+    }
+
     jasmineDone() {
         this._failedSuites.forEach(failure => {
             failure.failedExpectations.forEach(result => {
                 this._print(`not ok - An error was thrown in an afterAll(): ${result.message}\n`);
             });
         });
-
-        // Output the test plan
-        // TODO: This should be output at the start of the run, using
-        // info.totalSpecsDefined, in order to account for specs that are
-        // skipped. Unfortunately that number doesn't include specs disabled
-        // due to other specs being focused.
-        this._print(`1..${this._specCount}\n`);
-
         super.jasmineDone();
     }
 
