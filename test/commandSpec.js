@@ -185,6 +185,22 @@ describe('Jasmine command', function () {
             // tmpFile.delete_async(GLib.PRIORITY_DEFAULT, null, function () {});
         });
 
+        it('creates a directory for the report if necessary', function () {
+            let tmpDir = GLib.dir_make_tmp('junitreportXXXXXX');
+            let tmpFile =
+                Gio.File.new_for_path(tmpDir).get_child('dir').get_child('report.xml');
+            let tmpPath = tmpFile.get_path();
+
+            Command.run(fakeJasmine, ['--junit', tmpPath]);
+            expect(tmpFile.query_exists(null)).toBeTruthy();
+
+            tmpFile.delete(null);
+            tmpFile.get_parent().delete(null);
+            tmpFile.get_parent().get_parent().delete(null);
+            // COMPAT in GLib >= 2.34:
+            // Use tmpFile.delete_async()
+        });
+
         it('executes the Jasmine suite', function (done) {
             Command.run(fakeJasmine, []);
             // fakeJasmine.execute() is started in idle

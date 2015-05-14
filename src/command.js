@@ -86,6 +86,16 @@ function run(_jasmine, argv, config={}, timeout=-1) {
     if (options.junit) {
         const JUnitReporter = jasmineImporter.junitReporter;
         let junitFile = Gio.File.new_for_commandline_arg(options.junit);
+
+        // Since people might want their report dir structure to mirror
+        // their test dir structure, we shall be kind and try to create any
+        // report directories that don't exist.
+        try {
+            junitFile.get_parent().make_directory_with_parents(null);
+        } catch (e if e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
+            // ignore error if directory already exists
+        }
+
         let rawStream = junitFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
         let junitStream = new Gio.DataOutputStream({
             base_stream: rawStream,
