@@ -64,6 +64,8 @@ This is useful when integrating with Automake (see below.)
 XML report to `file`.
 If no file is given, the default is `report.xml` in the current working
 directory.
+If you don't specify an absolute path but you do set the environment variable `JASMINE_JUNIT_REPORTS_DIR`, then the report will be placed there instead.
+This allows you to use `$$tst` as the argument to `--junit` in your Makefile to mirror your test directory structure in your report directory.
 
 `--config [file]`: Use `file` as Jasmine's configuration file instead of
 the default `jasmine.json`.
