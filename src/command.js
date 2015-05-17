@@ -46,6 +46,27 @@ function loadConfig(configFilePath) {
     return config;
 }
 
+function configToArgs(config, shouldAddSpecFiles) {
+    let retval = [];
+    if (config.include_paths) {
+        _ensureArray(config.include_paths).forEach((path) => {
+            retval.push('-I');
+            retval.push(path);
+        });
+    }
+    if (config.exclude) {
+        _ensureArray(config.exclude).forEach((exclude) => {
+            retval.push('--exclude');
+            retval.push(exclude);
+        });
+    }
+    if (config.options)
+        retval = retval.concat(_ensureArray(config.options));
+    if (shouldAddSpecFiles && config.spec_files)
+        retval = retval.concat(_ensureArray(config.spec_files));
+    return retval;
+}
+
 function run(_jasmine, argv, config={}, timeout=-1) {
     let [files, options] = Options.parseOptions(argv);
 
@@ -54,6 +75,29 @@ function run(_jasmine, argv, config={}, timeout=-1) {
 
     if (options.config)
         config = loadConfig(options.config);
+
+    // If an environment is specified, launch a subprocess of Jasmine with that
+    // environment
+    if (config.environment) {
+        let launcher = new Gio.SubprocessLauncher();
+        Object.keys(config.environment).forEach((key) => {
+            launcher.setenv(key, config.environment[key], true);
+        });
+
+        let args = argv;
+        // The subprocess should ignore the config file, since the config file
+        // contains the environment key; we will pass everything it needs to
+        // know on the command line.
+        args.push('--no-config');
+        args = configToArgs(config, files.length === 0).concat(args);
+        args.unshift(System.programInvocationName);  // argv[0]
+
+        let process = launcher.spawnv(args);
+        process.wait(null);
+        if (process.get_if_exited())
+            return process.get_exit_status();
+        return 1;
+    }
 
     if (config.include_paths) {
         _ensureArray(config.include_paths).reverse().forEach((path) => {

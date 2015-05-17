@@ -122,6 +122,13 @@ but retaining the ability to run just one spec file on the command line.
 Relative paths are resolved relative to the configuration file's
 location.
 
+`environment`: (object with string properties)
+Execute specs with a modified environment.
+Each property of the given object is added as an environment variable.
+This is mainly useful if your Javascript code uses a private C library;
+you can add `LD_LIBRARY_PATH` and `GI_TYPELIB_PATH` to `environment` in
+order to expose that library to GJS's GObject introspection repository.
+
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into

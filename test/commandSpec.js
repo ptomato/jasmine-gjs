@@ -128,6 +128,89 @@ describe('Jasmine command', function () {
         });
     });
 
+    describe('manipulating the environment', function () {
+        let launcher, realLauncher;
+
+        beforeAll(function () {
+            realLauncher = Gio.SubprocessLauncher;
+            // Mock out system behaviour
+            Gio.SubprocessLauncher = function () {
+                let process = jasmine.createSpyObj('Subprocess', [
+                    'wait',
+                    'get_if_exited',
+                    'get_exit_status',
+                ]);
+                process.get_if_exited.and.returnValue(true);
+                process.get_exit_status.and.returnValue(0);
+                this.setenv = jasmine.createSpy('setenv');
+                this.spawnv = jasmine.createSpy('spawnv').and.returnValue(process);
+                launcher = this;
+            };
+        });
+
+        afterAll(function () {
+            Gio.SubprocessLauncher = realLauncher;
+        });
+
+        it('launches a subprocess when changing the environment', function () {
+            expect(Command.run(fakeJasmine, [], {
+                environment: {
+                    'MY_VARIABLE': 'my_value',
+                },
+            })).toEqual(0);
+            expect(launcher.setenv).toHaveBeenCalledWith('MY_VARIABLE', 'my_value', true);
+            expect(launcher.spawnv).toHaveBeenCalled();
+        });
+
+        it('passes the arguments on to the subprocess', function () {
+            Command.run(fakeJasmine, ['--color', 'spec.js'], { environment: {} });
+            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
+            expect(subprocessArgs).toContain('--color');
+            expect(subprocessArgs).toContain('spec.js');
+        });
+
+        it('tells the subprocess to ignore the config file', function () {
+            Command.run(fakeJasmine, [], { environment: {} });
+            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
+            expect(subprocessArgs).toContain('--no-config');
+        });
+
+        it('passes the config file on to the subprocess as arguments', function () {
+            Command.run(fakeJasmine, [], {
+                environment: {},
+                include_paths: ['/path1', '/path2'],
+                options: ['--color'],
+                exclude: ['nonspec*.js'],
+                spec_files: ['a.js', 'b.js'],
+            });
+            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
+            function subsequence(array, subseq) {
+                for (let ix = 0; ix < array.length - subseq.length + 1; ix++) {
+                    let subseqToTest = array.slice(ix, ix + subseq.length);
+                    if (subseqToTest.every((el, ix) => (el === subseq[ix])))
+                        return true;
+                }
+                return false;
+            }
+            expect(subsequence(subprocessArgs, ['-I', '/path1'])).toBeTruthy();
+            expect(subsequence(subprocessArgs, ['-I', '/path2'])).toBeTruthy();
+            expect(subprocessArgs).toContain('--color');
+            expect(subsequence(subprocessArgs, ['--exclude', 'nonspec*.js'])).toBeTruthy();
+            expect(subprocessArgs).toContain('a.js');
+            expect(subprocessArgs).toContain('b.js');
+        });
+
+        it('does not pass the config file specs if specs were on the command line', function () {
+            Command.run(fakeJasmine, ['spec1.js'], {
+                environment: {},
+                spec_files: ['spec2.js'],
+            });
+            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
+            expect(subprocessArgs).toContain('spec1.js');
+            expect(subprocessArgs).not.toContain('spec2.js');
+        });
+    });
+
     describe('adding GJS search paths', function () {
         let oldSearchPath;
 
