@@ -22,4 +22,17 @@ describe('Argument parser', function () {
         let [files, namespace] = Options.parseOptions(['--no-color', '--color']);
         expect(namespace['color']).toBe(true);
     });
+
+    it('stores the given value for an "append" argument', function () {
+        let [files, namespace] = Options.parseOptions(['--exclude', 'file.js']);
+        expect(namespace['exclude']).toEqual(['file.js']);
+    });
+
+    it('stores multiple values for an "append" argument appearing multiple times', function () {
+        let [files, namespace] = Options.parseOptions([
+            '--exclude', 'file.js',
+            '--exclude', 'file2.js',
+        ]);
+        expect(namespace['exclude']).toEqual(['file.js', 'file2.js']);
+    });
 });

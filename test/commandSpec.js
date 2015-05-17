@@ -99,6 +99,11 @@ describe('Jasmine command', function () {
             });
         });
 
+        it('adds exclusions from the command line', function () {
+            Command.run(fakeJasmine, ['--exclude', 'a.js'], {});
+            expect(fakeJasmine.exclusions).toEqual(['a.js']);
+        });
+
         it('adds exclusions from the config file', function () {
             Command.run(fakeJasmine, [], { exclude: ['a.js', 'b.js'] });
             expect(fakeJasmine.exclusions).toEqual(['a.js', 'b.js']);
@@ -107,6 +112,13 @@ describe('Jasmine command', function () {
         it('parses a single string as well as an array of exclusions', function () {
             Command.run(fakeJasmine, [], { exclude: 'file.js' });
             expect(fakeJasmine.exclusions).toEqual(['file.js']);
+        });
+
+        it('combines exclusions from the command line and the config file', function () {
+            Command.run(fakeJasmine, ['--exclude', 'a.js'], { exclude: 'b.js' });
+            expect(fakeJasmine.exclusions).toContain('a.js');
+            expect(fakeJasmine.exclusions).toContain('b.js');
+            expect(fakeJasmine.exclusions.length).toBe(2);
         });
 
         it('ignores the default config if requested', function () {

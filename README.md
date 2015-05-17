@@ -51,6 +51,12 @@ jasmine path/to/spec.js
 `--no-color`: Don't output color in the terminal.
 (Opposite of `--color`.)
 
+`--exclude <file>`: Don't run specs that match `file` (which may
+contain `?` and `*` wildcards.)
+This is useful if you pass a directory of specs that also contains
+utility modules or specs that you don't want to run by default.
+You may specify this option more than once with different arguments.
+
 `--verbose`: Output verbose results, formatted similarly to Mocha's
 output.
 (The default output is formatted the same as Jasmine's Node.JS runner's
@@ -105,8 +111,7 @@ conflict.
 `exclude`: (string or array of strings)
 Don't run specs in these files or directories.
 They may contain `*` and `?` as wildcards.
-Useful if you specify a directory to run which also contains
-utility modules or tests which you don't always want to run.
+(The same as specifying `--exclude` on the command line.)
 
 `spec_files`: (string or array of strings)
 Run specs in these files or directories.

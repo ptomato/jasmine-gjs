@@ -70,8 +70,11 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         });
     }
 
-    if (config.exclude)
-        _jasmine.exclusions = _ensureArray(config.exclude);
+    if (options.exclude || config.exclude) {
+        let optionsExclude = options.exclude || [];
+        let configExclude = config.exclude? _ensureArray(config.exclude) : [];
+        _jasmine.exclusions = configExclude.concat(optionsExclude);
+    }
 
     // Specific tests given on the command line should always override the
     // default tests in the config file

@@ -45,6 +45,10 @@ const ARGS = {
         help: 'ignore the default jasmine.json config file',
         action: 'store_true',
     },
+    'exclude': {
+        help: 'do not execute the given spec (may include wildcards)',
+        action: 'append',
+    }
 };
 
 function parseOptions(argv) {
@@ -73,6 +77,7 @@ function parseOptions(argv) {
 
         let arg_info = ARGS[arg_name];
         let dest = arg_info.dest || arg_name;
+        let value;
         switch (arg_info.action) {
         case 'help':
             help();
@@ -84,11 +89,7 @@ function parseOptions(argv) {
             namespace[dest] = false;
             break;
         case 'store':
-            let value = argv.shift();
-            if (typeof value !== 'undefined' && value.startsWith('--')) {
-                argv.unshift(value);
-                value = undefined;
-            }
+            value = _getNextArgument(argv);
             if (typeof value === 'undefined' && arg_info.nargs === '?')
                 value = arg_info.const;
             if (typeof value === 'undefined') {
@@ -97,6 +98,16 @@ function parseOptions(argv) {
             }
             namespace[dest] = value;
             break;
+        case 'append':
+            value = _getNextArgument(argv);
+            if (typeof value === 'undefined') {
+                printerr('warning: Missing value for argument "%s"'.format(arg_name));
+                continue;
+            }
+            if (!(dest in namespace))
+                namespace[dest] = [];
+            namespace[dest].push(value);
+            break;
         }
     }
     return [files, namespace];
@@ -104,6 +115,15 @@ function parseOptions(argv) {
 
 function _lPad(str, length) {
     return ' '.repeat(length - str.length) + str;
+}
+
+function _getNextArgument(argv) {
+    let value = argv.shift();
+    if (typeof value !== 'undefined' && value.startsWith('--')) {
+        argv.unshift(value);
+        value = undefined;
+    }
+    return value;
 }
 
 function help() {
