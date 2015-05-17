@@ -66,14 +66,14 @@ output.)
 [Test Anything Protocol](http://testanything.org/).
 This is useful when integrating with Automake (see below.)
 
-`--junit [file]`: In addition to the console output, print a JUnit-style
+`--junit [<file>]`: In addition to the console output, print a JUnit-style
 XML report to `file`.
 If no file is given, the default is `report.xml` in the current working
 directory.
 If you don't specify an absolute path but you do set the environment variable `JASMINE_JUNIT_REPORTS_DIR`, then the report will be placed there instead.
 This allows you to use `$$tst` as the argument to `--junit` in your Makefile to mirror your test directory structure in your report directory.
 
-`--config [file]`: Use `file` as Jasmine's configuration file instead of
+`--config <file>`: Use `file` as Jasmine's configuration file instead of
 the default `jasmine.json`.
 
 `--no-config`: Don't load a configuration file, even if one is present.
