@@ -80,7 +80,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
 
     if (options.version) {
         print('Jasmine', _jasmine.version);
-        System.exit(0);
+        return 0;
     }
 
     if (options.junit) {
@@ -177,4 +177,5 @@ function run(_jasmine, argv, config={}, timeout=-1) {
 
     // _jasmine.execute() queues up all the tests and runs them asynchronously.
     Mainloop.run('jasmine');
+    return 0;
 }

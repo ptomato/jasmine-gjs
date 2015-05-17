@@ -223,7 +223,7 @@ describe('Jasmine command', function () {
         });
 
         it('executes the Jasmine suite', function (done) {
-            Command.run(fakeJasmine, []);
+            expect(Command.run(fakeJasmine, [])).toEqual(0);
             // fakeJasmine.execute() is started in idle
             Mainloop.idle_add(function () {
                 expect(fakeJasmine.execute).toHaveBeenCalled();
