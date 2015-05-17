@@ -52,6 +52,7 @@ const ARGS = {
 };
 
 function parseOptions(argv) {
+    argv = argv.slice();  // Make a copy
     let namespace = {};
     let files = [];
 

@@ -35,4 +35,10 @@ describe('Argument parser', function () {
         ]);
         expect(namespace['exclude']).toEqual(['file.js', 'file2.js']);
     });
+
+    it('does not modify the list of arguments passed in', function () {
+        let args = ['arg1', 'arg2', 'arg3'];
+        Options.parseOptions(args);
+        expect(args.length).toBe(3);
+    });
 });
