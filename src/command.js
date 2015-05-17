@@ -81,7 +81,10 @@ function run(_jasmine, argv, config={}, timeout=-1) {
     if (config.environment) {
         let launcher = new Gio.SubprocessLauncher();
         Object.keys(config.environment).forEach((key) => {
-            launcher.setenv(key, config.environment[key], true);
+            if (config.environment[key] === null)
+                launcher.unsetenv(key);
+            else
+                launcher.setenv(key, config.environment[key], true);
         });
 
         let args = argv;

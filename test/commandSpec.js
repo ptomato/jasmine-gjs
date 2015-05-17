@@ -143,6 +143,7 @@ describe('Jasmine command', function () {
                 process.get_if_exited.and.returnValue(true);
                 process.get_exit_status.and.returnValue(0);
                 this.setenv = jasmine.createSpy('setenv');
+                this.unsetenv = jasmine.createSpy('unsetenv');
                 this.spawnv = jasmine.createSpy('spawnv').and.returnValue(process);
                 launcher = this;
             };
@@ -160,6 +161,16 @@ describe('Jasmine command', function () {
             })).toEqual(0);
             expect(launcher.setenv).toHaveBeenCalledWith('MY_VARIABLE', 'my_value', true);
             expect(launcher.spawnv).toHaveBeenCalled();
+        });
+
+        it('unsets environment variables with null values', function () {
+            Command.run(fakeJasmine, [], {
+                environment: {
+                    'MY_VARIABLE': null,
+                },
+            });
+            expect(launcher.unsetenv).toHaveBeenCalledWith('MY_VARIABLE');
+            expect(launcher.setenv).not.toHaveBeenCalled();
         });
 
         it('passes the arguments on to the subprocess', function () {

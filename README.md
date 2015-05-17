@@ -125,6 +125,8 @@ location.
 `environment`: (object with string properties)
 Execute specs with a modified environment.
 Each property of the given object is added as an environment variable.
+If a property's value is `null`, then any existing environment variable
+of that name is unset.
 This is mainly useful if your Javascript code uses a private C library;
 you can add `LD_LIBRARY_PATH` and `GI_TYPELIB_PATH` to `environment` in
 order to expose that library to GJS's GObject introspection repository.
