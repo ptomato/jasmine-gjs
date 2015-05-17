@@ -91,7 +91,6 @@ function run(_jasmine, argv, config={}, timeout=-1) {
             GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') !== null)
             junitPath = GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') + '/' +
                 junitPath;
-        printerr(junitPath);
         let junitFile = Gio.File.new_for_commandline_arg(junitPath);
 
         // Since people might want their report dir structure to mirror
