@@ -11,6 +11,8 @@ jasmine \- run Jasmine test suites
 .RB [ \-\-config
 .IR file ]
 .RB [ \-\-no\-config ]
+.RB [ \-\-exclude
+.IR file ]
 .RB [ \-\-verbose ]
 .RB [ \-\-tap ]
 .RB [ \-\-junit
@@ -42,6 +44,13 @@ Use
 .I file
 as the configuration file, instead of
 .IR jasmine.json .
+.TP
+.BI \-\-exclude " file"
+Don't execute specs in
+.I file
+(which may also be a wildcard pattern) even if they are in a directory specified
+on the command line.
+(Don't forget to escape wildcards so the shell doesn't expand them.)
 .TP
 .B \-\-help
 Show summary of options.
@@ -78,6 +87,11 @@ The
 utility exits with 0 on success, or with 1 if any tests failed or an internal
 error occurred.
 .SH ENVIRONMENT
+The JASMINE_JUNIT_REPORTS_DIR environment variable controls where JUnit-style
+XML reports are placed, if a relative path is passed to
+.B \-\-junit
+on the command line.
+.PP
 The JASMINE_UNINSTALLED environment variable can be used for debugging Jasmine.
 It is not recommended to set this variable during normal use.
 .SH FILES
