@@ -1,11 +1,11 @@
 Name: jasmine-gjs
-Version: 2.1.3
+Version: 2.2.0
 Release: 1%{?dist}
 Summary: A behavior-driven development framework for GJS
 
 License: MIT
 URL: https://github.com/ptomato/jasmine-gjs
-Source0: http://ptomato.name/downloads/jasmine-gjs-2.1.3.tar.xz
+Source0: http://ptomato.name/downloads/jasmine-gjs-2.2.0.tar.xz
 
 BuildArch: noarch
 BuildRequires: gjs >= 1.40
@@ -49,5 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun May 17 2015 Philip Chimento <philip.chimento@gmail.com> - 2.2.0-1
+- Update to version 2.2.0.
 * Wed Mar 4 2015 Philip Chimento <philip.chimento@gmail.com> - 2.1.3-1
 - Initial packaging.
