@@ -1,9 +1,9 @@
 // This suite is Jasmine's documentation suite, exercising all of Jasmine's
 // functionality to make sure that the GJS test runner has hooked everything up
 // correctly. It's taken from the following pages:
-//    http://jasmine.github.io/2.1/introduction.html
-//    http://jasmine.github.io/2.1/custom_equality.html
-//    http://jasmine.github.io/2.1/custom_matcher.html
+//    http://jasmine.github.io/2.2/introduction.html
+//    http://jasmine.github.io/2.2/custom_equality.html
+//    http://jasmine.github.io/2.2/custom_matcher.html
 //
 // Note: the "long asynchronous specs" suite near the bottom takes 9 seconds to
 // run. It is marked pending by default. To run this suite anyway, define an
@@ -159,6 +159,17 @@ describe('Jasmine integration test', function () {
             expect(foo).not.toThrow();
             expect(bar).toThrow();
         });
+
+        it("The 'toThrowError' matcher is for testing a specific thrown exception", function () {
+            var foo = function () {
+                throw new TypeError("foo bar baz");
+            };
+
+            expect(foo).toThrowError("foo bar baz");
+            expect(foo).toThrowError(/bar/);
+            expect(foo).toThrowError(TypeError);
+            expect(foo).toThrowError(TypeError, "foo bar baz");
+        });
     });
 
     describe("A spec", function () {
@@ -292,7 +303,7 @@ describe('Jasmine integration test', function () {
 
         it("can be declared by calling 'pending' in the spec body", function () {
             expect(true).toBe(false);
-            pending();
+            pending('this is why it is pending');
         });
     });
 
@@ -404,8 +415,8 @@ describe('Jasmine integration test', function () {
             };
 
             spyOn(foo, "getBar").and.callFake(function () {
-              return 1001;
-          });
+                return 1001;
+            });
 
             foo.setBar(123);
             fetchedBar = foo.getBar();
@@ -639,6 +650,23 @@ describe('Jasmine integration test', function () {
         });
     });
 
+    describe("jasmine.anything", function () {
+        it("matches anything", function () {
+            expect(1).toEqual(jasmine.anything());
+        });
+
+        describe("when used with a spy", function () {
+            it("is useful when the argument can be ignored", function () {
+                var foo = jasmine.createSpy('foo');
+                foo(12, function () {
+                    return false;
+                });
+
+                expect(foo).toHaveBeenCalledWith(12, jasmine.anything());
+            });
+        });
+    });
+
     describe("jasmine.objectContaining", function () {
         var foo;
 
@@ -673,6 +701,71 @@ describe('Jasmine integration test', function () {
                 expect(callback).not.toHaveBeenCalledWith(jasmine.objectContaining({
                     c: 37
                 }));
+            });
+        });
+    });
+
+    describe("jasmine.arrayContaining", function () {
+        var foo;
+
+        beforeEach(function () {
+            foo = [1, 2, 3, 4];
+        });
+
+        it("matches arrays with some of the values", function () {
+            expect(foo).toEqual(jasmine.arrayContaining([3, 1]));
+            expect(foo).not.toEqual(jasmine.arrayContaining([6]));
+        });
+
+        describe("when used with a spy", function () {
+            it("is useful when comparing arguments", function () {
+                var callback = jasmine.createSpy('callback');
+
+                callback([1, 2, 3, 4]);
+
+                expect(callback).toHaveBeenCalledWith(jasmine.arrayContaining([4, 2, 3]));
+                expect(callback).not.toHaveBeenCalledWith(jasmine.arrayContaining([5, 2]));
+            });
+        });
+    });
+
+    describe('jasmine.stringMatching', function () {
+        it("matches as a regexp", function () {
+            expect({foo: 'bar'}).toEqual({foo: jasmine.stringMatching(/^bar$/)});
+            expect({foo: 'foobarbaz'}).toEqual({foo: jasmine.stringMatching('bar')});
+        });
+
+        describe("when used with a spy", function () {
+            it("is useful for comparing arguments", function () {
+                var callback = jasmine.createSpy('callback');
+
+                callback('foobarbaz');
+
+                expect(callback).toHaveBeenCalledWith(jasmine.stringMatching('bar'));
+                expect(callback).not.toHaveBeenCalledWith(jasmine.stringMatching(/^bar$/));
+            });
+        });
+    });
+
+    describe("custom asymmetry", function () {
+        var tester = {
+            asymmetricMatch: function (actual) {
+                var secondValue = actual.split(',')[1];
+                return secondValue === 'bar';
+            }
+        };
+
+        it("dives in deep", function () {
+            expect("foo,bar,baz,quux").toEqual(tester);
+        });
+
+        describe("when used with a spy", function () {
+            it("is useful for comparing arguments", function () {
+                var callback = jasmine.createSpy('callback');
+
+                callback('foo,bar,baz');
+
+                expect(callback).toHaveBeenCalledWith(tester);
             });
         });
     });
@@ -731,6 +824,7 @@ describe('Jasmine integration test', function () {
 
     describe("Asynchronous specs", function () {
         var value;
+
         beforeEach(function (done) {
             setTimeout(function () {
                 value = 0;
@@ -745,23 +839,21 @@ describe('Jasmine integration test', function () {
         });
 
         describe("long asynchronous specs", function () {
-            var originalTimeout;
-            beforeEach(function () {
-                originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-                jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-            });
+            beforeEach(function (done) {
+                done();
+            }, 1000);
 
             if (GLib.getenv('RUN_THOROUGH_TESTS') === 'yes') {
                 it("takes a long time", function (done) {
                     setTimeout(function () {
                         done();
                     }, 9000);
-                });
+                }, 10000);
             }
 
-            afterEach(function () {
-                jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-            });
+            afterEach(function (done) {
+                done();
+            }, 1000);
         });
     });
 
@@ -770,7 +862,7 @@ describe('Jasmine integration test', function () {
             if (typeof first == "string" && typeof second == "string") {
                 return first[0] == second[1];
             }
-            return false;
+            return undefined;
         };
 
         beforeEach(function () {

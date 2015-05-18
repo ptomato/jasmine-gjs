@@ -2,7 +2,7 @@ const GLib = imports.gi.GLib;
 
 // This is a test of focused suites and specs with the fdescribe() and fit()
 // functions. It's taken from Jasmine's documentation suite:
-//   http://jasmine.github.io/2.1/focused_specs.html
+//   http://jasmine.github.io/2.2/focused_specs.html
 
 // By definition, this suite will disable all other suites that are run during
 // the same invocation of Jasmine -- so it is skipped by default. To run this
