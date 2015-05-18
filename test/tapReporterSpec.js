@@ -72,6 +72,15 @@ describe('The TAP reporter', function () {
         expect(out.getOutput()).toMatch(/# skip/i);
     });
 
+    it('reports the reason for a pending spec, if given', function () {
+        reporter.specStarted({});
+        reporter.specDone({
+            status: 'pending',
+            pendingReason: 'because I said so',
+        });
+        expect(out.getOutput()).toMatch('because I said so');
+    });
+
     it('outputs an "ok" line plus a skip directive for a disabled spec', function () {
         reporter.specStarted({});
         reporter.specDone({ status: 'disabled' });

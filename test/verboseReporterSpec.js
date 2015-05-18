@@ -154,6 +154,15 @@ describe('Verbose console reporter', function () {
         expect(out.getOutput()).toMatch('(50 ms)');
     });
 
+    it('prints the reason for a pending spec', function () {
+        reporter.specDone({
+            status: 'pending',
+            description: 'a pending spec',
+            pendingReason: 'it was not ready',
+        });
+        expect(out.getOutput()).toMatch('(it was not ready)');
+    });
+
     describe('with color', function () {
         beforeEach(function () {
             reporter = new VerboseReporter.VerboseReporter({
@@ -214,6 +223,15 @@ describe('Verbose console reporter', function () {
             reporter.specDone({id: 'foo'});
 
             expect(out.getOutput()).toMatch(/\x1b\[31m\(80 ms\)\x1b\[0m/);
+        });
+
+        it('prints a pending reason in yellow', function () {
+            reporter.specDone({
+                status: 'pending',
+                description: 'a pending spec',
+                pendingReason: 'it was not ready',
+            });
+            expect(out.getOutput()).toMatch(/\x1b\[33m\(it was not ready\)\x1b\[0m/);
         });
     });
 

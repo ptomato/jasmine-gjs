@@ -55,8 +55,10 @@ const TapReporter = new Lang.Class({
         else
             this._print('ok');
         this._print(' %d - %s'.format(this._specCount, result.fullName));
-        if (result.status === 'pending' || result.status === 'disabled')
-            this._print(' # SKIP ' + result.status);
+        if (result.status === 'pending' || result.status === 'disabled') {
+            let reason = result.pendingReason || result.status;
+            this._print(' # SKIP ' + reason);
+        }
         if (result.status === 'failed' && result.failedExpectations) {
             let messages = result.failedExpectations.map((r) => _removeNewlines(r.message)).join(' ');
             this._print(' (%s)'.format(messages));

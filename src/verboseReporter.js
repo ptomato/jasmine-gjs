@@ -80,6 +80,8 @@ const VerboseReporter = new Lang.Class({
             this._print(' ' + this._color('(%d ms)'.format(result.time), RED));
         else if (result.time > 40)
             this._print(' ' + this._color('(%d ms)'.format(result.time), YELLOW));
+        if (result.pendingReason)
+            this._print(' ' + this._color('(%s)'.format(result.pendingReason), YELLOW));
         this._print('\n');
     },
 
