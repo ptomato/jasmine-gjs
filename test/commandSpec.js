@@ -57,8 +57,7 @@ describe('Jasmine command', function () {
 
         it('warns about unrecognized config options', function () {
             Command.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
-            expect(window.printerr.calls.all().some((call) =>
-                call.args[0].startsWith('warning: '))).toBeTruthy();
+            expect(window.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
         });
     });
 
@@ -124,8 +123,8 @@ describe('Jasmine command', function () {
 
         it('combines exclusions from the command line and the config file', function () {
             Command.run(fakeJasmine, ['--exclude', 'a.js'], { exclude: 'b.js' });
-            expect(fakeJasmine.exclusions).toContain('a.js');
-            expect(fakeJasmine.exclusions).toContain('b.js');
+            expect(fakeJasmine.exclusions).toEqual(jasmine.arrayContaining(['a.js',
+                'b.js']));
             expect(fakeJasmine.exclusions.length).toBe(2);
         });
 
@@ -183,15 +182,13 @@ describe('Jasmine command', function () {
 
         it('passes the arguments on to the subprocess', function () {
             Command.run(fakeJasmine, ['--color', 'spec.js'], { environment: {} });
-            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
-            expect(subprocessArgs).toContain('--color');
-            expect(subprocessArgs).toContain('spec.js');
+            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--color',
+                'spec.js']));
         });
 
         it('tells the subprocess to ignore the config file', function () {
             Command.run(fakeJasmine, [], { environment: {} });
-            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
-            expect(subprocessArgs).toContain('--no-config');
+            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--no-config']));
         });
 
         it('passes the config file on to the subprocess as arguments', function () {
@@ -213,10 +210,9 @@ describe('Jasmine command', function () {
             }
             expect(subsequence(subprocessArgs, ['-I', '/path1'])).toBeTruthy();
             expect(subsequence(subprocessArgs, ['-I', '/path2'])).toBeTruthy();
-            expect(subprocessArgs).toContain('--color');
             expect(subsequence(subprocessArgs, ['--exclude', 'nonspec*.js'])).toBeTruthy();
-            expect(subprocessArgs).toContain('a.js');
-            expect(subprocessArgs).toContain('b.js');
+            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--color',
+                'a.js', 'b.js']));
         });
 
         it('does not pass the config file specs if specs were on the command line', function () {
@@ -224,9 +220,8 @@ describe('Jasmine command', function () {
                 environment: {},
                 spec_files: ['spec2.js'],
             });
-            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
-            expect(subprocessArgs).toContain('spec1.js');
-            expect(subprocessArgs).not.toContain('spec2.js');
+            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['spec1.js']));
+            expect(launcher.spawnv).not.toHaveBeenCalledWith(jasmine.arrayContaining(['spec2.js']));
         });
     });
 
