@@ -41,7 +41,7 @@ dist_pkgdata_DATA += lib/jasmine.js
 # upgrading to a new upstream version.
 # This rule will explicitly not work if $(srcdir) is not writable.
 $(srcdir)/lib/jasmine.js:
-	curl -o $@ https://raw.githubusercontent.com/jasmine/jasmine/v2.1.3/lib/jasmine-core/jasmine.js
+	curl -o $@ https://raw.githubusercontent.com/jasmine/jasmine/v2.2.0/lib/jasmine-core/jasmine.js
 	patch <$(srcdir)/lib/local-modifications.patch $@
 EXTRA_DIST += lib/local-modifications.patch
 

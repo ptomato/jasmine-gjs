@@ -1,29 +1,11 @@
---- jasmine/lib/jasmine-core/jasmine.js	2015-01-17 20:42:22.000000000 -0800
-+++ jasmine-gjs/lib/jasmine.js	2015-01-16 23:08:56.000000000 -0800
+--- jasmine/lib/jasmine-core/jasmine.js	2015-05-17 17:43:39.000000000 -0700
++++ jasmine-gjs/lib/jasmine.js	2015-05-17 18:09:10.000000000 -0700
 @@ -1,3 +1,4 @@
 +/* jscs:disable */
  /*
- Copyright (c) 2008-2014 Pivotal Labs
+ Copyright (c) 2008-2015 Pivotal Labs
  
-@@ -20,13 +21,16 @@
- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
--getJasmineRequireObj = (function (jasmineGlobal) {
-+var getJasmineRequireObj = (function (jasmineGlobal) {
-   var jasmineRequire;
- 
-   if (typeof module !== 'undefined' && module.exports) {
-     jasmineGlobal = global;
-     jasmineRequire = exports;
-   } else {
-+    if (typeof window !== 'undefined') {
-+      jasmineGlobal = window;
-+    }
-     jasmineRequire = jasmineGlobal.jasmineRequire = jasmineGlobal.jasmineRequire || {};
-   }
- 
-@@ -465,6 +469,10 @@
+@@ -504,6 +505,10 @@
      };
  
      var expectationFactory = function(actual, spec) {
@@ -34,7 +16,7 @@
        return j$.Expectation.Factory({
          util: j$.matchersUtil,
          customEqualityTesters: runnableResources[spec.id].customEqualityTesters,
-@@ -472,10 +480,6 @@
+@@ -511,10 +516,6 @@
          actual: actual,
          addExpectationResult: addExpectationResult
        });
@@ -45,7 +27,7 @@
      };
  
      var defaultResourcesForRunnable = function(id, parentRunnableId) {
-@@ -622,6 +626,12 @@
+@@ -661,6 +662,12 @@
      };
  
      var suiteFactory = function(description) {
@@ -58,7 +40,7 @@
        var suite = new j$.Suite({
          env: self,
          id: getNextSuiteId(),
-@@ -642,12 +652,6 @@
+@@ -682,12 +689,6 @@
  
        runnableLookupTable[suite.id] = suite;
        return suite;
@@ -71,7 +53,7 @@
      };
  
      this.describe = function(description, specDefinitions) {
-@@ -746,14 +750,6 @@
+@@ -786,14 +787,6 @@
          }
        });
  
@@ -86,7 +68,7 @@
        function specResultCallback(result) {
          clearResourcesForRunnable(spec.id);
          currentSpec = null;
-@@ -765,6 +761,14 @@
+@@ -805,6 +798,14 @@
          defaultResourcesForRunnable(spec.id, suite.id);
          reporter.specStarted(spec.result);
        }
@@ -101,7 +83,7 @@
      };
  
      this.it = function(description, fn, timeout) {
-@@ -1091,8 +1095,6 @@
+@@ -1099,8 +1100,6 @@
        }
      };
  
@@ -110,7 +92,7 @@
      function legacyIE() {
        //if these methods are polyfilled, apply will be present
        return !(realTimingFunctions.setTimeout || realTimingFunctions.setInterval).apply;
-@@ -1123,6 +1125,8 @@
+@@ -1131,6 +1130,8 @@
      function argSlice(argsObj, n) {
        return Array.prototype.slice.call(argsObj, n);
      }
@@ -119,7 +101,7 @@
    }
  
    return Clock;
-@@ -1209,8 +1213,6 @@
+@@ -1217,8 +1218,6 @@
        delayedFnCount = 0;
      };
  
@@ -128,7 +110,7 @@
      function indexOfFirstToPass(array, testFn) {
        var index = -1;
  
-@@ -1270,6 +1272,8 @@
+@@ -1284,6 +1283,8 @@
                   currentTime !== endTime  &&
                   scheduledLookup[0] <= endTime);
      }
@@ -137,7 +119,7 @@
    }
  
    return DelayedFunctionScheduler;
-@@ -1417,8 +1421,6 @@
+@@ -1431,8 +1432,6 @@
        result.actual = options.actual;
      }
  
@@ -146,7 +128,7 @@
      function message() {
        if (options.passed) {
          return 'Passed.';
-@@ -1445,6 +1447,8 @@
+@@ -1459,6 +1458,8 @@
        }
        return stackFormatter(error);
      }
@@ -155,7 +137,7 @@
    }
  
    return buildExpectationResult;
-@@ -1486,8 +1490,6 @@
+@@ -1500,8 +1501,6 @@
  
      createDateProperties();
  
@@ -164,16 +146,7 @@
      function FakeDate() {
        switch(arguments.length) {
          case 0:
-@@ -1506,7 +1508,7 @@
-         case 6:
-           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
-                                 arguments[4], arguments[5]);
--        case 7:
-+        default:
-           return new GlobalDate(arguments[0], arguments[1], arguments[2], arguments[3],
-                                 arguments[4], arguments[5], arguments[6]);
-       }
-@@ -1528,7 +1530,9 @@
+@@ -1542,7 +1541,9 @@
        FakeDate.parse = GlobalDate.parse;
        FakeDate.UTC = GlobalDate.UTC;
      }
@@ -184,21 +157,7 @@
  
    return MockDate;
  };
-@@ -1738,11 +1742,11 @@
-       self = this,
-       iterativeIndex;
- 
--
-     for(iterativeIndex = recursiveIndex; iterativeIndex < length; iterativeIndex++) {
-       var queueableFn = queueableFns[iterativeIndex];
-       if (queueableFn.fn.length > 0) {
--        return attemptAsync(queueableFn);
-+        attemptAsync(queueableFn);
-+        return;
-       } else {
-         attemptSync(queueableFn);
-       }
-@@ -1830,8 +1834,6 @@
+@@ -1812,8 +1813,6 @@
        reporters.push(reporter);
      };
  
@@ -207,7 +166,7 @@
      function dispatch(method, args) {
        for (var i = 0; i < reporters.length; i++) {
          var reporter = reporters[i];
-@@ -1840,6 +1842,8 @@
+@@ -1822,6 +1821,8 @@
          }
        }
      }
@@ -216,7 +175,7 @@
    }
  
    return ReportDispatcher;
-@@ -2178,56 +2182,6 @@
+@@ -2295,56 +2296,6 @@
  getJasmineRequireObj().matchersUtil = function(j$) {
    // TODO: what to do about jasmine.pp not being inject? move to JSON.stringify? gut PrettyPrinter?
  
@@ -270,19 +229,28 @@
 -    }
 -  };
 -
+   function isAsymmetric(obj) {
+     return obj && j$.isA_('Function', obj.asymmetricMatch);
+   }
+@@ -2364,6 +2315,8 @@
+     if (asymmetricB) {
+       return b.asymmetricMatch(a);
+     }
++
++    return undefined;
+   }
+ 
    // Equality function lovingly adapted from isEqual in
-   //   [Underscore](http://underscorejs.org)
-   function eq(a, b, aStack, bStack, customTesters) {
-@@ -2348,8 +2302,6 @@
+@@ -2488,8 +2441,6 @@
      aStack.pop();
      bStack.pop();
  
 -    return result;
 -
      function has(obj, key) {
-       return obj.hasOwnProperty(key);
+       return Object.prototype.hasOwnProperty.call(obj, key);
      }
-@@ -2357,7 +2309,59 @@
+@@ -2497,7 +2448,59 @@
      function isFunction(obj) {
        return typeof obj === 'function';
      }
@@ -342,7 +310,7 @@
  };
  
  getJasmineRequireObj().toBe = function() {
-@@ -2686,56 +2690,6 @@
+@@ -2830,56 +2833,6 @@
  
  getJasmineRequireObj().toThrowError = function(j$) {
    function toThrowError (util) {
@@ -377,7 +345,7 @@
 -        }
 -
 -        if (errorMatcher.hasNoSpecifics()) {
--          pass.message = 'Expected function not to throw an Error, but it threw ' + fnNameFor(thrown) + '.';
+-          pass.message = 'Expected function not to throw an Error, but it threw ' + j$.fnNameFor(thrown) + '.';
 -          return pass;
 -        }
 -
@@ -399,7 +367,7 @@
      function getMatcher() {
        var expected = null,
            errorType = null;
-@@ -2818,6 +2772,56 @@
+@@ -2958,6 +2911,56 @@
        Surrogate.prototype = type.prototype;
        return (new Surrogate()) instanceof Error;
      }
@@ -435,7 +403,7 @@
 +        }
 +
 +        if (errorMatcher.hasNoSpecifics()) {
-+          pass.message = 'Expected function not to throw an Error, but it threw ' + fnNameFor(thrown) + '.';
++          pass.message = 'Expected function not to throw an Error, but it threw ' + j$.fnNameFor(thrown) + '.';
 +          return pass;
 +        }
 +
