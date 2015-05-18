@@ -1,3 +1,11 @@
+jasmine-gjs (2.2.0-1) unstable; urgency=low
+
+  * Upgrade to 2.2.0
+  * copyright: Update copyright year of upstream Jasmine
+  * docs: Add new NEWS.md file
+
+ -- Philip Chimento <philip.chimento@gmail.com>  Mon, 18 May 2015 01:03:37 -0700
+
 jasmine-gjs (2.1.3-1) unstable; urgency=low
 
   * Initial release
