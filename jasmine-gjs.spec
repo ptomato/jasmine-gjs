@@ -41,6 +41,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %doc README.md
+%doc NEWS.md
 %doc COPYING
 %doc %{_mandir}/man1/jasmine.1.gz
 %{_bindir}/jasmine

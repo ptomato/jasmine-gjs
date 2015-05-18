@@ -99,7 +99,7 @@ EXTRA_DIST += \
 # Documentation
 
 dist_man1_MANS = jasmine.man
-EXTRA_DIST += README.md
+EXTRA_DIST += README.md NEWS.md
 
 # Git ignore files
 
