@@ -1,5 +1,6 @@
 /* global jasmineImporter */
 
+const Format = imports.format;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
@@ -7,6 +8,8 @@ const System = imports.system;
 
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
+
+String.prototype.format = Format.format;
 
 // Make it legal to specify "some_option": "single_value" in the config file as
 // well as "some_option": ["multiple", "values"]
@@ -41,6 +44,18 @@ function loadConfig(configFilePath) {
     if (config.spec_files)
         config.spec_files = _makePathsAbsolute(configFile,
             _ensureArray(config.spec_files));
+
+    const RECOGNIZED_KEYS = [
+        'environment',
+        'exclude',
+        'include_paths',
+        'options',
+        'spec_files',
+    ];
+    Object.keys(config).forEach((key) => {
+        if (RECOGNIZED_KEYS.indexOf(key) === -1)
+            printerr('warning: unrecognized config file key "%s"'.format(key));
+    });
 
     print('Configuration loaded from', configFile.get_path());
     return config;

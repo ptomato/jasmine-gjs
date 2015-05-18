@@ -24,7 +24,9 @@ describe('Jasmine command', function () {
 
     describe('loading config', function () {
         beforeEach(function () {
-            spyOn(window, 'print');  // suppress message
+            // suppress messages
+            spyOn(window, 'print');
+            spyOn(window, 'printerr');
         });
 
         it('loads from a file', function () {
@@ -51,6 +53,12 @@ describe('Jasmine command', function () {
 
             expect(config.include_paths).toContain(location.get_path());
             expect(config.spec_files).toContain(location.get_child('someSpec.js').get_path());
+        });
+
+        it('warns about unrecognized config options', function () {
+            Command.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
+            expect(window.printerr.calls.all().some((call) =>
+                call.args[0].startsWith('warning: '))).toBeTruthy();
         });
     });
 
