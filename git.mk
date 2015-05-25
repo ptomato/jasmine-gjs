@@ -1,4 +1,5 @@
-# git.mk
+# git.mk, a small Makefile to autogenerate .gitignore files
+# for autotools-based projects.
 #
 # Copyright 2009, Red Hat, Inc.
 # Copyright 2010,2011,2012,2013 Behdad Esfahbod
@@ -9,7 +10,7 @@
 # notice and this notice are preserved.
 #
 # The latest version of this file can be downloaded from:
-GIT_MK_URL = https://raw.github.com/behdad/git.mk/master/git.mk
+GIT_MK_URL = https://raw.githubusercontent.com/behdad/git.mk/master/git.mk
 #
 # Bugs, etc, should be reported upstream at:
 #   https://github.com/behdad/git.mk
@@ -277,6 +278,7 @@ $(srcdir)/.gitignore: Makefile.am $(top_srcdir)/git.mk
 			$(TEST_LOGS) \
 			$(TEST_LOGS:.log=.trs) \
 			$(TEST_SUITE_LOG) \
+			$(TESTS:=.test) \
 			"*.gcda" \
 			"*.gcno" \
 			$(DISTCLEANFILES) \
