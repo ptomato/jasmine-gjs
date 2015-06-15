@@ -46,4 +46,4 @@ try {
     // Don't complain if config file absent from default location
 }
 
-System.exit(Command.run(_jasmine, ARGV, defaultConfig, 10));
+Command.run(_jasmine, ARGV, defaultConfig, 10);
