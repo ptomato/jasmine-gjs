@@ -7,7 +7,6 @@ dist_bin_SCRIPTS = bin/jasmine
 
 do_subst = sed \
 	-e 's,[@]datadir[@],$(datadir),g' \
-	-e 's,[@]GJS_PATH[@],$(GJS_PATH),g' \
 	$(NULL)
 bin/jasmine: bin/jasmine.in Makefile
 	$(AM_V_GEN)$(MKDIR_P) bin && \
