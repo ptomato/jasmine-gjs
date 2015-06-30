@@ -1,3 +1,11 @@
+jasmine-gjs (2.3.0-1) unstable; urgency=medium
+
+  * Upgrade to 2.3.0
+  * Exit status is now implicit
+  * Use /usr/bin/env instead of /usr/bin/gjs in shebang
+
+ -- Sam Spilsbury <smspillaz@gmail.com>  Tue, 30 Jun 2015 21:17:19 +0800
+
 jasmine-gjs (2.2.0-1) unstable; urgency=low
 
   * Upgrade to 2.2.0
