@@ -1,4 +1,4 @@
-AC_INIT([Jasmine GJS], [2.2.0])
+AC_INIT([Jasmine GJS], [2.2.1])
 AM_INIT_AUTOMAKE([1.11 -Wall foreign dist-xz no-dist-gzip parallel-tests])
 AM_SILENT_RULES([yes])
 
