@@ -24,9 +24,7 @@ const Jasmine = new Lang.Class({
             ''),
     },
 
-    _init: function (props) {
-        props = props || {};
-
+    _init: function (props={}) {
         let jasmineCore;
         if (props.hasOwnProperty('jasmineCore')) {
             jasmineCore = props.jasmineCore;

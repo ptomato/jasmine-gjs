@@ -15,10 +15,6 @@ const JUnitReporter = new Lang.Class({
     Name: 'JUnitReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 
-    _init: function (props={}) {
-        this.parent(props);
-    },
-
     jasmineStarted: function (info) {
         this.parent(info);
         this._tree = new XMLWriter.Node('testsuites');
