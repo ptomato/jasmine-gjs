@@ -7,6 +7,7 @@
     "sub": true,
     "trailing": true,
     "undef": true,
+    "unused": true,
     "predef": [
         "addCustomEqualityTester",
         "afterAll",

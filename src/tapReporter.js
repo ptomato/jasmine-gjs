@@ -2,6 +2,7 @@
 // See http://testanything.org/tap-specification.html
 
 /* global jasmineImporter */
+/* exported TapReporter */
 
 const Format = imports.format;
 const Lang = imports.lang;

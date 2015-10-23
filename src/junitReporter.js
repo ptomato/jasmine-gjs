@@ -3,6 +3,7 @@
 // Unfortunately, the JUnit format is woefully underspecified.
 
 /* global jasmineImporter */
+/* exported JUnitReporter */
 
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;

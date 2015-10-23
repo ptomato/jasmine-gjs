@@ -11,6 +11,8 @@
 // run by default, but you don't want your tests to take 9 seconds when you run
 // them from the command line using "jasmine test".
 
+/* global setInterval, setTimeout */
+
 const GLib = imports.gi.GLib;
 
 describe('Jasmine integration test', function () {

@@ -1,3 +1,5 @@
+/* exported indent */
+
 function indent(str, spaces) {
     return str.split('\n').map((line) => {
         if (line === '')

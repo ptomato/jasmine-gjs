@@ -158,7 +158,6 @@ describe('The JUnit reporter', function () {
     // present such as, <properties>, so we cannot rely on the element with ID 0
     // being the first child of <testsuites>.
     function findSuite(tree, id) {
-        let retval;
         for (let index = 0; index < tree.children.length; index++) {
             let child = tree.children[index];
             if (child.name === 'testsuite' && child.attrs['id'] === id)
@@ -386,9 +385,7 @@ describe('The JUnit reporter', function () {
 
         let tree = JSON.parse(out.getOutput());
         let testsuite = findSuite(tree, 0);
-        expect(function () {
-            let date = Date.parse(testsuite.attrs['timestamp']);
-        }).not.toThrow();
+        expect(() => Date.parse(testsuite.attrs['timestamp'])).not.toThrow();
     });
 
     it('flattens nested suites', function () {

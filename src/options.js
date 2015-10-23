@@ -1,5 +1,6 @@
+/* exported parseOptions */
+
 const Format = imports.format;
-const Lang = imports.lang;
 const System = imports.system;
 
 String.prototype.format = Format.format;

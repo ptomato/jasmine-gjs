@@ -1,4 +1,5 @@
 /* global jasmineImporter */
+/* exported Jasmine */
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -116,7 +117,7 @@ const Jasmine = new Lang.Class({
             let modulePath = GLib.path_get_dirname(file);
             let moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
             imports.searchPath.unshift(modulePath);
-            let dummy = imports[moduleName];
+            void imports[moduleName];
             imports.searchPath = oldSearchPath;
         });
     },

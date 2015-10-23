@@ -1,4 +1,5 @@
 /* global jasmineImporter */
+/* exported run */
 
 const Format = imports.format;
 const Gio = imports.gi.Gio;
@@ -32,7 +33,7 @@ function loadConfig(configFilePath) {
     let config = {};
 
     try {
-        let [success, contents, length, etag] = configFile.load_contents(null);
+        let [, contents] = configFile.load_contents(null);
         config = JSON.parse(contents);
     } catch (e) {
         throw new Error('Configuration not read from ' + configFile.get_path());
@@ -124,7 +125,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
     }
 
     if (config.options) {
-        let [configFiles, configOptions] = Options.parseOptions(_ensureArray(config.options));
+        let [, configOptions] = Options.parseOptions(_ensureArray(config.options));
         // Command-line options should always override config file options
         Object.keys(configOptions).forEach((key) => {
             if (!(key in options))
@@ -178,7 +179,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
                 junitStream.put_string(str, null);
             },
         });
-        junitReporter.connect('complete', (success) => junitStream.close(null));
+        junitReporter.connect('complete', () => junitStream.close(null));
         _jasmine.addReporter(junitReporter);
     }
 

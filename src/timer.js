@@ -1,3 +1,5 @@
+/* exported installAPI, createDefaultTimer */
+
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 

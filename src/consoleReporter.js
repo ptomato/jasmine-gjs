@@ -1,8 +1,8 @@
 /* global jasmineImporter */
+/* exported DefaultReporter */
 
 const Format = imports.format;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
@@ -118,7 +118,7 @@ const ConsoleReporter = new Lang.Class({
 
     // Called with an "info" object with the following property:
     //   totalSpecsDefined - number of specs to be run
-    jasmineStarted: function (info) {
+    jasmineStarted: function () {
         this.emit('started');
         this.startTimer('main');
     },

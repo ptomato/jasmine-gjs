@@ -1,4 +1,5 @@
 /* global jasmineImporter */
+/* exported VerboseReporter */
 
 const Lang = imports.lang;
 

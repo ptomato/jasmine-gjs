@@ -11,7 +11,7 @@ let envSrcdir = GLib.getenv('SRCDIR');
 const SRCDIR = envSrcdir? envSrcdir + '/' : '';
 
 let customMatchers = {
-    toMatchAllFiles: function (util, customEqualityTesters) {
+    toMatchAllFiles: function () {
         return {
             compare: function (actual, expected) {
                 let result = {

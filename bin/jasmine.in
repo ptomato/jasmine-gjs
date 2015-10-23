@@ -3,7 +3,6 @@
 /* global jasmineImporter */
 
 const GLib = imports.gi.GLib;
-const System = imports.system;
 
 // Create a separate GJS importer object for Jasmine modules, so that Jasmine's
 // modules are not exposed to test code (e.g. client code might have its own

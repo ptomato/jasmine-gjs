@@ -1,5 +1,3 @@
-const GLib = imports.gi.GLib;
-
 // This is a test of focused suites and specs with the fdescribe() and fit()
 // functions. It's taken from Jasmine's documentation suite:
 //   http://jasmine.github.io/2.2/focused_specs.html
