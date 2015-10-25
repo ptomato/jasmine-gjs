@@ -29,6 +29,7 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
 }
 
 const Command = jasmineImporter.command;
+const Config = jasmineImporter.config;
 
 const Timer = jasmineImporter.timer;
 Timer.installAPI(window);
@@ -40,7 +41,7 @@ _jasmine.installAPI(window);
 
 let defaultConfig = {};
 try {
-    defaultConfig = Command.loadConfig('jasmine.json');
+    defaultConfig = Config.loadConfig('jasmine.json');
 } catch (e) {
     // Don't complain if config file absent from default location
 }
