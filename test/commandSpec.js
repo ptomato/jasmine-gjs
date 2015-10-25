@@ -4,6 +4,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 
+const Config = jasmineImporter.config;
 const Command = jasmineImporter.command;
 const JUnitReporter = jasmineImporter.junitReporter;
 const TapReporter = jasmineImporter.tapReporter;
@@ -22,50 +23,11 @@ describe('Jasmine command', function () {
         spyOn(Mainloop, 'run');  // stub out system behaviour
     });
 
-    describe('loading config', function () {
-        beforeEach(function () {
-            // suppress messages
-            spyOn(window, 'print');
-            spyOn(window, 'printerr');
-        });
-
-        it('loads from a file', function () {
-            let config = Command.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
-            expect(config.a).toEqual('b');
-            expect(config.c).toEqual('d');
-        });
-
-        it("errors out if the file doesn't exist", function () {
-            expect(function () {
-                Command.loadConfig('nonexist.json');
-            }).toThrow();
-        });
-
-        it('errors out if the file is invalid', function () {
-            expect(function () {
-                Command.loadConfig(SRCDIR + 'test/fixtures/invalid.json');
-            }).toThrow();
-        });
-
-        it("resolves paths relative to the config file's location", function () {
-            let config = Command.loadConfig(SRCDIR + 'test/fixtures/path.json');
-            let location = Gio.File.new_for_path(SRCDIR + 'test/fixtures');
-
-            expect(config.include_paths).toContain(location.get_path());
-            expect(config.spec_files).toContain(location.get_child('someSpec.js').get_path());
-        });
-
-        it('warns about unrecognized config options', function () {
-            Command.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
-            expect(window.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
-        });
-    });
-
     describe('parsing config', function () {
         it('loads config from a file', function () {
-            spyOn(Command, 'loadConfig').and.returnValue({});
+            spyOn(Config, 'loadConfig').and.returnValue({});
             Command.run(fakeJasmine, ['--config', SRCDIR + 'test/fixtures/jasmine.json']);
-            expect(Command.loadConfig).toHaveBeenCalled();
+            expect(Config.loadConfig).toHaveBeenCalled();
         });
 
         it('lets command line arguments override config options', function () {

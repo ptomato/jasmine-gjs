@@ -1,90 +1,15 @@
 /* global jasmineImporter */
 /* exported run */
 
-const Format = imports.format;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
 
+const Config = jasmineImporter.config;
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
-
-String.prototype.format = Format.format;
-
-// Make it legal to specify "some_option": "single_value" in the config file as
-// well as "some_option": ["multiple", "values"]
-function _ensureArray(option) {
-    if (!(option instanceof Array))
-        return [option];
-    return option;
-}
-
-function _makePathsAbsolute(configFile, paths) {
-    return paths.map((path) => {
-        if (GLib.path_is_absolute(path))
-            return path;
-        return configFile.get_parent().resolve_relative_path(path).get_path();
-    });
-}
-
-function loadConfig(configFilePath) {
-    let configFile = Gio.File.new_for_commandline_arg(configFilePath);
-    let config = {};
-
-    try {
-        let [, contents] = configFile.load_contents(null);
-        if (contents instanceof Uint8Array) {
-            contents = imports.byteArray.toString(contents)
-        }
-        config = JSON.parse(contents);
-    } catch (e) {
-        throw new Error('Configuration not read from ' + configFile.get_path());
-    }
-
-    if (config.include_paths)
-        config.include_paths = _makePathsAbsolute(configFile,
-            _ensureArray(config.include_paths));
-    if (config.spec_files)
-        config.spec_files = _makePathsAbsolute(configFile,
-            _ensureArray(config.spec_files));
-
-    const RECOGNIZED_KEYS = [
-        'environment',
-        'exclude',
-        'include_paths',
-        'options',
-        'spec_files',
-    ];
-    Object.keys(config).forEach((key) => {
-        if (RECOGNIZED_KEYS.indexOf(key) === -1)
-            printerr('warning: unrecognized config file key "%s"'.format(key));
-    });
-
-    print('Configuration loaded from', configFile.get_path());
-    return config;
-}
-
-function configToArgs(config, shouldAddSpecFiles) {
-    let retval = [];
-    if (config.include_paths) {
-        _ensureArray(config.include_paths).forEach((path) => {
-            retval.push('-I');
-            retval.push(path);
-        });
-    }
-    if (config.exclude) {
-        _ensureArray(config.exclude).forEach((exclude) => {
-            retval.push('--exclude');
-            retval.push(exclude);
-        });
-    }
-    if (config.options)
-        retval = retval.concat(_ensureArray(config.options));
-    if (shouldAddSpecFiles && config.spec_files)
-        retval = retval.concat(_ensureArray(config.spec_files));
-    return retval;
-}
+const Utils = jasmineImporter.utils;
 
 function run(_jasmine, argv, config={}, timeout=-1) {
     let [files, options] = Options.parseOptions(argv);
@@ -93,7 +18,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         config = {};
 
     if (options.config)
-        config = loadConfig(options.config);
+        config = Config.loadConfig(options.config);
 
     // If an environment is specified, launch a subprocess of Jasmine with that
     // environment
@@ -111,7 +36,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         // contains the environment key; we will pass everything it needs to
         // know on the command line.
         args.push('--no-config');
-        args = configToArgs(config, files.length === 0).concat(args);
+        args = Config.configToArgs(config, files.length === 0).concat(args);
         args.unshift(System.programInvocationName);  // argv[0]
 
         let process = launcher.spawnv(args);
@@ -122,13 +47,13 @@ function run(_jasmine, argv, config={}, timeout=-1) {
     }
 
     if (config.include_paths) {
-        _ensureArray(config.include_paths).reverse().forEach((path) => {
+        Utils.ensureArray(config.include_paths).reverse().forEach((path) => {
             imports.searchPath.unshift(path);
         });
     }
 
     if (config.options) {
-        let [, configOptions] = Options.parseOptions(_ensureArray(config.options));
+        let [, configOptions] = Options.parseOptions(Utils.ensureArray(config.options));
         // Command-line options should always override config file options
         Object.keys(configOptions).forEach((key) => {
             if (!(key in options))
@@ -138,14 +63,14 @@ function run(_jasmine, argv, config={}, timeout=-1) {
 
     if (options.exclude || config.exclude) {
         let optionsExclude = options.exclude || [];
-        let configExclude = config.exclude? _ensureArray(config.exclude) : [];
+        let configExclude = config.exclude? Utils.ensureArray(config.exclude) : [];
         _jasmine.exclusions = configExclude.concat(optionsExclude);
     }
 
     // Specific tests given on the command line should always override the
     // default tests in the config file
     if (config.spec_files && files.length === 0)
-        files = _ensureArray(config.spec_files);
+        files = Utils.ensureArray(config.spec_files);
 
     if (options.version) {
         print('Jasmine', _jasmine.version);

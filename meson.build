@@ -20,6 +20,7 @@ jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
 install_data(
     'lib/jasmine.js',
     'src/command.js',
+    'src/config.js',
     'src/consoleReporter.js',
     'src/jasmineBoot.js',
     'src/junitReporter.js',
@@ -40,6 +41,7 @@ install_data('jasmine.man', rename: 'jasmine.1',
 
 tests = [
     'commandSpec',
+    'configSpec',
     'consoleReporterSpec',
     'defaultReporterSpec',
     'focusedSpecIntegrationTest',
