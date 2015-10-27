@@ -14,12 +14,6 @@ const Utils = jasmineImporter.utils;
 function run(_jasmine, argv, config={}, timeout=-1) {
     let [files, options] = Options.parseOptions(argv);
 
-    if (options['no-config'])
-        config = {};
-
-    if (options.config)
-        config = Config.loadConfig(options.config);
-
     // If an environment is specified, launch a subprocess of Jasmine with that
     // environment
     if (config.environment) {
