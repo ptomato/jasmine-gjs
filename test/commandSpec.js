@@ -4,16 +4,10 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 
-const Config = jasmineImporter.config;
 const Command = jasmineImporter.command;
 const JUnitReporter = jasmineImporter.junitReporter;
 const TapReporter = jasmineImporter.tapReporter;
 const VerboseReporter = jasmineImporter.verboseReporter;
-
-// This is in case we are running the tests from a build tree that is different
-// from the source tree, for example during 'make distcheck'.
-let envSrcdir = GLib.getenv('SRCDIR');
-const SRCDIR = envSrcdir? envSrcdir + '/' : '';
 
 describe('Jasmine command', function () {
     let fakeJasmine;
@@ -24,12 +18,6 @@ describe('Jasmine command', function () {
     });
 
     describe('parsing config', function () {
-        it('loads config from a file', function () {
-            spyOn(Config, 'loadConfig').and.returnValue({});
-            Command.run(fakeJasmine, ['--config', SRCDIR + 'test/fixtures/jasmine.json']);
-            expect(Config.loadConfig).toHaveBeenCalled();
-        });
-
         it('lets command line arguments override config options', function () {
             Command.run(fakeJasmine, ['--no-color'], { options: '--color' });
             expect(fakeJasmine.addReporter)

@@ -17,9 +17,12 @@ function _makePathsAbsolute(configFile, paths) {
     });
 }
 
-function loadConfig(configFilePath) {
-    let configFile = Gio.File.new_for_commandline_arg(configFilePath);
+function loadConfig(options, defaultFile='jasmine.json') {
+    if (options['no-config'])
+        return {};
+
     let config = {};
+    let configFile = Gio.File.new_for_commandline_arg(options.config || defaultFile);
 
     try {
         let [, contents] = configFile.load_contents(null);
@@ -28,6 +31,8 @@ function loadConfig(configFilePath) {
         }
         config = JSON.parse(contents);
     } catch (e) {
+        if (!options.config && e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
+            return {};  // Don't complain if config file absent from default location
         throw new Error('Configuration not read from ' + configFile.get_path());
     }
 

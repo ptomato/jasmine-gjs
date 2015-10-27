@@ -18,21 +18,42 @@ describe('Loading configuration', function () {
     });
 
     it('loads from a file', function () {
-        let config = Config.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
+        let config = Config.loadConfig({ config: SRCDIR + 'test/fixtures/jasmine.json' });
+        expect(config.a).toEqual('b');
+        expect(config.c).toEqual('d');
+    });
+
+    it("doesn't load the file if no-config specified", function () {
+        let config = Config.loadConfig({
+            'no-config': true,
+            config: SRCDIR + 'test/fixtures/jasmine.json',
+        });
+        expect(config.a).not.toEqual('b');
+        expect(config.c).not.toEqual('d');
+    });
+
+    it('loads the default file if none given', function () {
+        let config = Config.loadConfig({}, SRCDIR + 'test/fixtures/jasmine.json');
         expect(config.a).toEqual('b');
         expect(config.c).toEqual('d');
     });
 
     it("errors out if the file doesn't exist", function () {
-        expect(() => Config.loadConfig('nonexist.json')).toThrow();
+        expect(() => Config.loadConfig({ config: 'nonexist.json' })).toThrow();
+    });
+
+    it("doesn't error out if the default file doesn't exist", function () {
+        expect(() => Config.loadConfig({}, 'nonexist.json')).not.toThrow();
     });
 
     it('errors out if the file is invalid', function () {
-        expect(() => Config.loadConfig(SRCDIR + 'test/fixtures/invalid.json')).toThrow();
+        expect(() => Config.loadConfig({
+            config: SRCDIR + 'test/fixtures/invalid.json',
+        })).toThrow();
     });
 
     it("resolves paths relative to the config file's location", function () {
-        let config = Config.loadConfig(SRCDIR + 'test/fixtures/path.json');
+        let config = Config.loadConfig({ config: SRCDIR + 'test/fixtures/path.json' });
         let location = Gio.File.new_for_path(SRCDIR + 'test/fixtures');
 
         expect(config.include_paths).toContain(location.get_path());
@@ -40,7 +61,7 @@ describe('Loading configuration', function () {
     });
 
     it('warns about unrecognized config options', function () {
-        Config.loadConfig(SRCDIR + 'test/fixtures/jasmine.json');
+        Config.loadConfig({ config: SRCDIR + 'test/fixtures/jasmine.json' });
         expect(window.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
     });
 });

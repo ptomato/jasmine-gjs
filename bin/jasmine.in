@@ -30,6 +30,7 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
 
 const Command = jasmineImporter.command;
 const Config = jasmineImporter.config;
+const Options = jasmineImporter.options;
 
 const Timer = jasmineImporter.timer;
 Timer.installAPI(window);
@@ -39,12 +40,8 @@ const JasmineBoot = jasmineImporter.jasmineBoot;
 let _jasmine = new JasmineBoot.Jasmine();
 _jasmine.installAPI(window);
 
-let defaultConfig = {};
-try {
-    defaultConfig = Config.loadConfig('jasmine.json');
-} catch (e) {
-    // Don't complain if config file absent from default location
-}
+let [, options] = Options.parseOptions(ARGV);
+let config = Config.loadConfig(options);
 
 // Don't put any code after this; the return value is used as the exit code.
-Command.run(_jasmine, ARGV, defaultConfig, 10);
+Command.run(_jasmine, ARGV, config, 10);
