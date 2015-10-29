@@ -1,47 +1,43 @@
 #!/usr/bin/env gjs
 
-/* global jasmineImporter */
-
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const System = imports.system;
 
-// Create a separate GJS importer object for Jasmine modules, so that Jasmine's
-// modules are not exposed to test code (e.g. client code might have its own
-// Utils module.)
-// This means that all imports within Jasmine must use jasmineImporter rather
-// than imports. That includes imports of Jasmine modules in the tests. It would
-// be better to test a separate copy of Jasmine code, but importing most modules
-// registers a GType, and we cannot register two GTypes with the same name in
-// the same process.
-
+let runner_path = '@pkglibexecdir@/jasmine-runner';
 if (GLib.getenv('JASMINE_UNINSTALLED')) {
     // Trick to use the uninstalled copy of Jasmine when running "make check".
     let srcdir = GLib.getenv('SRCDIR');
-    window.jasmineImporter = imports['.'];
-    jasmineImporter.searchPath = [
-        GLib.build_filenamev([srcdir, 'src']),
-        GLib.build_filenamev([srcdir, 'lib']),
-    ];
+    imports.searchPath.unshift(GLib.build_filenamev([srcdir, 'src']));
+    const builddir = GLib.getenv('BUILDDIR');
+    runner_path = GLib.build_filenamev([builddir, 'jasmine-runner']);
 } else {
-    let oldSearchPath = imports.searchPath.slice();  // make a copy
-    imports.searchPath.unshift('@datadir@');
-    window.jasmineImporter = imports['jasmine-gjs'];
-    imports.searchPath = oldSearchPath;
+    imports.searchPath.unshift('@datadir@/jasmine-gjs');
 }
 
-const Command = jasmineImporter.command;
-const Config = jasmineImporter.config;
-const Options = jasmineImporter.options;
+const Config = imports.config;
+const Options = imports.options;
 
-const Timer = jasmineImporter.timer;
-Timer.installAPI(window);
+let [files, options] = Options.parseOptions(ARGV);
 
-// Do not conflict with global "jasmine" object
-const JasmineBoot = jasmineImporter.jasmineBoot;
-let _jasmine = new JasmineBoot.Jasmine();
-_jasmine.installAPI(window);
+if (options.version) {
+    print('Jasmine @PACKAGE_VERSION@');
+    System.exit(0);
+}
 
-let [, options] = Options.parseOptions(ARGV);
 let config = Config.loadConfig(options);
 
+// Launch Jasmine in a subprocess so we can control the environment
+let launcher = new Gio.SubprocessLauncher();
+Config.prepareLauncher(launcher, config);
+let args = Config.configToArgs(config, files, options);
+args.unshift(runner_path);  // argv[0]
+let process = launcher.spawnv(args);
+process.wait(null);
+
 // Don't put any code after this; the return value is used as the exit code.
-Command.run(_jasmine, ARGV, config, 10);
+(function () {
+    if (process.get_if_exited())
+        return process.get_exit_status();
+    return 1;
+})();
