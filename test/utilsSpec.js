@@ -20,13 +20,3 @@ describe('Indent', function () {
         expect(Utils.indent('a\nb\nc', 0)).toEqual('a\nb\nc');
     });
 });
-
-describe('Ensure array', function () {
-    it('does not change an array', function () {
-        expect(Utils.ensureArray(['a', 'b'])).toEqual(['a', 'b']);
-    });
-
-    it('puts a single value into an array', function () {
-        expect(Utils.ensureArray('a')).toEqual(['a']);
-    });
-});

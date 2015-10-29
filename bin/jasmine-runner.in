@@ -1,0 +1,42 @@
+#!/usr/bin/env gjs
+
+/* global jasmineImporter */
+
+const GLib = imports.gi.GLib;
+
+// Create a separate GJS importer object for Jasmine modules, so that Jasmine's
+// modules are not exposed to test code (e.g. client code might have its own
+// Utils module.)
+// This means that all imports within Jasmine must use jasmineImporter rather
+// than imports. That includes imports of Jasmine modules in the tests. It would
+// be better to test a separate copy of Jasmine code, but importing most modules
+// registers a GType, and we cannot register two GTypes with the same name in
+// the same process.
+
+if (GLib.getenv('JASMINE_UNINSTALLED')) {
+    // Trick to use the uninstalled copy of Jasmine when running "make check".
+    let srcdir = GLib.getenv('SRCDIR');
+    window.jasmineImporter = imports['.'];
+    jasmineImporter.searchPath = [
+        GLib.build_filenamev([srcdir, 'src']),
+        GLib.build_filenamev([srcdir, 'lib']),
+    ];
+} else {
+    let oldSearchPath = imports.searchPath.slice();  // make a copy
+    imports.searchPath.unshift('@datadir@');
+    window.jasmineImporter = imports['jasmine-gjs'];
+    imports.searchPath = oldSearchPath;
+}
+
+const Command = jasmineImporter.command;
+const Timer = jasmineImporter.timer;
+const JasmineBoot = jasmineImporter.jasmineBoot;
+
+Timer.installAPI(window);
+
+// Do not conflict with global "jasmine" object
+let _jasmine = new JasmineBoot.Jasmine();
+_jasmine.installAPI(window);
+
+// Don't put any code after this; the return value is used as the exit code.
+Command.run(_jasmine, ARGV, 10);

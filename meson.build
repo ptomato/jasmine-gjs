@@ -8,12 +8,21 @@ else
     gjs = find_program('gjs', 'gjs-console')
 endif
 
-# Executable
+pkglibexecdir = join_paths(get_option('libexecdir'), meson.project_name())
+
+# Executables
 
 config = configuration_data()
 config.set('datadir', join_paths(get_option('prefix'), get_option('datadir')))
+config.set('pkglibexecdir', join_paths(get_option('prefix'), pkglibexecdir))
+config.set('PACKAGE_VERSION', meson.project_version())
+
 jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
     output: 'jasmine', install: true, install_dir: 'bin')
+
+jasmine_runner = configure_file(configuration: config,
+    input: 'bin/jasmine-runner.in', output: 'jasmine-runner', install: true,
+    install_dir: pkglibexecdir)
 
 # Source code and Jasmine library
 
@@ -58,6 +67,7 @@ tests = [
 ]
 test_env = environment()
 test_env.set('SRCDIR', meson.current_source_dir())
+test_env.set('BUILDDIR', meson.current_build_dir())
 test_env.set('JASMINE_UNINSTALLED', 'yes')
 foreach t : tests
     test_file = files('test/@0@.js'.format(t))

@@ -6,70 +6,14 @@ const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
 
-const Config = jasmineImporter.config;
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
-const Utils = jasmineImporter.utils;
 
-function run(_jasmine, argv, config={}, timeout=-1) {
+function run(_jasmine, argv, timeout=-1) {
     let [files, options] = Options.parseOptions(argv);
 
-    // If an environment is specified, launch a subprocess of Jasmine with that
-    // environment
-    if (config.environment) {
-        let launcher = new Gio.SubprocessLauncher();
-        Object.keys(config.environment).forEach((key) => {
-            if (config.environment[key] === null)
-                launcher.unsetenv(key);
-            else
-                launcher.setenv(key, config.environment[key], true);
-        });
-
-        let args = argv;
-        // The subprocess should ignore the config file, since the config file
-        // contains the environment key; we will pass everything it needs to
-        // know on the command line.
-        args.push('--no-config');
-        args = Config.configToArgs(config, files.length === 0).concat(args);
-        args.unshift(System.programInvocationName);  // argv[0]
-
-        let process = launcher.spawnv(args);
-        process.wait(null);
-        if (process.get_if_exited())
-            return process.get_exit_status();
-        return 1;
-    }
-
-    if (config.include_paths) {
-        Utils.ensureArray(config.include_paths).reverse().forEach((path) => {
-            imports.searchPath.unshift(path);
-        });
-    }
-
-    if (config.options) {
-        let [, configOptions] = Options.parseOptions(Utils.ensureArray(config.options));
-        // Command-line options should always override config file options
-        Object.keys(configOptions).forEach((key) => {
-            if (!(key in options))
-                options[key] = configOptions[key];
-        });
-    }
-
-    if (options.exclude || config.exclude) {
-        let optionsExclude = options.exclude || [];
-        let configExclude = config.exclude? Utils.ensureArray(config.exclude) : [];
-        _jasmine.exclusions = configExclude.concat(optionsExclude);
-    }
-
-    // Specific tests given on the command line should always override the
-    // default tests in the config file
-    if (config.spec_files && files.length === 0)
-        files = Utils.ensureArray(config.spec_files);
-
-    if (options.version) {
-        print('Jasmine', _jasmine.version);
-        return 0;
-    }
+    if (options.exclude)
+        _jasmine.exclusions = options.exclude;
 
     if (options.junit) {
         const JUnitReporter = jasmineImporter.junitReporter;

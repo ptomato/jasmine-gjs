@@ -17,189 +17,6 @@ describe('Jasmine command', function () {
         spyOn(Mainloop, 'run');  // stub out system behaviour
     });
 
-    describe('parsing config', function () {
-        it('lets command line arguments override config options', function () {
-            Command.run(fakeJasmine, ['--no-color'], { options: '--color' });
-            expect(fakeJasmine.addReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
-        });
-
-        it('parses an array of options as well as a single string', function () {
-            Command.run(fakeJasmine, [], { options: ['--color', '--verbose'] });
-            expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
-            expect(reporter.show_colors).toBeTruthy();
-            expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
-        });
-
-        it('adds specs from the config file', function (done) {
-            Command.run(fakeJasmine, [], { spec_files: 'myspecdir' });
-            Mainloop.idle_add(function () {
-                expect(fakeJasmine.execute).toHaveBeenCalledWith(['myspecdir']);
-                done();
-            });
-        });
-
-        it('parses an array of spec files as well as a single string', function (done) {
-            Command.run(fakeJasmine, [], { spec_files: ['a.js', 'b.js'] });
-            Mainloop.idle_add(function () {
-                expect(fakeJasmine.execute).toHaveBeenCalledWith(['a.js', 'b.js']);
-                done();
-            });
-        });
-
-        it('overrides spec files from config if any are given on the command line', function (done) {
-            Command.run(fakeJasmine, ['spec1.js'], { spec_files: 'spec2.js' });
-            Mainloop.idle_add(function () {
-                expect(fakeJasmine.execute).toHaveBeenCalledWith(['spec1.js']);
-                done();
-            });
-        });
-
-        it('adds exclusions from the command line', function () {
-            Command.run(fakeJasmine, ['--exclude', 'a.js'], {});
-            expect(fakeJasmine.exclusions).toEqual(['a.js']);
-        });
-
-        it('adds exclusions from the config file', function () {
-            Command.run(fakeJasmine, [], { exclude: ['a.js', 'b.js'] });
-            expect(fakeJasmine.exclusions).toEqual(['a.js', 'b.js']);
-        });
-
-        it('parses a single string as well as an array of exclusions', function () {
-            Command.run(fakeJasmine, [], { exclude: 'file.js' });
-            expect(fakeJasmine.exclusions).toEqual(['file.js']);
-        });
-
-        it('combines exclusions from the command line and the config file', function () {
-            Command.run(fakeJasmine, ['--exclude', 'a.js'], { exclude: 'b.js' });
-            expect(fakeJasmine.exclusions).toEqual(jasmine.arrayContaining(['a.js',
-                'b.js']));
-            expect(fakeJasmine.exclusions.length).toBe(2);
-        });
-
-        it('ignores the default config if requested', function () {
-            Command.run(fakeJasmine, ['--no-config'], { options: '--no-color' });
-            expect(fakeJasmine.addReporter)
-                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: true }));
-        });
-    });
-
-    describe('manipulating the environment', function () {
-        let launcher, realLauncher;
-
-        beforeAll(function () {
-            realLauncher = Gio.SubprocessLauncher;
-            // Mock out system behaviour
-            Gio.SubprocessLauncher = function () {
-                let process = jasmine.createSpyObj('Subprocess', [
-                    'wait',
-                    'get_if_exited',
-                    'get_exit_status',
-                ]);
-                process.get_if_exited.and.returnValue(true);
-                process.get_exit_status.and.returnValue(0);
-                this.setenv = jasmine.createSpy('setenv');
-                this.unsetenv = jasmine.createSpy('unsetenv');
-                this.spawnv = jasmine.createSpy('spawnv').and.returnValue(process);
-                launcher = this;
-            };
-        });
-
-        afterAll(function () {
-            Gio.SubprocessLauncher = realLauncher;
-        });
-
-        it('launches a subprocess when changing the environment', function () {
-            expect(Command.run(fakeJasmine, [], {
-                environment: {
-                    'MY_VARIABLE': 'my_value',
-                },
-            })).toEqual(0);
-            expect(launcher.setenv).toHaveBeenCalledWith('MY_VARIABLE', 'my_value', true);
-            expect(launcher.spawnv).toHaveBeenCalled();
-        });
-
-        it('unsets environment variables with null values', function () {
-            Command.run(fakeJasmine, [], {
-                environment: {
-                    'MY_VARIABLE': null,
-                },
-            });
-            expect(launcher.unsetenv).toHaveBeenCalledWith('MY_VARIABLE');
-            expect(launcher.setenv).not.toHaveBeenCalled();
-        });
-
-        it('passes the arguments on to the subprocess', function () {
-            Command.run(fakeJasmine, ['--color', 'spec.js'], { environment: {} });
-            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--color',
-                'spec.js']));
-        });
-
-        it('tells the subprocess to ignore the config file', function () {
-            Command.run(fakeJasmine, [], { environment: {} });
-            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--no-config']));
-        });
-
-        it('passes the config file on to the subprocess as arguments', function () {
-            Command.run(fakeJasmine, [], {
-                environment: {},
-                include_paths: ['/path1', '/path2'],
-                options: ['--color'],
-                exclude: ['nonspec*.js'],
-                spec_files: ['a.js', 'b.js'],
-            });
-            let subprocessArgs = launcher.spawnv.calls.mostRecent().args[0];
-            function subsequence(array, subseq) {
-                for (let ix = 0; ix < array.length - subseq.length + 1; ix++) {
-                    let subseqToTest = array.slice(ix, ix + subseq.length);
-                    if (subseqToTest.every((el, ix) => (el === subseq[ix])))
-                        return true;
-                }
-                return false;
-            }
-            expect(subsequence(subprocessArgs, ['-I', '/path1'])).toBeTruthy();
-            expect(subsequence(subprocessArgs, ['-I', '/path2'])).toBeTruthy();
-            expect(subsequence(subprocessArgs, ['--exclude', 'nonspec*.js'])).toBeTruthy();
-            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['--color',
-                'a.js', 'b.js']));
-        });
-
-        it('does not pass the config file specs if specs were on the command line', function () {
-            Command.run(fakeJasmine, ['spec1.js'], {
-                environment: {},
-                spec_files: ['spec2.js'],
-            });
-            expect(launcher.spawnv).toHaveBeenCalledWith(jasmine.arrayContaining(['spec1.js']));
-            expect(launcher.spawnv).not.toHaveBeenCalledWith(jasmine.arrayContaining(['spec2.js']));
-        });
-    });
-
-    describe('adding GJS search paths', function () {
-        let oldSearchPath;
-
-        beforeEach(function () {
-            oldSearchPath = imports.searchPath.slice();  // copy
-        });
-
-        afterEach(function () {
-            imports.searchPath = oldSearchPath;
-        });
-
-        it('does so in the right order', function () {
-            Command.run(fakeJasmine, [], {
-                include_paths: ['/fake/path', '/another/fake/path'],
-            });
-            expect(imports.searchPath[0]).toBe('/fake/path');
-            expect(imports.searchPath[1]).toBe('/another/fake/path');
-        });
-
-        it('parses a single string as well as an array', function () {
-            Command.run(fakeJasmine, [], { include_paths: '/fake/path' });
-            expect(imports.searchPath).toContain('/fake/path');
-        });
-    });
-
     describe('running specs', function () {
         it('shows colors by default', function () {
             Command.run(fakeJasmine, []);
@@ -211,6 +28,15 @@ describe('Jasmine command', function () {
             Command.run(fakeJasmine, ['--no-color']);
             expect(fakeJasmine.addReporter)
                 .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
+        });
+
+        it('lets later color arguments override earlier ones', function () {
+            Command.run(fakeJasmine, ['--color', '--no-color']);
+            expect(fakeJasmine.addReporter)
+                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: false }));
+            Command.run(fakeJasmine, ['--no-color', '--color']);
+            expect(fakeJasmine.addReporter)
+                .toHaveBeenCalledWith(jasmine.objectContaining({ show_colors: true }));
         });
 
         it('loads the verbose reporter', function () {
