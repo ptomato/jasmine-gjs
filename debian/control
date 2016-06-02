@@ -2,8 +2,8 @@ Source: jasmine-gjs
 Section: devel
 Priority: optional
 Maintainer: Philip Chimento <philip.chimento@gmail.com>
-Build-Depends: autotools-dev,
-               debhelper (>= 9),
+Build-Depends: debhelper (>= 9),
+               dh-autoreconf,
                gir1.2-glib-2.0,
                gir1.2-gtk-3.0,
                gjs (>= 1.39.3)
