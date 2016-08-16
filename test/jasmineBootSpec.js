@@ -82,12 +82,6 @@ describe('Jasmine boot', function () {
         jasmine.addMatchers(customMatchers);
     });
 
-    describe('constructor options', function () {
-        it('have defaults', function () {
-            expect(testJasmine.project_base_dir.get_path()).toEqual(GLib.get_current_dir());
-        });
-    });
-
     it('ignores a nonexistent spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
         testJasmine.addSpecFiles(['non/existent/file.js']);

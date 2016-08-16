@@ -13,11 +13,6 @@ const Jasmine = new Lang.Class({
     Extends: GObject.Object,
 
     Properties: {
-        'project-base-dir': GObject.ParamSpec.object('project-base-dir',
-            'Project base directory',
-            'File object for root directory of project with tests',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
-            GObject.Object.$gtype),  // should be Gio.File.$gtype
         'version': GObject.ParamSpec.string('version', 'Version',
             'Version of Jasmine library',
             GObject.ParamFlags.READABLE,
@@ -35,9 +30,6 @@ const Jasmine = new Lang.Class({
 
         this.parent(props);
 
-        if (this.project_base_dir === null)
-            this._projectBaseDir = Gio.File.new_for_path(GLib.get_current_dir());
-
         let jasmineCorePath = jasmineCore.__file__;
         this._jasmineCoreFile = Gio.File.new_for_path(jasmineCorePath);
 
@@ -49,17 +41,6 @@ const Jasmine = new Lang.Class({
         this.exclusions = [];
         this.specFiles = [];
         this._reportersCount = 0;
-    },
-
-    get project_base_dir() {
-        return this._projectBaseDir;
-    },
-
-    set project_base_dir(value) {
-        if (this._projectBaseDir !== value) {
-            this._projectBaseDir = value;
-            this.notify('project-base-dir');
-        }
     },
 
     get version() {
