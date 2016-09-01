@@ -3,8 +3,11 @@
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
+olddir=`pwd`
 
+cd "$srcdir"
 autoreconf -if || exit $?
+cd "$olddir"
 
 if test "$#" = 0 -a "x$NOCONFIGURE" = "x"; then
   echo "**Warning**: I am going to run 'configure' with no arguments."
