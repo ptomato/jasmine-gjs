@@ -17,8 +17,8 @@ if test "$#" = 0 -a "x$NOCONFIGURE" = "x"; then
 fi
 
 if test "x$NOCONFIGURE" = "x"; then
-    echo Running $srcdir/configure "$@" ...
-    $srcdir/configure "$@" \
+    echo Running "$srcdir/configure" "$@" ...
+    "$srcdir/configure" "$@" \
     && echo "Now type 'make' to compile" || exit 1
 else
     echo Skipping configure process.
