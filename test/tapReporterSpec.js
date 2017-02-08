@@ -29,7 +29,10 @@ describe('The TAP reporter', function () {
     it('outputs a test plan', function () {
         reporter.jasmineStarted({ totalSpecsDefined: 1 });
         reporter.specStarted({});
-        reporter.specDone({ status: 'passed' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'passed',
+        });
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/1../);
@@ -38,9 +41,15 @@ describe('The TAP reporter', function () {
     it('includes the total number of specs in the test plan', function () {
         reporter.jasmineStarted({ totalSpecsDefined: 2 });
         reporter.specStarted({});
-        reporter.specDone({ status: 'passed' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'passed',
+        });
         reporter.specStarted({});
-        reporter.specDone({ status: 'passed' });
+        reporter.specDone({
+            fullName: 'bar',
+            status: 'passed',
+        });
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/1..2/);
@@ -55,19 +64,28 @@ describe('The TAP reporter', function () {
 
     it('outputs a line starting with "ok" for a passing spec', function () {
         reporter.specStarted({});
-        reporter.specDone({ status: 'passed' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'passed',
+        });
         expect(out.getOutput()).toMatch(/^ok/);
     });
 
     it('outputs a line starting with "not ok" for a failing spec', function () {
         reporter.specStarted({});
-        reporter.specDone({ status: 'failed' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'failed',
+        });
         expect(out.getOutput()).toMatch(/^not ok/);
     });
 
     it('outputs an "ok" line plus a skip directive for a pending spec', function () {
         reporter.specStarted({});
-        reporter.specDone({ status: 'pending' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'pending',
+        });
         expect(out.getOutput()).toMatch(/^ok/);
         expect(out.getOutput()).toMatch(/# skip/i);
     });
@@ -75,6 +93,7 @@ describe('The TAP reporter', function () {
     it('reports the reason for a pending spec, if given', function () {
         reporter.specStarted({});
         reporter.specDone({
+            fullName: 'foo',
             status: 'pending',
             pendingReason: 'because I said so',
         });
@@ -83,18 +102,27 @@ describe('The TAP reporter', function () {
 
     it('outputs an "ok" line plus a skip directive for a disabled spec', function () {
         reporter.specStarted({});
-        reporter.specDone({ status: 'disabled' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'disabled',
+        });
         expect(out.getOutput()).toMatch(/^ok/);
         expect(out.getOutput()).toMatch(/# skip/i);
     });
 
     it('outputs a sequence number after the result', function () {
         reporter.specStarted({});
-        reporter.specDone({ status: 'passed' });
+        reporter.specDone({
+            fullName: 'foo',
+            status: 'passed',
+        });
         expect(out.getOutput()).toMatch(/^ok 1/);
         out.clear();
         reporter.specStarted({});
-        reporter.specDone({ status: 'failed' });
+        reporter.specDone({
+            fullName: 'bar',
+            status: 'failed',
+        });
         expect(out.getOutput()).toMatch(/^not ok 2/);
     });
 
@@ -129,6 +157,7 @@ describe('The TAP reporter', function () {
             reporter.specStarted({});
             out.clear();
             reporter.specDone({
+                fullName: 'foo',
                 status: 'failed',
                 failedExpectations: [
                     {
@@ -167,6 +196,7 @@ describe('The TAP reporter', function () {
             reporter.specStarted({});
             out.clear();
             reporter.specDone({
+                fullName: 'foo',
                 status: 'failed',
                 failedExpectations: [{
                     message: 'A message\non two lines',
@@ -213,6 +243,8 @@ describe('The TAP reporter', function () {
 
     it('reports failures in afterAll as an extra failure', function () {
         reporter.suiteDone({
+            status: 'failed',
+            fullName: 'A suite',
             failedExpectations: [{ message: 'An afterAll exception' }],
         });
         reporter.jasmineDone();

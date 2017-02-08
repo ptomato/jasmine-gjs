@@ -99,7 +99,10 @@ describe('Console reporter base class', function () {
     });
 
     it('times individual specs', function () {
-        let specInfo = {id: 'foo'};
+        let specInfo = {
+            id: 'foo',
+            status: 'passed',
+        };
         reporter.specStarted(specInfo);
         expect(timerSpies['spec:foo'].start).toHaveBeenCalled();
 

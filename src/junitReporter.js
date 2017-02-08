@@ -16,6 +16,7 @@ const JUnitReporter = new Lang.Class({
     Extends: ConsoleReporter.ConsoleReporter,
 
     jasmineStarted: function (info) {
+        this._currentSuite = null;
         this.parent(info);
         this._tree = new XMLWriter.Node('testsuites');
         this._suiteCount = 0;

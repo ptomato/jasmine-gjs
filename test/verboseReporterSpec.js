@@ -43,7 +43,9 @@ describe('Verbose console reporter', function () {
     });
 
     it('reports a passing spec with a checkmark', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'passed',
             description: 'A passing spec',
         });
@@ -51,7 +53,9 @@ describe('Verbose console reporter', function () {
     });
 
     it('reports a disabled spec with an "x"', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'disabled',
             description: 'A disabled spec',
         });
@@ -59,7 +63,9 @@ describe('Verbose console reporter', function () {
     });
 
     it('reports a failing spec with a number', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'failed',
             description: 'A failing spec',
         });
@@ -67,12 +73,16 @@ describe('Verbose console reporter', function () {
     });
 
     it('reports a failing spec with the number of that failure in sequence', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'failed',
             description: 'A failing spec',
         });
         out.clear();
+        reporter.specStarted({id: 'bar'});
         reporter.specDone({
+            id: 'bar',
             status: 'failed',
             description: 'Another failing spec',
         });
@@ -80,7 +90,9 @@ describe('Verbose console reporter', function () {
     });
 
     it('reports a pending spec as a dash', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'pending',
             description: 'A pending spec',
         });
@@ -89,9 +101,21 @@ describe('Verbose console reporter', function () {
 
     it('reports a summary when done', function () {
         reporter.jasmineStarted();
-        reporter.specDone({status: 'passed'});
-        reporter.specDone({status: 'pending'});
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
+            description: 'A spec',
+            status: 'passed',
+        });
+        reporter.specStarted({id: 'bar'});
+        reporter.specDone({
+            id: 'bar',
+            description: 'A spec',
+            status: 'pending',
+        });
+        reporter.specStarted({id: 'baz'});
+        reporter.specDone({
+            id: 'baz',
             status: 'failed',
             description: 'with a failing spec',
             fullName: 'A suite with a failing spec',
@@ -125,8 +149,15 @@ describe('Verbose console reporter', function () {
 
     it('reports a summary when done that includes the failed spec number before the full name of a failing spec', function () {
         reporter.jasmineStarted();
-        reporter.specDone({status: 'passed'});
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
+            description: 'A spec',
+            status: 'passed',
+        });
+        reporter.specStarted({id: 'bar'});
+        reporter.specDone({
+            id: 'bar',
             status: 'failed',
             description: 'with a failing spec',
             fullName: 'A suite with a failing spec',
@@ -136,7 +167,7 @@ describe('Verbose console reporter', function () {
                 expected: false,
                 actual: true,
                 stack: 'fakeStack\nfakeStack',
-            }]
+            }],
         });
 
         out.clear();
@@ -149,13 +180,19 @@ describe('Verbose console reporter', function () {
     it('prints a warning when a spec takes over 40 ms', function () {
         reporter.specStarted({id: 'foo'});
         timerSpies['spec:foo'].elapsed.and.returnValue(50);
-        reporter.specDone({id: 'foo'});
+        reporter.specDone({
+            id: 'foo',
+            description: 'A spec',
+            status: 'passed',
+        });
 
         expect(out.getOutput()).toMatch('(50 ms)');
     });
 
     it('prints the reason for a pending spec', function () {
+        reporter.specStarted({id: 'foo'});
         reporter.specDone({
+            id: 'foo',
             status: 'pending',
             description: 'a pending spec',
             pendingReason: 'it was not ready',
@@ -178,7 +215,9 @@ describe('Verbose console reporter', function () {
         });
 
         it('reports a passing spec with a checkmark', function () {
+            reporter.specStarted({id: 'foo'});
             reporter.specDone({
+                id: 'foo',
                 status: 'passed',
                 description: 'A passing spec',
             });
@@ -186,7 +225,9 @@ describe('Verbose console reporter', function () {
         });
 
         it('reports a disabled spec with an "x"', function () {
+            reporter.specStarted({id: 'foo'});
             reporter.specDone({
+                id: 'foo',
                 status: 'disabled',
                 description: 'A disabled spec',
             });
@@ -194,7 +235,9 @@ describe('Verbose console reporter', function () {
         });
 
         it('reports a failing spec with a number', function () {
+            reporter.specStarted({id: 'foo'});
             reporter.specDone({
+                id: 'foo',
                 status: 'failed',
                 description: 'A failing spec',
             });
@@ -212,7 +255,11 @@ describe('Verbose console reporter', function () {
         it('prints a mild warning when a spec takes over 40 ms', function () {
             reporter.specStarted({id: 'foo'});
             timerSpies['spec:foo'].elapsed.and.returnValue(50);
-            reporter.specDone({id: 'foo'});
+            reporter.specDone({
+                id: 'foo',
+                description: 'A spec',
+                status: 'passed',
+            });
 
             expect(out.getOutput()).toMatch(/\x1b\[33m\(50 ms\)\x1b\[0m/);
         });
@@ -220,13 +267,19 @@ describe('Verbose console reporter', function () {
         it('prints a loud warning when a spec takes over 75 ms', function () {
             reporter.specStarted({id: 'foo'});
             timerSpies['spec:foo'].elapsed.and.returnValue(80);
-            reporter.specDone({id: 'foo'});
+            reporter.specDone({
+                id: 'foo',
+                description: 'A spec',
+                status: 'passed',
+            });
 
             expect(out.getOutput()).toMatch(/\x1b\[31m\(80 ms\)\x1b\[0m/);
         });
 
         it('prints a pending reason in yellow', function () {
+            reporter.specStarted({id: 'foo'});
             reporter.specDone({
+                id: 'foo',
                 status: 'pending',
                 description: 'a pending spec',
                 pendingReason: 'it was not ready',
@@ -236,8 +289,14 @@ describe('Verbose console reporter', function () {
     });
 
     it('displays all afterAll exceptions', function () {
-        reporter.suiteDone({ failedExpectations: [{ message: 'After All Exception' }] });
-        reporter.suiteDone({ failedExpectations: [{ message: 'Some Other Exception' }] });
+        reporter.suiteDone({
+            status: 'failed',
+            failedExpectations: [{ message: 'After All Exception' }],
+        });
+        reporter.suiteDone({
+            status: 'failed',
+            failedExpectations: [{ message: 'Some Other Exception' }],
+        });
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/After All Exception/);
