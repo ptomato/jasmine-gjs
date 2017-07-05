@@ -3,6 +3,7 @@
 const GLib = imports.gi.GLib;
 
 const JUnitReporter = jasmineImporter.junitReporter;
+const XMLWriter = jasmineImporter.xmlWriter;
 
 const SUITE_INFO = {
     id: 'foo',
@@ -110,7 +111,7 @@ describe('The JUnit reporter', function () {
         // for ease of verifying the output. XML is inconvenient to parse in the
         // DOM-less GJS. Any regressions in the XML output should not be tested
         // here, but instead should be covered in xmlWriterSpec.js.
-        spyOn(JUnitReporter.XMLWriter.Node.prototype, 'toString').and.callFake(function () {
+        spyOn(XMLWriter.Node.prototype, 'toString').and.callFake(function () {
             return JSON.stringify(this);
         });
 
