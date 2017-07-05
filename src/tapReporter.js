@@ -11,7 +11,7 @@ const ConsoleReporter = jasmineImporter.consoleReporter;
 
 String.prototype.format = Format.format;
 
-const TapReporter = new Lang.Class({
+var TapReporter = new Lang.Class({
     Name: 'TapReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 

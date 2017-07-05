@@ -11,7 +11,7 @@ const Lang = imports.lang;
 const ConsoleReporter = jasmineImporter.consoleReporter;
 const XMLWriter = jasmineImporter.xmlWriter;
 
-const JUnitReporter = new Lang.Class({
+var JUnitReporter = new Lang.Class({
     Name: 'JUnitReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 

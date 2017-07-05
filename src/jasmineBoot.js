@@ -8,7 +8,7 @@ const Lang = imports.lang;
 
 GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 
-const Jasmine = new Lang.Class({
+var Jasmine = new Lang.Class({
     Name: 'Jasmine',
     Extends: GObject.Object,
 

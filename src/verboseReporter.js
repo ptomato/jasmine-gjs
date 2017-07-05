@@ -13,7 +13,7 @@ const RED = '\x1b[31m';
 
 // This reporter, activated with --verbose on the command line, behaves very
 // similarly to Mocha's nicely formatted reporter.
-const VerboseReporter = new Lang.Class({
+var VerboseReporter = new Lang.Class({
     Name: 'VerboseReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 

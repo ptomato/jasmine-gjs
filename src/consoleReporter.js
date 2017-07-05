@@ -23,7 +23,7 @@ function createNoopTimer() {
     };
 }
 
-const ConsoleReporter = new Lang.Class({
+var ConsoleReporter = new Lang.Class({
     Name: 'ConsoleReporter',
     Extends: GObject.Object,
 
@@ -189,7 +189,7 @@ const ConsoleReporter = new Lang.Class({
 
 // This reporter has very nearly the same behaviour to Jasmine's default console
 // reporter.
-const DefaultReporter = new Lang.Class({
+var DefaultReporter = new Lang.Class({
     Name: 'DefaultReporter',
     Extends: ConsoleReporter,
 
