@@ -201,7 +201,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
     }
     reporter.connect('started', () => Mainloop.source_remove(timeoutId));
-    reporter.connect('complete', (success) => {
+    reporter.connect('complete', (reporter, success) => {
         if (!success)
             System.exit(1);
         Mainloop.quit('jasmine');
