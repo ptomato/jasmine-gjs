@@ -188,6 +188,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         show_colors: options.color,
         timerFactory: Timer.createDefaultTimer,
     };
+    let exitCode = 0;
 
     let reporter;
     if (options.verbose) {
@@ -203,7 +204,7 @@ function run(_jasmine, argv, config={}, timeout=-1) {
     reporter.connect('started', () => Mainloop.source_remove(timeoutId));
     reporter.connect('complete', (reporter, success) => {
         if (!success)
-            System.exit(1);
+            exitCode = 1;
         Mainloop.quit('jasmine');
     });
     _jasmine.addReporter(reporter);
@@ -216,7 +217,8 @@ function run(_jasmine, argv, config={}, timeout=-1) {
                 print('Bail out! Test suite failed to start within 10 seconds');
             else
                 printerr('Test suite failed to start within 10 seconds');
-            System.exit(1);
+            exitCode = 1;
+            Mainloop.quit('jasmine');
         });
     }
 
@@ -235,12 +237,13 @@ function run(_jasmine, argv, config={}, timeout=-1) {
                 printerr(e);
                 printerr(e.stack);
             }
-            System.exit(1);
+            exitCode = 1;
+            Mainloop.quit('jasmine');
         }
         return GLib.SOURCE_REMOVE;
     });
 
     // _jasmine.execute() queues up all the tests and runs them asynchronously.
     Mainloop.run('jasmine');
-    return 0;
+    return exitCode;
 }
