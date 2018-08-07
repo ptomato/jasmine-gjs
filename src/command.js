@@ -164,7 +164,9 @@ function run(_jasmine, argv, config={}, timeout=-1) {
         // report directories that don't exist.
         try {
             junitFile.get_parent().make_directory_with_parents(null);
-        } catch (e if e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS)) {
+        } catch (e) {
+            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.EXISTS))
+                throw e;
             // ignore error if directory already exists
         }
 
