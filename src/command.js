@@ -6,6 +6,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
 const System = imports.system;
+const ByteArray = imports.byteArray;
 
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
@@ -34,7 +35,7 @@ function loadConfig(configFilePath) {
 
     try {
         let [, contents] = configFile.load_contents(null);
-        config = JSON.parse(contents);
+        config = JSON.parse(ByteArray.toString(contents));
     } catch (e) {
         throw new Error('Configuration not read from ' + configFile.get_path());
     }
