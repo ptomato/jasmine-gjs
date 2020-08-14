@@ -5,8 +5,8 @@
 #export DH_VERBOSE=1
 
 %:
-	dh $@  --with autoreconf
+	dh $@
 
 # Print out test log on failure, so that we can diagnose failures on OBS
 override_dh_auto_test:
-	dh_auto_test || (find . -name test-suite.log | xargs cat ; exit 1)
+	dh_auto_test || (find . -name testlog.txt | xargs cat ; exit 1)

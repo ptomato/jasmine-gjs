@@ -1,0 +1,64 @@
+project('jasmine-gjs', version: '2.2.1', license: 'MIT',
+    meson_version: '>= 0.50.0')
+
+gjs_dep = dependency('gjs-1.0', required: false)
+if gjs_dep.found()
+    gjs = gjs_dep.get_pkgconfig_variable('gjs_console')
+else
+    gjs = find_program('gjs', 'gjs-console')
+endif
+
+# Executable
+
+config = configuration_data()
+config.set('datadir', join_paths(get_option('prefix'), get_option('datadir')))
+jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
+    output: 'jasmine', install: true, install_dir: 'bin')
+
+# Source code and Jasmine library
+
+install_data(
+    'lib/jasmine.js',
+    'src/command.js',
+    'src/consoleReporter.js',
+    'src/jasmineBoot.js',
+    'src/junitReporter.js',
+    'src/options.js',
+    'src/tapReporter.js',
+    'src/timer.js',
+    'src/utils.js',
+    'src/verboseReporter.js',
+    'src/xmlWriter.js',
+)
+
+# Documentation
+
+install_data('jasmine.man', rename: 'jasmine.1',
+    install_dir: join_paths(get_option('datadir'), 'man', 'man1'))
+
+# Tests
+
+tests = [
+    'commandSpec',
+    'consoleReporterSpec',
+    'defaultReporterSpec',
+    'focusedSpecIntegrationTest',
+    'importerSpec',
+    'jasmineBootSpec',
+    'jasmineIntegrationTest',
+    'junitReporterSpec',
+    'optionsSpec',
+    'tapReporterSpec',
+    'timerSpec',
+    'utilsSpec',
+    'verboseReporterSpec',
+    'xmlWriterSpec',
+]
+test_env = environment()
+test_env.set('SRCDIR', meson.current_source_dir())
+test_env.set('JASMINE_UNINSTALLED', 'yes')
+foreach t : tests
+    test_file = files('test/@0@.js'.format(t))
+    test(t, gjs, args: ['jasmine', test_file, '--tap', '--no-config'],
+        env: test_env, protocol: 'tap')
+endforeach

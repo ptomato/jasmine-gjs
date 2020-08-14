@@ -7,9 +7,7 @@
 //
 // Note: the "long asynchronous specs" suite near the bottom takes 9 seconds to
 // run. It is marked pending by default. To run this suite anyway, define an
-// environment variable RUN_THOROUGH_TESTS=yes. During "make check" the suite is
-// run by default, but you don't want your tests to take 9 seconds when you run
-// them from the command line using "jasmine test".
+// environment variable RUN_THOROUGH_TESTS=yes.
 
 /* global setInterval, setTimeout */
 
