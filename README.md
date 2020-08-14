@@ -17,9 +17,9 @@ From Git:
 ```sh
 git clone https://github.com/ptomato/jasmine-gjs
 cd jasmine-gjs
-./autogen.sh
-make
-sudo make install
+meson _build
+ninja -C _build
+sudo ninja -C _build install
 ```
 
 From a tarball:
@@ -27,9 +27,9 @@ From a tarball:
 ```sh
 tar xJf jasmine-gjs-2.1.3.tar.xz
 cd jasmine-gjs-2.1.3
-./configure
-make
-sudo make install
+meson _build
+ninja -C _build
+sudo ninja -C _build install
 ```
 
 ## Usage
@@ -131,6 +131,23 @@ This is mainly useful if your Javascript code uses a private C library;
 you can add `LD_LIBRARY_PATH` and `GI_TYPELIB_PATH` to `environment` in
 order to expose that library to GJS's GObject introspection repository.
 
+## Integration with Meson
+
+If using Meson, you might want to integrate your test suite into your build process.
+Meson can parse the output of the TAP reporter automatically and display a full report at the end.
+
+Put this code in `meson.build`:
+
+```
+jasmine = find_program('jasmine')
+
+test(test_name, jasmine, args: [test_file, '--tap', '--no-config'],
+    protocol: 'tap')
+```
+
+Where `test_name` and `test_file` are the name of your test and the JS
+script to run, respectively.
+
 ## Integration with Autotools
 
 If using autotools, you might want to integrate your test suite into
@@ -173,16 +190,18 @@ If you don't want that, remove the `JS_LOG_DRIVER_FLAGS` line.
 
 If you use on-disk test fixtures, you should note that someone may be
 building your software with separate source and build trees.
-Notably, `make distcheck` does this.
+Notably, Meson does this.
 In that case, you have to make sure that your fixtures can be found both
 when running tests from the source directory and from a separate build
 directory.
 I suggest defining an environment variable in your makefile that tells
 where the fixtures can be found.
-For example, in Jasmine GJS's own tests, this line is in `Makefile.am`:
+For example, in Jasmine GJS's own tests, this line is in `meson.build`:
 
-```make
-AM_TESTS_ENVIRONMENT = export SRCDIR='$(srcdir)';
+```
+test_env = {
+    'SRCDIR': meson.current_source_dir(),
+}
 ```
 
 The test code then reads the environment variable like this:

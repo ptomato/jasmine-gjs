@@ -1,8 +1,8 @@
 ---
-language: c
-script: ./autogen.sh && make all check distcheck
-sudo: required
-dist: trusty
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq gjs
+dist: focal
+addons:
+  apt:
+    packages:
+      - gjs
+      - meson
+script: meson _build && ninja -C _build && RUN_THOROUGH_TESTS=yes meson test -C _build
