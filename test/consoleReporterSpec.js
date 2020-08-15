@@ -40,8 +40,6 @@ describe('Console reporter base class', function () {
     });
 
     describe('started signal', function () {
-        let reporter;
-
         beforeEach(function () {
             reporter = new ConsoleReporter.ConsoleReporter();
         });
@@ -53,15 +51,13 @@ describe('Console reporter base class', function () {
     });
 
     describe('complete signal', function () {
-        let reporter;
-
         beforeEach(function () {
             reporter = new ConsoleReporter.ConsoleReporter();
             reporter.jasmineStarted();
         });
 
         it('is emitted with true when the suite is done', function (done) {
-            reporter.connect('complete', (reporter, success) => {
+            reporter.connect('complete', (_, success) => {
                 expect(success).toBeTruthy();
                 done();
             });
@@ -69,7 +65,7 @@ describe('Console reporter base class', function () {
         });
 
         it('is emitted with false if there are spec failures', function (done) {
-            reporter.connect('complete', (reporter, success) => {
+            reporter.connect('complete', (_, success) => {
                 expect(success).toBeFalsy();
                 done();
             });
@@ -78,7 +74,7 @@ describe('Console reporter base class', function () {
         });
 
         it('is emitted with false if there are suite failures', function (done) {
-            reporter.connect('complete', (reporter, success) => {
+            reporter.connect('complete', (_, success) => {
                 expect(success).toBeFalsy();
                 done();
             });
