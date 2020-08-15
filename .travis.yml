@@ -5,4 +5,15 @@ addons:
     packages:
       - gjs
       - meson
-script: meson _build && ninja -C _build && RUN_THOROUGH_TESTS=yes meson test -C _build
+      - npm
+matrix:
+  include:
+    - name: Linter
+      script: |
+        npm install -g eslint &&
+        eslint bin/* src test
+    - name: Unit tests
+      script: |
+        meson _build &&
+        ninja -C _build &&
+        RUN_THOROUGH_TESTS=yes meson test -C _build
