@@ -1,9 +1,6 @@
 /* exported configToArgs, loadConfig, prepareLauncher */
 
-const Format = imports.format;
 const {Gio, GLib} = imports.gi;
-
-String.prototype.format = Format.format;
 
 function _makePathsAbsolute(configFile, paths) {
     return paths.map(path => {
@@ -57,7 +54,7 @@ function loadConfig(options, defaultFile = 'jasmine.json') {
     ];
     Object.keys(config).forEach(key => {
         if (RECOGNIZED_KEYS.indexOf(key) === -1)
-            printerr('warning: unrecognized config file key "%s"'.format(key));
+            printerr(`warning: unrecognized config file key "${key}"`);
     });
 
     print('Configuration loaded from', configFile.get_path());

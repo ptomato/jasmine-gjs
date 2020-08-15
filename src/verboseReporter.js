@@ -24,12 +24,12 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
         this._failedSpecs.forEach(this._printSpecFailureDetails, this);
         const seconds = Math.round(this.elapsedTime('main')) / 1000;
 
-        this._print(this._color('  %d passing'.format(this._passingCount), GREEN));
-        this._print(' (%f s)\n'.format(seconds));
+        this._print(this._color(`  ${this._passingCount} passing`, GREEN));
+        this._print(` (${seconds} s)\n`);
         if (this._pendingCount > 0)
-            this._print(this._color('  %d pending\n'.format(this._pendingCount), YELLOW));
+            this._print(this._color(`  ${this._pendingCount} pending\n`, YELLOW));
         if (this._failureCount > 0)
-            this._print(this._color('  %d failing\n'.format(this._failureCount), RED));
+            this._print(this._color(`  ${this._failureCount} failing\n`, RED));
         this._print('\n');
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
@@ -73,18 +73,18 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
         };
         this._print(Utils.indent(this._color(symbols[result.status],
             colors[result.status]), this._suiteLevel * 2 + 2));
-        this._print(' %s'.format(result.description));
+        this._print(` ${result.description}`);
         if (result.time > 75)
-            this._print(` ${this._color('(%d ms)'.format(result.time), RED)}`);
+            this._print(` ${this._color(`(${result.time} ms)`, RED)}`);
         else if (result.time > 40)
-            this._print(` ${this._color('(%d ms)'.format(result.time), YELLOW)}`);
+            this._print(` ${this._color(`(${result.time} ms)`, YELLOW)}`);
         if (result.pendingReason)
-            this._print(` ${this._color('(%s)'.format(result.pendingReason), YELLOW)}`);
+            this._print(` ${this._color(`(${result.pendingReason})`, YELLOW)}`);
         this._print('\n');
     }
 
     _printSpecFailureDetails(result, index) {
-        this._print(this._color('%d) %s\n\n'.format(index + 1, result.fullName), RED));
+        this._print(this._color(`${index + 1}) ${result.fullName}\n\n`, RED));
 
         result.failedExpectations.forEach(failedExpectation => {
             this._print(Utils.indent(this._color(failedExpectation.message, GRAY), 2));
