@@ -4,11 +4,9 @@
 const Format = imports.format;
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
-const Lang = imports.lang;
 
 const Utils = jasmineImporter.utils;
 
-GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
 String.prototype.format = Format.format;
 
 const YELLOW = '\x1b[33m';
@@ -25,10 +23,7 @@ function createNoopTimer() {
     };
 }
 
-var ConsoleReporter = new Lang.Class({
-    Name: 'ConsoleReporter',
-    Extends: GObject.Object,
-
+var ConsoleReporter = GObject.registerClass({
     Properties: {
         'show-colors': GObject.ParamSpec.boolean('show-colors', 'Show colors',
             'Whether to print color output',
@@ -47,7 +42,7 @@ var ConsoleReporter = new Lang.Class({
             param_types: [GObject.TYPE_BOOLEAN],
         },
     },
-
+}, class ConsoleReporter extends GObject.Object {
     _init(props = {}) {
         if (props.hasOwnProperty('print')) {
             this._print = props.print;
@@ -60,7 +55,7 @@ var ConsoleReporter = new Lang.Class({
             delete props.timerFactory;
         }
 
-        this.parent(props);
+        super._init(props);
 
         // The main timer should return 0 if the run hasn't started yet
         this._timers = {
@@ -74,37 +69,41 @@ var ConsoleReporter = new Lang.Class({
         this._passingCount = 0;
         this._failureCount = 0;
         this._pendingCount = 0;
-    },
+    }
 
     _color(str, color) {
         if (typeof color !== 'undefined')
             return this.show_colors ? color + str + NORMAL : str;
         return str;
-    },
+    }
 
     // default print function that prints to stdout (GJS' built-in print
     // functions, print() and printerr(), unfortunately append newlines to
     // everything)
-    _print: (function () {
-        const FD_STDOUT = 1;
-        let fdstream = new Gio.UnixOutputStream({
-            fd: FD_STDOUT,
-            close_fd: false,
-        });
-        let stdout = new Gio.DataOutputStream({
-            base_stream: fdstream,
-        });
-        return function (str) {
-            stdout.put_string(str, null);
-        };
-    })(),
+    static getStdout() {
+        if (!this._stdout) {
+            const FD_STDOUT = 1;
+            let fdstream = new Gio.UnixOutputStream({
+                fd: FD_STDOUT,
+                close_fd: false,
+            });
+            this._stdout = new Gio.DataOutputStream({
+                base_stream: fdstream,
+            });
+        }
+        return this._stdout;
+    }
+
+    _print(str) {
+        ConsoleReporter.getStdout().put_string(str, null);
+    }
 
     // Used to start a timer associated with a particular ID. Subclasses can use
     // this to time actions that the base class doesn't time if they wish.
     startTimer(id) {
         this._timers[id] = this._timerFactory(id);
         this._timers[id].start();
-    },
+    }
 
     // Used to get the elapsed time from a timer with the given ID. Subclasses
     // can use this to time actions not timed by the base class. The base class
@@ -114,19 +113,19 @@ var ConsoleReporter = new Lang.Class({
     //   spec:bar - times the spec with ID "bar"
     elapsedTime(id) {
         return this._timers[id].elapsed();
-    },
+    }
 
     // Called with an "info" object with the following property:
     //   totalSpecsDefined - number of specs to be run
     jasmineStarted() {
         this.emit('started');
         this.startTimer('main');
-    },
+    }
 
     jasmineDone() {
         this.elapsedTime('main');  // Stop the timer
         this.emit('complete', this._failureCount === 0);
-    },
+    }
 
     // Called with a "result" object with the following properties:
     //   id - a string unique to this suite
@@ -137,7 +136,7 @@ var ConsoleReporter = new Lang.Class({
         if (result.id)
             this.startTimer(`suite:${result.id}`);
         this._suiteLevel++;
-    },
+    }
 
     // Called with the same object as suiteStarted(), with an extra property:
     //   status - "disabled", "failed", or "finished"
@@ -151,7 +150,7 @@ var ConsoleReporter = new Lang.Class({
         }
         if (result.id)
             result.time = this.elapsedTime(`suite:${result.id}`);
-    },
+    }
 
     // Called with a "result" object with the following properties:
     //   id - a string unique to this spec
@@ -163,7 +162,7 @@ var ConsoleReporter = new Lang.Class({
         if (result.id)
             this.startTimer(`spec:${result.id}`);
         this._specCount++;
-    },
+    }
 
     // Called with the same object as specStarted(), with an extra property:
     //   status - "disabled", "pending", "failed", or "passed"
@@ -180,25 +179,22 @@ var ConsoleReporter = new Lang.Class({
         }
         if (result.id)
             result.time = this.elapsedTime(`spec:${result.id}`);
-    },
+    }
 
     filterStack(stack) {
         return stack.split('\n').filter(stackLine => {
             return stackLine.indexOf(this.jasmine_core_path) === -1;
         }).join('\n');
-    },
+    }
 });
 
 // This reporter has very nearly the same behaviour to Jasmine's default console
 // reporter.
-var DefaultReporter = new Lang.Class({
-    Name: 'DefaultReporter',
-    Extends: ConsoleReporter,
-
+var DefaultReporter = GObject.registerClass(class DefaultReporter extends ConsoleReporter {
     jasmineStarted(info) {
-        this.parent(info);
+        super.jasmineStarted(info);
         this._print('Started\n');
-    },
+    }
 
     jasmineDone() {
         this._print('\n\n');
@@ -223,11 +219,11 @@ var DefaultReporter = new Lang.Class({
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
 
-        this.parent();
-    },
+        super.jasmineDone();
+    }
 
     specDone(result) {
-        this.parent(result);
+        super.specDone(result);
 
         const colors = {
             passed: GREEN,
@@ -242,7 +238,7 @@ var DefaultReporter = new Lang.Class({
             disabled: '',
         };
         this._print(this._color(symbols[result.status], colors[result.status]));
-    },
+    }
 
     _printSpecFailureDetails(result, index) {
         this._print('\n%d) %s\n'.format(index + 1, result.fullName));
@@ -254,12 +250,12 @@ ${this.filterStack(failedExpectation.stack)}
 `;
             this._print(Utils.indent(report, 2));
         });
-    },
+    }
 
     _printSuiteFailureDetails(result) {
         result.failedExpectations.forEach(failedExpectation => {
             this._print(this._color(`An error was thrown in an afterAll
 AfterAll ${failedExpectation.message}`, RED));
         });
-    },
+    }
 });

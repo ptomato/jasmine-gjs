@@ -1,9 +1,9 @@
 /* global jasmineImporter */
 /* exported VerboseReporter */
 
-const Lang = imports.lang;
+const {GObject} = imports.gi;
 
-const ConsoleReporter = jasmineImporter.consoleReporter;
+const {ConsoleReporter} = jasmineImporter.consoleReporter;
 const Utils = jasmineImporter.utils;
 
 const GRAY = '\x1b[38;5;246m';
@@ -13,14 +13,11 @@ const RED = '\x1b[31m';
 
 // This reporter, activated with --verbose on the command line, behaves very
 // similarly to Mocha's nicely formatted reporter.
-var VerboseReporter = new Lang.Class({
-    Name: 'VerboseReporter',
-    Extends: ConsoleReporter.ConsoleReporter,
-
+var VerboseReporter = GObject.registerClass(class VerboseReporter extends ConsoleReporter {
     jasmineStarted(info) {
-        this.parent(info);
+        super.jasmineStarted(info);
         this._print('Started\n\n');
-    },
+    }
 
     jasmineDone() {
         this._print('\n');
@@ -37,15 +34,15 @@ var VerboseReporter = new Lang.Class({
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
 
-        this.parent();
-    },
+        super.jasmineDone();
+    }
 
     suiteStarted(result) {
-        this.parent(result);
+        super.suiteStarted(result);
         this._print(Utils.indent(this._color(result.description, GRAY),
             this._suiteLevel * 2));
         this._print('\n');
-    },
+    }
 
     suiteDone(result) {
         if (result.status === 'disabled') {
@@ -53,14 +50,14 @@ var VerboseReporter = new Lang.Class({
                 this._suiteLevel * 2 + 2));
         }
 
-        this.parent(result);
+        super.suiteDone(result);
 
         if (this._suiteLevel === 0)
             this._print('\n');
-    },
+    }
 
     specDone(result) {
-        this.parent(result);
+        super.specDone(result);
 
         const colors = {
             passed: GREEN,
@@ -84,7 +81,7 @@ var VerboseReporter = new Lang.Class({
         if (result.pendingReason)
             this._print(` ${this._color('(%s)'.format(result.pendingReason), YELLOW)}`);
         this._print('\n');
-    },
+    }
 
     _printSpecFailureDetails(result, index) {
         this._print(this._color('%d) %s\n\n'.format(index + 1, result.fullName), RED));
@@ -95,12 +92,12 @@ var VerboseReporter = new Lang.Class({
             this._print(Utils.indent(this.filterStack(failedExpectation.stack), 4));
             this._print('\n\n');
         });
-    },
+    }
 
     _printSuiteFailureDetails(result) {
         result.failedExpectations.forEach(failedExpectation => {
             this._print(this._color(`An error was thrown in an afterAll
 AfterAll ${failedExpectation.message}`, RED));
         });
-    },
+    }
 });

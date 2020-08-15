@@ -5,19 +5,15 @@
 /* global jasmineImporter */
 /* exported JUnitReporter */
 
-const GLib = imports.gi.GLib;
-const Lang = imports.lang;
+const {GLib, GObject} = imports.gi;
 
-const ConsoleReporter = jasmineImporter.consoleReporter;
+const {ConsoleReporter} = jasmineImporter.consoleReporter;
 const XMLWriter = jasmineImporter.xmlWriter;
 
-var JUnitReporter = new Lang.Class({
-    Name: 'JUnitReporter',
-    Extends: ConsoleReporter.ConsoleReporter,
-
+var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleReporter {
     jasmineStarted(info) {
         this._currentSuite = null;
-        this.parent(info);
+        super.jasmineStarted(info);
         this._tree = new XMLWriter.Node('testsuites');
         this._suiteCount = 0;
         this._activeSuites = [];
@@ -32,7 +28,7 @@ var JUnitReporter = new Lang.Class({
             return property;
         });
         this._tree.children.push(properties);
-    },
+    }
 
     jasmineDone() {
         let failedAfterAlls = this._failedSuites.length;
@@ -69,14 +65,14 @@ var JUnitReporter = new Lang.Class({
 
         this._print(this._tree.toString());
 
-        this.parent();
-    },
+        super.jasmineDone();
+    }
 
     // Jenkins parses nested JUnit test suites but doesn't display them properly.
     // See https://issues.jenkins-ci.org/browse/JENKINS-18673
     // Therefore, we flatten all suites into one level.
     suiteStarted(result) {
-        this.parent(result);
+        super.suiteStarted(result);
         this._activeSuites.push(this._currentSuite);
         this._currentSuite = new XMLWriter.Node('testsuite');
         this._currentSuite.attrs = {
@@ -90,21 +86,21 @@ var JUnitReporter = new Lang.Class({
             timestamp: GLib.DateTime.new_now_local().format('%Y-%m-%dT%H:%M:%S'),
         };
         this._tree.children.push(this._currentSuite);
-    },
+    }
 
     suiteDone(result) {
-        this.parent(result);
+        super.suiteDone(result);
         this._currentSuite.attrs.time = result.time / 1000;  // in seconds
         this._currentSuite = this._activeSuites.pop();
-    },
+    }
 
     specStarted(result) {
-        this.parent(result);
+        super.specStarted(result);
         this._currentSuite.attrs.tests++;
-    },
+    }
 
     specDone(result) {
-        this.parent(result);
+        super.specDone(result);
 
         let spec = new XMLWriter.Node('testcase');
         spec.attrs = {
@@ -152,7 +148,7 @@ var JUnitReporter = new Lang.Class({
             break;
         }
         this._currentSuite.children.push(spec);
-    },
+    }
 });
 
 function _parseExceptionMessage(expectation) {
