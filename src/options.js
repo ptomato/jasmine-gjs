@@ -57,30 +57,30 @@ function parseOptions(argv) {
     let namespace = {};
     let files = [];
 
-    Object.keys(ARGS).forEach(function (arg_name) {
-        let arg_info = ARGS[arg_name];
-        let dest = arg_info.dest || arg_name;
-        if (typeof arg_info.default !== 'undefined')
-            namespace[dest] = arg_info.default;
+    Object.keys(ARGS).forEach(function (argName) {
+        let argInfo = ARGS[argName];
+        let dest = argInfo.dest || argName;
+        if (typeof argInfo.default !== 'undefined')
+            namespace[dest] = argInfo.default;
     });
 
-    let argv_element;
-    while ((argv_element = argv.shift())) {
-        if (!argv_element.startsWith('--')) {
-            files.push(argv_element);
+    let argvElement;
+    while ((argvElement = argv.shift())) {
+        if (!argvElement.startsWith('--')) {
+            files.push(argvElement);
             continue;
         }
 
-        let arg_name = argv_element.slice(2);
-        if (!(arg_name in ARGS)) {
-            printerr('warning: Unknown argument "%s"'.format(arg_name));
+        let argName = argvElement.slice(2);
+        if (!(argName in ARGS)) {
+            printerr('warning: Unknown argument "%s"'.format(argName));
             continue;
         }
 
-        let arg_info = ARGS[arg_name];
-        let dest = arg_info.dest || arg_name;
+        let argInfo = ARGS[argName];
+        let dest = argInfo.dest || argName;
         let value;
-        switch (arg_info.action) {
+        switch (argInfo.action) {
         case 'help':
             help();
             break;
@@ -92,10 +92,10 @@ function parseOptions(argv) {
             break;
         case 'store':
             value = _getNextArgument(argv);
-            if (typeof value === 'undefined' && arg_info.nargs === '?')
-                value = arg_info.const;
+            if (typeof value === 'undefined' && argInfo.nargs === '?')
+                value = argInfo.const;
             if (typeof value === 'undefined') {
-                printerr('warning: Missing value for argument "%s"'.format(arg_name));
+                printerr(`warning: Missing value for argument "${argName}"`);
                 continue;
             }
             namespace[dest] = value;
@@ -103,7 +103,7 @@ function parseOptions(argv) {
         case 'append':
             value = _getNextArgument(argv);
             if (typeof value === 'undefined') {
-                printerr('warning: Missing value for argument "%s"'.format(arg_name));
+                printerr(`warning: Missing value for argument "${argName}"`);
                 continue;
             }
             if (!(dest in namespace))
@@ -133,8 +133,8 @@ function help() {
     print('If file given, runs the spec in that file. If directory given,');
     print('searches for and runs specs under that directory.\n');
     print('Options:');
-    Object.keys(ARGS).forEach(function (arg_name) {
-        print('%s\t\t%s'.format(_lPad(`--${arg_name}`, 15), ARGS[arg_name].help));
+    Object.keys(ARGS).forEach(function (argName) {
+        print('%s\t\t%s'.format(_lPad(`--${argName}`, 15), ARGS[argName].help));
     });
     print('');
     System.exit(0);

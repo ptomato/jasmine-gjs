@@ -4,13 +4,13 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const System = imports.system;
 
-let runner_path = '@pkglibexecdir@/jasmine-runner';
+let runnerPath = '@pkglibexecdir@/jasmine-runner';
 if (GLib.getenv('JASMINE_UNINSTALLED')) {
     // Trick to use the uninstalled copy of Jasmine when running "make check".
     let srcdir = GLib.getenv('SRCDIR');
     imports.searchPath.unshift(GLib.build_filenamev([srcdir, 'src']));
     const builddir = GLib.getenv('BUILDDIR');
-    runner_path = GLib.build_filenamev([builddir, 'jasmine-runner']);
+    runnerPath = GLib.build_filenamev([builddir, 'jasmine-runner']);
 } else {
     imports.searchPath.unshift('@datadir@/jasmine-gjs');
 }
@@ -31,7 +31,7 @@ let config = Config.loadConfig(options);
 let launcher = new Gio.SubprocessLauncher();
 Config.prepareLauncher(launcher, config);
 let args = Config.configToArgs(config, files, options);
-args.unshift(runner_path);  // argv[0]
+args.unshift(runnerPath);  // argv[0]
 let process = launcher.spawnv(args);
 process.wait(null);
 
