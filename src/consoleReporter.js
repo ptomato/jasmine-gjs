@@ -1,12 +1,9 @@
 /* global jasmineImporter */
 /* exported DefaultReporter */
 
-const Format = imports.format;
 const {Gio, GObject} = imports.gi;
 
 const Utils = jasmineImporter.utils;
-
-String.prototype.format = Format.format;
 
 const YELLOW = '\x1b[33m';
 const GREEN = '\x1b[32m';
@@ -203,18 +200,17 @@ var DefaultReporter = GObject.registerClass(class DefaultReporter extends Consol
 
         if (this._specCount > 0) {
             this._print('\n');
-            this._print('%d %s, %d failed'.format(this._specCount,
-                this._specCount === 1 ? 'spec' : 'specs', this._failureCount));
+            this._print(`${this._specCount} spec${this._specCount === 1 ? '' : 's'}, ${this._failureCount} failed`);
 
             if (this._pendingCount)
-                this._print(', %d pending'.format(this._pendingCount));
+                this._print(`, ${this._pendingCount} pending`);
         } else {
             this._print('No specs found');
         }
 
         this._print('\n');
         const seconds = Math.round(this.elapsedTime('main')) / 1000;
-        this._print('\nFinished in %f s\n'.format(seconds));
+        this._print(`\nFinished in ${seconds} s\n`);
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
 
@@ -240,7 +236,7 @@ var DefaultReporter = GObject.registerClass(class DefaultReporter extends Consol
     }
 
     _printSpecFailureDetails(result, index) {
-        this._print('\n%d) %s\n'.format(index + 1, result.fullName));
+        this._print(`\n${index + 1}) ${result.fullName}\n`);
         result.failedExpectations.forEach(failedExpectation => {
             const report = `Message:
 ${this._color(failedExpectation.message, RED)}

@@ -4,18 +4,15 @@
 /* global jasmineImporter */
 /* exported TapReporter */
 
-const Format = imports.format;
 const {GObject} = imports.gi;
 
 const {ConsoleReporter} = jasmineImporter.consoleReporter;
-
-String.prototype.format = Format.format;
 
 var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporter {
     jasmineDone() {
         this._failedSuites.forEach(failure => {
             failure.failedExpectations.forEach(result => {
-                this._print('not ok - An error was thrown in an afterAll(): %s\n'.format(result.message));
+                this._print(`not ok - An error was thrown in an afterAll(): ${result.message}\n`);
             });
         });
 
@@ -24,24 +21,23 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
         // info.totalSpecsDefined, in order to account for specs that are
         // skipped. Unfortunately that number doesn't include specs disabled
         // due to other specs being focused.
-        this._print('1..%d\n'.format(this._specCount));
+        this._print(`1..${this._specCount}\n`);
 
         super.jasmineDone();
     }
 
     suiteStarted(result) {
         super.suiteStarted(result);
-        this._print('# Suite started: %s\n'.format(result.fullName));
+        this._print(`# Suite started: ${result.fullName}\n`);
     }
 
     suiteDone(result) {
         super.suiteDone(result);
         if (result.status === 'disabled') {
-            this._print('# Suite was disabled: %s\n'.format(result.fullName));
+            this._print(`# Suite was disabled: ${result.fullName}\n`);
         } else {
             const failures = result.failedExpectations.length;
-            this._print('# Suite finished with %d %s: %s\n'.format(failures,
-                failures === 1 ? 'failure' : 'failures', result.fullName));
+            this._print(`# Suite finished with ${failures} failure${failures === 1 ? '' : 's'}: ${result.fullName}\n`);
         }
     }
 
@@ -52,21 +48,21 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
             this._print('not ok');
         else
             this._print('ok');
-        this._print(' %d - %s'.format(this._specCount, result.fullName));
+        this._print(` ${this._specCount} - ${result.fullName}`);
         if (result.status === 'pending' || result.status === 'disabled') {
             const reason = result.pendingReason || result.status;
             this._print(` # SKIP ${reason}`);
         }
         if (result.status === 'failed' && result.failedExpectations) {
             const messages = result.failedExpectations.map(r => _removeNewlines(r.message)).join(' ');
-            this._print(' (%s)'.format(messages));
+            this._print(` (${messages})`);
         }
         this._print('\n');
 
         // Print additional diagnostic info on failure
         if (result.status === 'failed' && result.failedExpectations) {
             result.failedExpectations.forEach(failedExpectation => {
-                this._print('# Message: %s\n'.format(_removeNewlines(failedExpectation.message)));
+                this._print(`# Message: ${_removeNewlines(failedExpectation.message)}\n`);
                 this._print('# Stack:\n');
                 const stackTrace = this.filterStack(failedExpectation.stack).trim();
                 this._print(stackTrace.split('\n').map(str => `#   ${str}`).join('\n'));

@@ -1,9 +1,6 @@
 /* exported parseOptions */
 
-const Format = imports.format;
 const System = imports.system;
-
-String.prototype.format = Format.format;
 
 const ARGS = {
     'help': {
@@ -73,7 +70,7 @@ function parseOptions(argv) {
 
         const argName = argvElement.slice(2);
         if (!(argName in ARGS)) {
-            printerr('warning: Unknown argument "%s"'.format(argName));
+            printerr(`warning: Unknown argument "${argName}"`);
             continue;
         }
 
@@ -115,10 +112,6 @@ function parseOptions(argv) {
     return [files, namespace];
 }
 
-function _lPad(str, length) {
-    return ' '.repeat(length - str.length) + str;
-}
-
 function _getNextArgument(argv) {
     let value = argv.shift();
     if (typeof value !== 'undefined' && value.startsWith('--')) {
@@ -134,7 +127,7 @@ function help() {
     print('searches for and runs specs under that directory.\n');
     print('Options:');
     Object.keys(ARGS).forEach(function (argName) {
-        print('%s\t\t%s'.format(_lPad(`--${argName}`, 15), ARGS[argName].help));
+        print(`${`--${argName}`.padStart(15)}\t\t${ARGS[argName].help}`);
     });
     print('');
     System.exit(0);
