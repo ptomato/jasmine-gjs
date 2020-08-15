@@ -2,7 +2,6 @@
 /* exported Jasmine */
 
 const {Gio, GLib} = imports.gi;
-const Lang = imports.lang;
 
 var Jasmine = class Jasmine {
     constructor({jasmineCore} = {jasmineCore: jasmineImporter.jasmine}) {
@@ -87,7 +86,7 @@ var Jasmine = class Jasmine {
 
     // Install Jasmine API on the global object
     installAPI(global) {
-        Lang.copyProperties(this._jasmineInterface, global);
+        Object.assign(global, this._jasmineInterface);
     }
 };
 
