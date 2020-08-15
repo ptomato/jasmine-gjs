@@ -17,3 +17,9 @@ matrix:
         meson _build &&
         ninja -C _build &&
         RUN_THOROUGH_TESTS=yes meson test -C _build
+    - name: Installed test
+      script: |
+        meson _build &&
+        ninja -C _build &&
+        sudo ninja -C _build install &&
+        jasmine
