@@ -119,7 +119,7 @@ var JUnitReporter = new Lang.Class({
         case 'disabled':
             this._currentSuite.attrs.disabled++;
             return;
-        case 'failed':
+        case 'failed': {
             // We count a failure as a "failure" if at least one expectation
             // failed. If there were only uncaught exceptions, then it is an
             // "error".
@@ -144,6 +144,7 @@ var JUnitReporter = new Lang.Class({
                 this._currentSuite.attrs.failures++;
             else
                 this._currentSuite.attrs.errors++;
+        }
             break;
         case 'pending':
             this._currentSuite.attrs.skipped++;
