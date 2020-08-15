@@ -3,33 +3,10 @@
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 
-GObject.ParamFlags.READWRITE = GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE;
-
-var Jasmine = new Lang.Class({
-    Name: 'Jasmine',
-    Extends: GObject.Object,
-
-    Properties: {
-        'version': GObject.ParamSpec.string('version', 'Version',
-            'Version of Jasmine library',
-            GObject.ParamFlags.READABLE,
-            ''),
-    },
-
-    _init(props = {}) {
-        let jasmineCore;
-        if (props.hasOwnProperty('jasmineCore')) {
-            jasmineCore = props.jasmineCore;
-            delete props.jasmineCore;
-        } else {
-            jasmineCore = jasmineImporter.jasmine;
-        }
-
-        this.parent(props);
-
+var Jasmine = class Jasmine {
+    constructor({jasmineCore} = {jasmineCore: jasmineImporter.jasmine}) {
         let jasmineCorePath = jasmineCore.__file__;
         this._jasmineCoreFile = Gio.File.new_for_path(jasmineCorePath);
 
@@ -41,17 +18,17 @@ var Jasmine = new Lang.Class({
         this.exclusions = [];
         this.specFiles = [];
         this._reportersCount = 0;
-    },
+    }
 
     get version() {
         return this._jasmine.version;
-    },
+    }
 
     addReporter(reporter) {
         reporter.jasmine_core_path = this._jasmineCoreFile.get_parent().get_path();
         this.env.addReporter(reporter);
         this._reportersCount++;
-    },
+    }
 
     _addSpecFile(file) {
         let absolutePath = file.get_path();
@@ -70,7 +47,7 @@ var Jasmine = new Lang.Class({
             return;
         if (this.specFiles.indexOf(absolutePath) === -1)
             this.specFiles.push(absolutePath);
-    },
+    }
 
     addSpecFiles(filePaths) {
         filePaths.forEach(filePath => {
@@ -88,7 +65,7 @@ var Jasmine = new Lang.Class({
                 // ignore
             }
         });
-    },
+    }
 
     loadSpecs() {
         let oldSearchPath = imports.searchPath.slice();  // make a copy
@@ -99,7 +76,7 @@ var Jasmine = new Lang.Class({
             void imports[moduleName];
             imports.searchPath = oldSearchPath;
         });
-    },
+    }
 
     execute(files) {
         if (files && files.length > 0)
@@ -107,13 +84,13 @@ var Jasmine = new Lang.Class({
 
         this.loadSpecs();
         this.env.execute();
-    },
+    }
 
     // Install Jasmine API on the global object
     installAPI(global) {
         Lang.copyProperties(this._jasmineInterface, global);
-    },
-});
+    }
+};
 
 function recurseDirectory(directory, func) {
     let enumerator = directory.enumerate_children('standard::*',

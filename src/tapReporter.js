@@ -5,16 +5,13 @@
 /* exported TapReporter */
 
 const Format = imports.format;
-const Lang = imports.lang;
+const {GObject} = imports.gi;
 
-const ConsoleReporter = jasmineImporter.consoleReporter;
+const {ConsoleReporter} = jasmineImporter.consoleReporter;
 
 String.prototype.format = Format.format;
 
-var TapReporter = new Lang.Class({
-    Name: 'TapReporter',
-    Extends: ConsoleReporter.ConsoleReporter,
-
+var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporter {
     jasmineDone() {
         this._failedSuites.forEach(failure => {
             failure.failedExpectations.forEach(result => {
@@ -29,16 +26,16 @@ var TapReporter = new Lang.Class({
         // due to other specs being focused.
         this._print('1..%d\n'.format(this._specCount));
 
-        this.parent();
-    },
+        super.jasmineDone();
+    }
 
     suiteStarted(result) {
-        this.parent(result);
+        super.suiteStarted(result);
         this._print('# Suite started: %s\n'.format(result.fullName));
-    },
+    }
 
     suiteDone(result) {
-        this.parent(result);
+        super.suiteDone(result);
         if (result.status === 'disabled') {
             this._print('# Suite was disabled: %s\n'.format(result.fullName));
         } else {
@@ -46,10 +43,10 @@ var TapReporter = new Lang.Class({
             this._print('# Suite finished with %d %s: %s\n'.format(failures,
                 failures === 1 ? 'failure' : 'failures', result.fullName));
         }
-    },
+    }
 
     specDone(result) {
-        this.parent(result);
+        super.specDone(result);
 
         if (result.status === 'failed')
             this._print('not ok');
@@ -76,7 +73,7 @@ var TapReporter = new Lang.Class({
                 this._print('\n');
             });
         }
-    },
+    }
 });
 
 function _removeNewlines(str) {
