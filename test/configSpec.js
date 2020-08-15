@@ -38,8 +38,9 @@ describe('Loading configuration', function () {
             'no-config': true,
             config: `${SRCDIR}test/fixtures/jasmine.json`,
         });
-        expect(config.a).not.toEqual('b');
-        expect(config.c).not.toEqual('d');
+        const keys = Object.keys(config);
+        expect(keys).not.toContain('a');
+        expect(keys).not.toContain('c');
     });
 
     it('loads the default file if none given', function () {
