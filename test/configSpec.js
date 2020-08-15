@@ -6,7 +6,7 @@ const Config = jasmineImporter.config;
 const Options = jasmineImporter.options;
 
 // This is in case we are running the tests from a build tree that is different
-// from the source tree, for example during 'make distcheck'.
+// from the source tree, for example during 'meson test'.
 const envSrcdir = GLib.getenv('SRCDIR');
 const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
 
