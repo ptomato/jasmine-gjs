@@ -1,7 +1,6 @@
 /* global jasmineImporter */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 
 const JasmineBoot = jasmineImporter.jasmineBoot;
 

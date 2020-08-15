@@ -2,8 +2,7 @@
 /* exported DefaultReporter */
 
 const Format = imports.format;
-const Gio = imports.gi.Gio;
-const GObject = imports.gi.GObject;
+const {Gio, GObject} = imports.gi;
 
 const Utils = jasmineImporter.utils;
 

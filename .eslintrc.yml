@@ -165,7 +165,7 @@ rules:
   operator-assignment: error
   operator-linebreak: error
   prefer-const: error
-  # prefer-destructuring: error
+  prefer-destructuring: error
   prefer-numeric-literals: error
   prefer-promise-reject-errors: error
   prefer-rest-params: error

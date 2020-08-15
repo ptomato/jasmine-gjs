@@ -1,8 +1,7 @@
 /* global jasmineImporter */
 /* exported run */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 const Mainloop = imports.mainloop;
 
 const Options = jasmineImporter.options;

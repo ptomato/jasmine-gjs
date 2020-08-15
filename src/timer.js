@@ -1,6 +1,6 @@
 /* exported installAPI, createDefaultTimer */
 
-const GLib = imports.gi.GLib;
+const {GLib} = imports.gi;
 const Mainloop = imports.mainloop;
 
 function _setTimeoutInternal(continueTimeout, func, time) {

@@ -1,6 +1,6 @@
 /* global jasmineImporter */
 
-const GLib = imports.gi.GLib;
+const {GLib} = imports.gi;
 
 const JUnitReporter = jasmineImporter.junitReporter;
 const XMLWriter = jasmineImporter.xmlWriter;
@@ -194,10 +194,10 @@ describe('The JUnit reporter', function () {
 
         const tree = JSON.parse(out.getOutput());
         const testsuite = findSuite(tree, 0);
-        const testcase = testsuite.children[0];
-        expect(testcase.name).toBe('testcase');
-        expect(testcase.attrs['name']).toBe('passes a test');
-        expect(testcase.attrs['classname']).toBe('A suite');
+        const [{name, attrs}] = testsuite.children;
+        expect(name).toBe('testcase');
+        expect(attrs['name']).toBe('passes a test');
+        expect(attrs['classname']).toBe('A suite');
     });
 
     it('reports a pending spec as skipped', function () {
@@ -206,8 +206,8 @@ describe('The JUnit reporter', function () {
 
         const tree = JSON.parse(out.getOutput());
         const testsuite = findSuite(tree, 0);
-        const testcase = testsuite.children[0];
-        expect(testcase.children[0].name).toBe('skipped');
+        const [{children}] = testsuite.children;
+        expect(children[0].name).toBe('skipped');
     });
 
     describe('given a spec with a failed expectation', function () {
@@ -219,7 +219,7 @@ describe('The JUnit reporter', function () {
 
             const tree = JSON.parse(out.getOutput());
             const testsuite = findSuite(tree, 0);
-            failure = testsuite.children[0].children[0];
+            [failure] = testsuite.children[0].children;
         });
 
         it('reports it as failed', function () {
@@ -252,8 +252,7 @@ describe('The JUnit reporter', function () {
 
             const tree = JSON.parse(out.getOutput());
             const testsuite = findSuite(tree, 0);
-            error1 = testsuite.children[0].children[0];
-            error2 = testsuite.children[0].children[1];
+            [error1, error2] = testsuite.children[0].children;
         });
 
         it('reports it as errored', function () {
@@ -331,8 +330,8 @@ describe('The JUnit reporter', function () {
 
         const tree = JSON.parse(out.getOutput());
         const testsuite = findSuite(tree, 0);
-        const testcase = testsuite.children[0];
-        expect(testcase.attrs['time']).toBeCloseTo(0.1, 4);
+        const [{attrs}] = testsuite.children;
+        expect(attrs['time']).toBeCloseTo(0.1, 4);
     });
 
     it('counts all tests in a suite', function () {
@@ -442,7 +441,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         const tree = JSON.parse(out.getOutput());
-        const properties = tree.children.filter(child => child.name === 'properties')[0];
+        const [properties] = tree.children.filter(child => child.name === 'properties');
         expect(properties.children).toContain(jasmine.objectContaining({
             name: 'property',
             attrs: {
