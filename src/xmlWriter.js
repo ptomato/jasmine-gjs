@@ -1,15 +1,22 @@
 /* global jasmineImporter */
+/* exported Node */
 
 const {GLib} = imports.gi;
 
 const Utils = jasmineImporter.utils;
 
-function Node(name) {
-    this.name = name;
-    this.attrs = {};
-    this.children = [];
-    this.text = '';
-}
+var Node = class Node {
+    constructor(name) {
+        this.name = name;
+        this.attrs = {};
+        this.children = [];
+        this.text = '';
+    }
+
+    toString() {
+        return `<?xml version="1.0" encoding="UTF-8"?>\n${_prettyprint(this)}`;
+    }
+};
 
 function _attrsToString(attrs) {
     return Object.keys(attrs).map(key => {
@@ -32,7 +39,3 @@ function _prettyprint(node) {
     return elementTop + Utils.indent(children, 2) + Utils.indent(text, 2) +
         elementBottom;
 }
-
-Node.prototype.toString = function () {
-    return `<?xml version="1.0" encoding="UTF-8"?>\n${_prettyprint(this)}`;
-};
