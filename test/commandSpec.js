@@ -11,6 +11,10 @@ const VerboseReporter = jasmineImporter.verboseReporter;
 describe('Jasmine command', function () {
     let fakeJasmine;
 
+    beforeAll(function () {
+        Gio._promisify(Gio._LocalFilePrototype, 'delete_async', 'delete_finish');
+    });
+
     beforeEach(function () {
         fakeJasmine = jasmine.createSpyObj('jasmine', ['addReporter', 'configureDefaultReporter', 'execute']);
         spyOn(Mainloop, 'run');  // stub out system behaviour
@@ -64,9 +68,7 @@ describe('Jasmine command', function () {
             const reporters = fakeJasmine.addReporter.calls.allArgs().map(args => args[0].constructor);
             expect(reporters).toContain(JUnitReporter.JUnitReporter);
 
-            tmpFile.delete(null);
-            // COMPAT in GLib >= 2.34:
-            // tmpFile.delete_async(GLib.PRIORITY_DEFAULT, null, function () {});
+            tmpFile.delete_async(GLib.PRIORITY_DEFAULT, null).then(() => {});
         });
 
         it('creates a directory for the report if necessary', function () {
@@ -78,11 +80,9 @@ describe('Jasmine command', function () {
             Command.run(fakeJasmine, ['--junit', tmpPath]);
             expect(tmpFile.query_exists(null)).toBeTruthy();
 
-            tmpFile.delete(null);
-            tmpFile.get_parent().delete(null);
-            tmpFile.get_parent().get_parent().delete(null);
-            // COMPAT in GLib >= 2.34:
-            // Use tmpFile.delete_async()
+            tmpFile.delete_async(GLib.PRIORITY_DEFAULT, null)
+                .then(() => tmpFile.get_parent().delete_async(GLib.PRIORITY_DEFAULT, null))
+                .then(() => tmpFile.get_parent().get_parent().delete_async(GLib.PRIORITY_DEFAULT, null));
         });
 
         it('uses the value of JASMINE_JUNIT_REPORTS_DIR', function () {
@@ -95,10 +95,8 @@ describe('Jasmine command', function () {
                 Gio.File.new_for_path(tmpDir).get_child('report.xml');
             expect(reportFile.query_exists(null)).toBeTruthy();
 
-            reportFile.delete(null);
-            reportFile.get_parent().delete(null);
-            // COMPAT in GLib >= 2.34:
-            // Use tmpFile.delete_async()
+            reportFile.delete_async(GLib.PRIORITY_DEFAULT, null)
+                .then(() => reportFile.get_parent().delete_async(GLib.PRIORITY_DEFAULT, null));
 
             if (oldPath !== null)
                 GLib.setenv('JASMINE_JUNIT_REPORTS_DIR', oldPath, true);

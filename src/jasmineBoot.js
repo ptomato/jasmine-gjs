@@ -96,11 +96,8 @@ function recurseDirectory(directory, func) {
 
     let info;
     while ((info = enumerator.next_file(null))) {
-        // COMPAT: use the following on GLib >= 2.36:
-        // let file = enumerator.get_child(info);
-        // let filename = file.get_basename();
-        const filename = info.get_name();
-        const file = enumerator.get_container().get_child(filename);
+        const file = enumerator.get_child(info);
+        const filename = file.get_basename();
 
         if (info.get_file_type() === Gio.FileType.DIRECTORY)
             recurseDirectory(file, func);
