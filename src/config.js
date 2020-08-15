@@ -7,7 +7,7 @@ const GLib = imports.gi.GLib;
 String.prototype.format = Format.format;
 
 function _makePathsAbsolute(configFile, paths) {
-    return paths.map((path) => {
+    return paths.map(path => {
         if (GLib.path_is_absolute(path))
             return path;
         return configFile.get_parent().resolve_relative_path(path).get_path();
@@ -22,7 +22,7 @@ function ensureArray(option) {
     return option;
 }
 
-function loadConfig(options, defaultFile='jasmine.json') {
+function loadConfig(options, defaultFile = 'jasmine.json') {
     if (options['no-config'])
         return {};
 
@@ -31,22 +31,23 @@ function loadConfig(options, defaultFile='jasmine.json') {
 
     try {
         let [, contents] = configFile.load_contents(null);
-        if (contents instanceof Uint8Array) {
-            contents = imports.byteArray.toString(contents)
-        }
+        if (contents instanceof Uint8Array)
+            contents = imports.byteArray.toString(contents);
         config = JSON.parse(contents);
     } catch (e) {
         if (!options.config && e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
             return {};  // Don't complain if config file absent from default location
-        throw new Error('Configuration not read from ' + configFile.get_path());
+        throw new Error(`Configuration not read from ${configFile.get_path()}`);
     }
 
-    if (config.include_paths)
+    if (config.include_paths) {
         config.include_paths = _makePathsAbsolute(configFile,
             ensureArray(config.include_paths));
-    if (config.spec_files)
+    }
+    if (config.spec_files) {
         config.spec_files = _makePathsAbsolute(configFile,
             ensureArray(config.spec_files));
+    }
 
     const RECOGNIZED_KEYS = [
         'environment',
@@ -55,7 +56,7 @@ function loadConfig(options, defaultFile='jasmine.json') {
         'options',
         'spec_files',
     ];
-    Object.keys(config).forEach((key) => {
+    Object.keys(config).forEach(key => {
         if (RECOGNIZED_KEYS.indexOf(key) === -1)
             printerr('warning: unrecognized config file key "%s"'.format(key));
     });
@@ -65,7 +66,7 @@ function loadConfig(options, defaultFile='jasmine.json') {
 }
 
 function optionsToArgs(options) {
-    let args = [options.color? '--color' : '--no-color'];
+    let args = [options.color ? '--color' : '--no-color'];
     if (options.verbose)
         args.push('--verbose');
     if (options.tap)
@@ -83,16 +84,16 @@ function optionsToArgs(options) {
     return args;
 }
 
-function configToArgs(config, specFiles=[], options={}) {
+function configToArgs(config, specFiles = [], options = {}) {
     let retval = [];
     if (config.include_paths) {
-        ensureArray(config.include_paths).forEach((path) => {
+        ensureArray(config.include_paths).forEach(path => {
             retval.push('-I');
             retval.push(path);
         });
     }
     if (config.exclude) {
-        ensureArray(config.exclude).forEach((exclude) => {
+        ensureArray(config.exclude).forEach(exclude => {
             retval.push('--exclude');
             retval.push(exclude);
         });

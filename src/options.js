@@ -49,7 +49,7 @@ const ARGS = {
     'exclude': {
         help: 'do not execute the given spec (may include wildcards)',
         action: 'append',
-    }
+    },
 };
 
 function parseOptions(argv) {
@@ -134,7 +134,7 @@ function help() {
     print('searches for and runs specs under that directory.\n');
     print('Options:');
     Object.keys(ARGS).forEach(function (arg_name) {
-        print('%s\t\t%s'.format(_lPad('--' + arg_name, 15), ARGS[arg_name].help));
+        print('%s\t\t%s'.format(_lPad(`--${arg_name}`, 15), ARGS[arg_name].help));
     });
     print('');
     System.exit(0);

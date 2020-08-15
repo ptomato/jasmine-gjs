@@ -18,8 +18,10 @@ const NORMAL = '\x1b[0m';
 
 function createNoopTimer() {
     return {
-        start: function () {},
-        elapsed: function () { return 0; },
+        start() {},
+        elapsed() {
+            return 0;
+        },
     };
 }
 
@@ -46,7 +48,7 @@ var ConsoleReporter = new Lang.Class({
         },
     },
 
-    _init: function (props={}) {
+    _init(props = {}) {
         if (props.hasOwnProperty('print')) {
             this._print = props.print;
             delete props.print;
@@ -74,9 +76,9 @@ var ConsoleReporter = new Lang.Class({
         this._pendingCount = 0;
     },
 
-    _color: function (str, color) {
+    _color(str, color) {
         if (typeof color !== 'undefined')
-            return this.show_colors? color + str + NORMAL : str;
+            return this.show_colors ? color + str + NORMAL : str;
         return str;
     },
 
@@ -99,7 +101,7 @@ var ConsoleReporter = new Lang.Class({
 
     // Used to start a timer associated with a particular ID. Subclasses can use
     // this to time actions that the base class doesn't time if they wish.
-    startTimer: function (id) {
+    startTimer(id) {
         this._timers[id] = this._timerFactory(id);
         this._timers[id].start();
     },
@@ -110,18 +112,18 @@ var ConsoleReporter = new Lang.Class({
     //   main - times the whole suite
     //   suite:foo - times the suite with ID "foo"
     //   spec:bar - times the spec with ID "bar"
-    elapsedTime: function (id) {
+    elapsedTime(id) {
         return this._timers[id].elapsed();
     },
 
     // Called with an "info" object with the following property:
     //   totalSpecsDefined - number of specs to be run
-    jasmineStarted: function () {
+    jasmineStarted() {
         this.emit('started');
         this.startTimer('main');
     },
 
-    jasmineDone: function () {
+    jasmineDone() {
         this.elapsedTime('main');  // Stop the timer
         this.emit('complete', this._failureCount === 0);
     },
@@ -131,9 +133,9 @@ var ConsoleReporter = new Lang.Class({
     //   description - the name of the suite passed to describe()
     //   fullName - the full name including the names of parent suites
     //   failedExpectations - a list of failures in this suite
-    suiteStarted: function (result) {
+    suiteStarted(result) {
         if (result.id)
-            this.startTimer('suite:' + result.id);
+            this.startTimer(`suite:${result.id}`);
         this._suiteLevel++;
     },
 
@@ -141,14 +143,14 @@ var ConsoleReporter = new Lang.Class({
     //   status - "disabled", "failed", or "finished"
     // Adds another extra property if the suite was started properly with ID:
     //   time - time taken to execute the suite, in milliseconds
-    suiteDone: function (result) {
+    suiteDone(result) {
         this._suiteLevel--;
         if (result.failedExpectations && result.failedExpectations.length > 0) {
             this._failureCount++;
             this._failedSuites.push(result);
         }
         if (result.id)
-            result.time = this.elapsedTime('suite:' + result.id);
+            result.time = this.elapsedTime(`suite:${result.id}`);
     },
 
     // Called with a "result" object with the following properties:
@@ -157,9 +159,9 @@ var ConsoleReporter = new Lang.Class({
     //   fullName - the full name concatenated with the suite's full name
     //   failedExpectations - a list of failures in this spec
     //   passedExpectations - a list of succeeded expectations in this spec
-    specStarted: function (result) {
+    specStarted(result) {
         if (result.id)
-            this.startTimer('spec:' + result.id);
+            this.startTimer(`spec:${result.id}`);
         this._specCount++;
     },
 
@@ -167,7 +169,7 @@ var ConsoleReporter = new Lang.Class({
     //   status - "disabled", "pending", "failed", or "passed"
     // Adds another extra property if the spec was started properly with ID:
     //   time - time taken to execute the spec, in milliseconds
-    specDone: function (result) {
+    specDone(result) {
         if (result.status === 'passed') {
             this._passingCount++;
         } else if (result.status === 'pending') {
@@ -177,11 +179,11 @@ var ConsoleReporter = new Lang.Class({
             this._failedSpecs.push(result);
         }
         if (result.id)
-            result.time = this.elapsedTime('spec:' + result.id);
+            result.time = this.elapsedTime(`spec:${result.id}`);
     },
 
-    filterStack: function (stack) {
-        return stack.split('\n').filter((stackLine) => {
+    filterStack(stack) {
+        return stack.split('\n').filter(stackLine => {
             return stackLine.indexOf(this.jasmine_core_path) === -1;
         }).join('\n');
     },
@@ -193,12 +195,12 @@ var DefaultReporter = new Lang.Class({
     Name: 'DefaultReporter',
     Extends: ConsoleReporter,
 
-    jasmineStarted: function (info) {
+    jasmineStarted(info) {
         this.parent(info);
         this._print('Started\n');
     },
 
-    jasmineDone: function () {
+    jasmineDone() {
         this._print('\n\n');
         if (this._failedSpecs.length > 0)
             this._print('Failures:');
@@ -209,9 +211,8 @@ var DefaultReporter = new Lang.Class({
             this._print('%d %s, %d failed'.format(this._specCount,
                 this._specCount === 1 ? 'spec' : 'specs', this._failureCount));
 
-            if (this._pendingCount) {
+            if (this._pendingCount)
                 this._print(', %d pending'.format(this._pendingCount));
-            }
         } else {
             this._print('No specs found');
         }
@@ -225,7 +226,7 @@ var DefaultReporter = new Lang.Class({
         this.parent();
     },
 
-    specDone: function (result) {
+    specDone(result) {
         this.parent(result);
 
         const colors = {
@@ -243,19 +244,22 @@ var DefaultReporter = new Lang.Class({
         this._print(this._color(symbols[result.status], colors[result.status]));
     },
 
-    _printSpecFailureDetails: function (result, index) {
+    _printSpecFailureDetails(result, index) {
         this._print('\n%d) %s\n'.format(index + 1, result.fullName));
-        result.failedExpectations.forEach((failedExpectation) => {
-            let report = 'Message:\n' + this._color(failedExpectation.message, RED) +
-                '\nStack:\n' + this.filterStack(failedExpectation.stack) + '\n';
+        result.failedExpectations.forEach(failedExpectation => {
+            let report = `Message:
+${this._color(failedExpectation.message, RED)}
+Stack:
+${this.filterStack(failedExpectation.stack)}
+`;
             this._print(Utils.indent(report, 2));
         });
     },
 
-    _printSuiteFailureDetails: function (result) {
-        result.failedExpectations.forEach((failedExpectation) => {
-            this._print(this._color('An error was thrown in an afterAll\n' +
-                'AfterAll %s\n'.format(failedExpectation.message), RED));
+    _printSuiteFailureDetails(result) {
+        result.failedExpectations.forEach(failedExpectation => {
+            this._print(this._color(`An error was thrown in an afterAll
+AfterAll ${failedExpectation.message}`, RED));
         });
     },
 });

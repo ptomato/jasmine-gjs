@@ -9,7 +9,7 @@ const Options = jasmineImporter.options;
 // This is in case we are running the tests from a build tree that is different
 // from the source tree, for example during 'make distcheck'.
 let envSrcdir = GLib.getenv('SRCDIR');
-const SRCDIR = envSrcdir? envSrcdir + '/' : '';
+const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
 
 describe('Ensure array', function () {
     it('does not change an array', function () {
@@ -29,7 +29,7 @@ describe('Loading configuration', function () {
     });
 
     it('loads from a file', function () {
-        let config = Config.loadConfig({ config: SRCDIR + 'test/fixtures/jasmine.json' });
+        let config = Config.loadConfig({config: `${SRCDIR}test/fixtures/jasmine.json`});
         expect(config.a).toEqual('b');
         expect(config.c).toEqual('d');
     });
@@ -37,20 +37,20 @@ describe('Loading configuration', function () {
     it("doesn't load the file if no-config specified", function () {
         let config = Config.loadConfig({
             'no-config': true,
-            config: SRCDIR + 'test/fixtures/jasmine.json',
+            config: `${SRCDIR}test/fixtures/jasmine.json`,
         });
         expect(config.a).not.toEqual('b');
         expect(config.c).not.toEqual('d');
     });
 
     it('loads the default file if none given', function () {
-        let config = Config.loadConfig({}, SRCDIR + 'test/fixtures/jasmine.json');
+        let config = Config.loadConfig({}, `${SRCDIR}test/fixtures/jasmine.json`);
         expect(config.a).toEqual('b');
         expect(config.c).toEqual('d');
     });
 
     it("errors out if the file doesn't exist", function () {
-        expect(() => Config.loadConfig({ config: 'nonexist.json' })).toThrow();
+        expect(() => Config.loadConfig({config: 'nonexist.json'})).toThrow();
     });
 
     it("doesn't error out if the default file doesn't exist", function () {
@@ -59,20 +59,20 @@ describe('Loading configuration', function () {
 
     it('errors out if the file is invalid', function () {
         expect(() => Config.loadConfig({
-            config: SRCDIR + 'test/fixtures/invalid.json',
+            config: `${SRCDIR}test/fixtures/invalid.json`,
         })).toThrow();
     });
 
     it("resolves paths relative to the config file's location", function () {
-        let config = Config.loadConfig({ config: SRCDIR + 'test/fixtures/path.json' });
-        let location = Gio.File.new_for_path(SRCDIR + 'test/fixtures');
+        let config = Config.loadConfig({config: `${SRCDIR}test/fixtures/path.json`});
+        let location = Gio.File.new_for_path(`${SRCDIR}test/fixtures`);
 
         expect(config.include_paths).toContain(location.get_path());
         expect(config.spec_files).toContain(location.get_child('someSpec.js').get_path());
     });
 
     it('warns about unrecognized config options', function () {
-        Config.loadConfig({ config: SRCDIR + 'test/fixtures/jasmine.json' });
+        Config.loadConfig({config: `${SRCDIR}test/fixtures/jasmine.json`});
         expect(window.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
     });
 });
@@ -82,35 +82,35 @@ describe('Configuration options to arguments', function () {
         // COMPAT: spread operator in function args requires mozjs 27. This should read:
         // let args = Config.configToArgs({ options: '--color' },
         //   ...Options.parseOptions(['--no-color']));
-        let args = Config.configToArgs.apply(null, [{ options: '--color' },
+        let args = Config.configToArgs.apply(null, [{options: '--color'},
             ...Options.parseOptions(['--no-color'])]);
         expect(args.indexOf('--no-color')).toBeGreaterThan(args.indexOf('--color'));
     });
 
     it('adds one search path', function () {
-        let args = Config.configToArgs({ include_paths: '/a' });
+        let args = Config.configToArgs({include_paths: '/a'});
         expect(args.join(' ')).toMatch('-I /a');
     });
 
     it('adds multiple search paths', function () {
-        let args = Config.configToArgs({ include_paths: ['/a', '/b'] });
+        let args = Config.configToArgs({include_paths: ['/a', '/b']});
         expect(args.join(' ')).toMatch('-I /a');
         expect(args.join(' ')).toMatch('-I /b');
     });
 
     it('adds search paths in the right order', function () {
-        let args = Config.configToArgs({ include_paths: ['/a', '/b'] });
+        let args = Config.configToArgs({include_paths: ['/a', '/b']});
         let argstring = args.join(' ');
         expect(argstring.indexOf('-I /a')).toBeLessThan(argstring.indexOf('-I /b'));
     });
 
     it('adds one exclusion path', function () {
-        let args = Config.configToArgs({ exclude: 'a' });
+        let args = Config.configToArgs({exclude: 'a'});
         expect(args.join(' ')).toMatch('--exclude a');
     });
 
     it('adds more than one exclusion path', function () {
-        let args = Config.configToArgs({ exclude: ['a', 'b'] });
+        let args = Config.configToArgs({exclude: ['a', 'b']});
         expect(args.join(' ')).toMatch('--exclude a');
         expect(args.join(' ')).toMatch('--exclude b');
     });
@@ -122,36 +122,36 @@ describe('Configuration options to arguments', function () {
     });
 
     it('combines exclusions from the command line and the config file', function () {
-        let args = Config.configToArgs.apply(null, [{ exclude: 'b.js' },
+        let args = Config.configToArgs.apply(null, [{exclude: 'b.js'},
             ...Options.parseOptions(['--exclude', 'a.js'])]);
         expect(args.join(' ')).toMatch('--exclude a.js');
         expect(args.join(' ')).toMatch('--exclude b.js');
     });
 
     it('adds one extra option', function () {
-        let args = Config.configToArgs({ options: '--foo' });
+        let args = Config.configToArgs({options: '--foo'});
         expect(args).toContain('--foo');
     });
 
     it('adds more than one extra option', function () {
-        let args = Config.configToArgs({ options: ['--foo', '--bar'] });
+        let args = Config.configToArgs({options: ['--foo', '--bar']});
         expect(args.join(' ')).toMatch('--foo --bar');
         // order should be preserved here
     });
 
     it('adds one spec file', function () {
-        let args = Config.configToArgs({ spec_files: 'a' });
+        let args = Config.configToArgs({spec_files: 'a'});
         expect(args).toContain('a');
     });
 
     it('adds more than one spec file', function () {
-        let args = Config.configToArgs({ spec_files: ['a', 'b'] });
+        let args = Config.configToArgs({spec_files: ['a', 'b']});
         expect(args).toContain('a');
         expect(args).toContain('b');
     });
 
     it('does not add spec files from config if there were some on the command line', function () {
-        let args = Config.configToArgs({ spec_files: ['a', 'b'] }, ['c']);
+        let args = Config.configToArgs({spec_files: ['a', 'b']}, ['c']);
         expect(args).not.toContain('a');
         expect(args).not.toContain('b');
     });

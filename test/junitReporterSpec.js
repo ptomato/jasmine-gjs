@@ -43,7 +43,7 @@ const PASSING_SPEC_INFO = {
         {
             matcherName: 'toContain',
             message: 'Expected [1] to contain 1',
-        }
+        },
     ],
     status: 'passed',
 };
@@ -118,20 +118,20 @@ describe('The JUnit reporter', function () {
         out = (function () {
             let output = '';
             return {
-                print: function (str) {
+                print(str) {
                     output += str;
                 },
-                getOutput: function () {
+                getOutput() {
                     return output;
                 },
-                clear: function () {
+                clear() {
                     output = '';
-                }
+                },
             };
-        }());
+        })();
 
         timerSpies = {};
-        let timerSpy = (id) => {
+        let timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
@@ -296,7 +296,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        tree.children.filter((child) => child.name === 'testsuite')
+        tree.children.filter(child => child.name === 'testsuite')
         .forEach((child, index) => {
             expect(child.attrs['id']).toBe(index);
         });
@@ -312,7 +312,7 @@ describe('The JUnit reporter', function () {
 
     it('times individual suites', function () {
         reporter.suiteStarted(SUITE_INFO);
-        timerSpies['suite:' + SUITE_INFO.id].elapsed.and.returnValue(100);
+        timerSpies[`suite:${SUITE_INFO.id}`].elapsed.and.returnValue(100);
         reporter.suiteDone(SUITE_INFO);
         reporter.jasmineDone();
 
@@ -324,7 +324,7 @@ describe('The JUnit reporter', function () {
     it('times individual specs', function () {
         reporter.suiteStarted(SUITE_INFO);
         reporter.specStarted(PASSING_SPEC_INFO);
-        timerSpies['spec:' + PASSING_SPEC_INFO.id].elapsed.and.returnValue(100);
+        timerSpies[`spec:${PASSING_SPEC_INFO.id}`].elapsed.and.returnValue(100);
         reporter.specDone(PASSING_SPEC_INFO);
         reporter.suiteDone(SUITE_INFO);
         reporter.jasmineDone();
@@ -442,7 +442,7 @@ describe('The JUnit reporter', function () {
         reporter.jasmineDone();
 
         let tree = JSON.parse(out.getOutput());
-        let properties = tree.children.filter((child) => child.name === 'properties')[0];
+        let properties = tree.children.filter(child => child.name === 'properties')[0];
         expect(properties.children).toContain(jasmine.objectContaining({
             name: 'property',
             attrs: {

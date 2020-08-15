@@ -12,18 +12,18 @@ function Node(name) {
 }
 
 function _attrsToString(attrs) {
-    return Object.keys(attrs).map((key) => {
+    return Object.keys(attrs).map(key => {
         let value = attrs[key].toString();
-        return ' ' + key + '="' + GLib.markup_escape_text(value, -1) + '"';
+        return ` ${key}="${GLib.markup_escape_text(value, -1)}"`;
     }).join('');
 }
 
 function _prettyprint(node) {
     if (node.children.length === 0 && node.text.length === 0)
-        return '<' + node.name + _attrsToString(node.attrs) + '/>\n';
+        return `<${node.name}${_attrsToString(node.attrs)}/>\n`;
 
-    let elementTop = '<' + node.name + _attrsToString(node.attrs) + '>\n';
-    let elementBottom = '</' + node.name + '>\n';
+    let elementTop = `<${node.name}${_attrsToString(node.attrs)}>\n`;
+    let elementBottom = `</${node.name}>\n`;
     let children = node.children.map(_prettyprint).join('');
     let text = GLib.markup_escape_text(node.text, -1).trim();
     if (text.length !== 0)
@@ -34,5 +34,5 @@ function _prettyprint(node) {
 }
 
 Node.prototype.toString = function () {
-    return '<?xml version="1.0" encoding="UTF-8"?>\n' + _prettyprint(this);
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${_prettyprint(this)}`;
 };

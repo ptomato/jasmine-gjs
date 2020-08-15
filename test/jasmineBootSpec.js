@@ -8,27 +8,27 @@ let JasmineBoot = jasmineImporter.jasmineBoot;
 // This is in case we are running the tests from a build tree that is different
 // from the source tree, for example during 'make distcheck'.
 let envSrcdir = GLib.getenv('SRCDIR');
-const SRCDIR = envSrcdir? envSrcdir + '/' : '';
+const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
 
 let customMatchers = {
-    toMatchAllFiles: function () {
+    toMatchAllFiles() {
         return {
-            compare: function (actual, expected) {
+            compare(actual, expected) {
                 let result = {
-                    message: 'Expected ' + JSON.stringify(actual) + ' ',
+                    message: `Expected ${JSON.stringify(actual)} `,
                 };
                 if (actual.length !== expected.length) {
                     result.pass = false;
-                    result.message += 'to match ' + expected.length + ' ' +
-                        (expected.length === 1 ? 'file' : 'files') +
-                        ', but it contained ' + actual.length;
+                    result.message += `to match ${expected.length} ${
+                        expected.length === 1 ? 'file' : 'files'
+                    }, but it contained ${actual.length}`;
                     return result;
                 }
 
                 let unexpectedFile;
-                result.pass = actual.every((path) => {
+                result.pass = actual.every(path => {
                     let actualFile = Gio.File.new_for_path(path);
-                    let retval = expected.some((expectedPath) => {
+                    let retval = expected.some(expectedPath => {
                         let expectedFile = Gio.File.new_for_path(expectedPath);
                         return actualFile.equal(expectedFile);
                     });
@@ -37,14 +37,14 @@ let customMatchers = {
                     return retval;
                 });
                 if (result.pass) {
-                    result.message += 'not to match a list of files ' +
-                        expected + ', but it did.';
+                    result.message += `not to match a list of files ${
+                        expected}, but it did.`;
                 } else if (unexpectedFile) {
-                    result.message += 'to match a list of files ' + expected +
-                        ', but it contained ' + unexpectedFile;
+                    result.message += `to match a list of files ${expected
+                    }, but it contained ${unexpectedFile}`;
                 } else {
-                    result.message += 'to match the list of files ' + expected +
-                        ', but it did not: ' + actual;
+                    result.message += `to match the list of files ${expected
+                    }, but it did not: ${actual}`;
                 }
                 return result;
             },
@@ -73,11 +73,13 @@ describe('Jasmine boot', function () {
         };
 
         let fakeJasmineCore = {
-            getJasmineRequireObj: function () { return fakeJasmineRequireObj; },
+            getJasmineRequireObj() {
+                return fakeJasmineRequireObj;
+            },
             __file__: 'fake/jasmine/path/jasmine.js',
         };
 
-        testJasmine = new JasmineBoot.Jasmine({ jasmineCore: fakeJasmineCore });
+        testJasmine = new JasmineBoot.Jasmine({jasmineCore: fakeJasmineCore});
 
         jasmine.addMatchers(customMatchers);
     });
@@ -90,51 +92,51 @@ describe('Jasmine boot', function () {
 
     it('adds a real spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures/someSpec.js']);
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures/someSpec.js`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            SRCDIR + 'test/fixtures/someSpec.js',
+            `${SRCDIR}test/fixtures/someSpec.js`,
         ]);
     });
 
     it('adds more than one spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
         testJasmine.addSpecFiles([
-            SRCDIR + 'test/fixtures/someSpec.js',
-            SRCDIR + 'test/fixtures/otherSpec.js',
+            `${SRCDIR}test/fixtures/someSpec.js`,
+            `${SRCDIR}test/fixtures/otherSpec.js`,
         ]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            SRCDIR + 'test/fixtures/someSpec.js',
-            SRCDIR + 'test/fixtures/otherSpec.js',
+            `${SRCDIR}test/fixtures/someSpec.js`,
+            `${SRCDIR}test/fixtures/otherSpec.js`,
         ]);
     });
 
     it('adds a whole directory of spec files', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            SRCDIR + 'test/fixtures/someSpec.js',
-            SRCDIR + 'test/fixtures/otherSpec.js',
+            `${SRCDIR}test/fixtures/someSpec.js`,
+            `${SRCDIR}test/fixtures/otherSpec.js`,
         ]);
-        expect(testJasmine.specFiles.every((path) => path.indexOf('notASpec.txt') === -1)).toBe(true);
+        expect(testJasmine.specFiles.every(path => path.indexOf('notASpec.txt') === -1)).toBe(true);
     });
 
     it('respects excluded files', function () {
         testJasmine.exclusions = ['otherSpec.js'];
-        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            SRCDIR + 'test/fixtures/someSpec.js'
+            `${SRCDIR}test/fixtures/someSpec.js`,
         ]);
     });
 
     it('matches when the paths match', function () {
         testJasmine.exclusions = ['test/fixtures'];
-        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([]);
     });
 
     it('can handle globs in excluded files', function () {
         testJasmine.exclusions = ['*.js'];
-        testJasmine.addSpecFiles([SRCDIR + 'test/fixtures']);
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([]);
     });
 

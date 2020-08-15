@@ -15,7 +15,7 @@ var JUnitReporter = new Lang.Class({
     Name: 'JUnitReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 
-    jasmineStarted: function (info) {
+    jasmineStarted(info) {
         this._currentSuite = null;
         this.parent(info);
         this._tree = new XMLWriter.Node('testsuites');
@@ -23,7 +23,7 @@ var JUnitReporter = new Lang.Class({
         this._activeSuites = [];
 
         let properties = new XMLWriter.Node('properties');
-        properties.children = GLib.listenv().map((key) => {
+        properties.children = GLib.listenv().map(key => {
             let property = new XMLWriter.Node('property');
             property.attrs = {
                 name: key,
@@ -34,7 +34,7 @@ var JUnitReporter = new Lang.Class({
         this._tree.children.push(properties);
     },
 
-    jasmineDone: function () {
+    jasmineDone() {
         let failedAfterAlls = this._failedSuites.length;
         if (failedAfterAlls > 0) {
             let afterAllSuite = new XMLWriter.Node('testsuite');
@@ -44,14 +44,14 @@ var JUnitReporter = new Lang.Class({
                 errors: failedAfterAlls,
                 id: this._suiteCount++,
             };
-            afterAllSuite.children = this._failedSuites.map((failure) => {
+            afterAllSuite.children = this._failedSuites.map(failure => {
                 let afterAllCase = new XMLWriter.Node('testcase');
                 afterAllCase.attrs = {
                     name: failure.description,
                     classname: 'AfterAll',
                     assertions: failure.failedExpectations.length,
                 };
-                afterAllCase.children = failure.failedExpectations.map((result) => {
+                afterAllCase.children = failure.failedExpectations.map(result => {
                     let error = new XMLWriter.Node('error');
                     error.attrs = _parseExceptionMessage(result);
                     error.text = result.stack;
@@ -75,7 +75,7 @@ var JUnitReporter = new Lang.Class({
     // Jenkins parses nested JUnit test suites but doesn't display them properly.
     // See https://issues.jenkins-ci.org/browse/JENKINS-18673
     // Therefore, we flatten all suites into one level.
-    suiteStarted: function (result) {
+    suiteStarted(result) {
         this.parent(result);
         this._activeSuites.push(this._currentSuite);
         this._currentSuite = new XMLWriter.Node('testsuite');
@@ -92,18 +92,18 @@ var JUnitReporter = new Lang.Class({
         this._tree.children.push(this._currentSuite);
     },
 
-    suiteDone: function (result) {
+    suiteDone(result) {
         this.parent(result);
         this._currentSuite.attrs.time = result.time / 1000;  // in seconds
         this._currentSuite = this._activeSuites.pop();
     },
 
-    specStarted: function (result) {
+    specStarted(result) {
         this.parent(result);
         this._currentSuite.attrs.tests++;
     },
 
-    specDone: function (result) {
+    specDone(result) {
         this.parent(result);
 
         let spec = new XMLWriter.Node('testcase');
@@ -116,39 +116,39 @@ var JUnitReporter = new Lang.Class({
         };
 
         switch (result.status) {
-            case 'disabled':
-                this._currentSuite.attrs.disabled++;
-                return;
-            case 'failed':
-                // We count a failure as a "failure" if at least one expectation
-                // failed. If there were only uncaught exceptions, then it is an
-                // "error".
-                let assertFailed = false;
-                result.failedExpectations.forEach((failedExpectation) => {
-                    let node;
-                    if (failedExpectation.matcherName !== '') {
-                        assertFailed = true;
-                        node = new XMLWriter.Node('failure');
-                        node.attrs = {
-                            type: failedExpectation.matcherName,
-                            message: failedExpectation.message,
-                        };
-                    } else {
-                        node = new XMLWriter.Node('error');
-                        node.attrs = _parseExceptionMessage(failedExpectation);
-                    }
-                    node.text = this.filterStack(failedExpectation.stack);
-                    spec.children.push(node);
-                });
-                if (assertFailed)
-                    this._currentSuite.attrs.failures++;
-                else
-                    this._currentSuite.attrs.errors++;
-                break;
-            case 'pending':
-                this._currentSuite.attrs.skipped++;
-                spec.children.push(new XMLWriter.Node('skipped'));
-                break;
+        case 'disabled':
+            this._currentSuite.attrs.disabled++;
+            return;
+        case 'failed':
+            // We count a failure as a "failure" if at least one expectation
+            // failed. If there were only uncaught exceptions, then it is an
+            // "error".
+            let assertFailed = false;
+            result.failedExpectations.forEach(failedExpectation => {
+                let node;
+                if (failedExpectation.matcherName !== '') {
+                    assertFailed = true;
+                    node = new XMLWriter.Node('failure');
+                    node.attrs = {
+                        type: failedExpectation.matcherName,
+                        message: failedExpectation.message,
+                    };
+                } else {
+                    node = new XMLWriter.Node('error');
+                    node.attrs = _parseExceptionMessage(failedExpectation);
+                }
+                node.text = this.filterStack(failedExpectation.stack);
+                spec.children.push(node);
+            });
+            if (assertFailed)
+                this._currentSuite.attrs.failures++;
+            else
+                this._currentSuite.attrs.errors++;
+            break;
+        case 'pending':
+            this._currentSuite.attrs.skipped++;
+            spec.children.push(new XMLWriter.Node('skipped'));
+            break;
         }
         this._currentSuite.children.push(spec);
     },
@@ -157,7 +157,7 @@ var JUnitReporter = new Lang.Class({
 function _parseExceptionMessage(expectation) {
     let parse = expectation.message.split(':');
     return {
-        type: (parse.length > 1)? parse[0] : 'Error',
+        type: parse.length > 1 ? parse[0] : 'Error',
         message: expectation.message,
     };
 }

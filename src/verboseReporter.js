@@ -17,12 +17,12 @@ var VerboseReporter = new Lang.Class({
     Name: 'VerboseReporter',
     Extends: ConsoleReporter.ConsoleReporter,
 
-    jasmineStarted: function (info) {
+    jasmineStarted(info) {
         this.parent(info);
         this._print('Started\n\n');
     },
 
-    jasmineDone: function () {
+    jasmineDone() {
         this._print('\n');
         this._failedSpecs.forEach(this._printSpecFailureDetails, this);
         let seconds = Math.round(this.elapsedTime('main')) / 1000;
@@ -40,26 +40,26 @@ var VerboseReporter = new Lang.Class({
         this.parent();
     },
 
-    suiteStarted: function (result) {
+    suiteStarted(result) {
         this.parent(result);
         this._print(Utils.indent(this._color(result.description, GRAY),
             this._suiteLevel * 2));
         this._print('\n');
     },
 
-    suiteDone: function (result) {
-        if (result.status === 'disabled')
-            this._print(Utils.indent(this._color('(disabled)', YELLOW) + '\n',
+    suiteDone(result) {
+        if (result.status === 'disabled') {
+            this._print(Utils.indent(`${this._color('(disabled)', YELLOW)}\n`,
                 this._suiteLevel * 2 + 2));
+        }
 
         this.parent(result);
 
-        if (this._suiteLevel === 0) {
+        if (this._suiteLevel === 0)
             this._print('\n');
-        }
     },
 
-    specDone: function (result) {
+    specDone(result) {
         this.parent(result);
 
         const colors = {
@@ -71,25 +71,25 @@ var VerboseReporter = new Lang.Class({
         const symbols = {
             passed: '✓',
             pending: '-',
-            failed: this._failureCount + ')',
+            failed: `${this._failureCount})`,
             disabled: 'x',
         };
         this._print(Utils.indent(this._color(symbols[result.status],
             colors[result.status]), this._suiteLevel * 2 + 2));
         this._print(' %s'.format(result.description));
         if (result.time > 75)
-            this._print(' ' + this._color('(%d ms)'.format(result.time), RED));
+            this._print(` ${this._color('(%d ms)'.format(result.time), RED)}`);
         else if (result.time > 40)
-            this._print(' ' + this._color('(%d ms)'.format(result.time), YELLOW));
+            this._print(` ${this._color('(%d ms)'.format(result.time), YELLOW)}`);
         if (result.pendingReason)
-            this._print(' ' + this._color('(%s)'.format(result.pendingReason), YELLOW));
+            this._print(` ${this._color('(%s)'.format(result.pendingReason), YELLOW)}`);
         this._print('\n');
     },
 
-    _printSpecFailureDetails: function (result, index) {
+    _printSpecFailureDetails(result, index) {
         this._print(this._color('%d) %s\n\n'.format(index + 1, result.fullName), RED));
 
-        result.failedExpectations.forEach((failedExpectation) => {
+        result.failedExpectations.forEach(failedExpectation => {
             this._print(Utils.indent(this._color(failedExpectation.message, GRAY), 2));
             this._print('\n');
             this._print(Utils.indent(this.filterStack(failedExpectation.stack), 4));
@@ -97,10 +97,10 @@ var VerboseReporter = new Lang.Class({
         });
     },
 
-    _printSuiteFailureDetails: function (result) {
-        result.failedExpectations.forEach((failedExpectation) => {
-            this._print(this._color('An error was thrown in an afterAll\n' +
-                'AfterAll %s\n'.format(failedExpectation.message), RED));
+    _printSuiteFailureDetails(result) {
+        result.failedExpectations.forEach(failedExpectation => {
+            this._print(this._color(`An error was thrown in an afterAll
+AfterAll ${failedExpectation.message}`, RED));
         });
     },
 });
