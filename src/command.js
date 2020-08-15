@@ -9,7 +9,7 @@ const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
 
 function run(_jasmine, argv, timeout = -1) {
-    let [files, options] = Options.parseOptions(argv);
+    const [files, options] = Options.parseOptions(argv);
 
     if (options.exclude)
         _jasmine.exclusions = options.exclude;
@@ -21,7 +21,7 @@ function run(_jasmine, argv, timeout = -1) {
         if (!GLib.path_is_absolute(junitPath) &&
             GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') !== null)
             junitPath = `${GLib.getenv('JASMINE_JUNIT_REPORTS_DIR')}/${junitPath}`;
-        let junitFile = Gio.File.new_for_commandline_arg(junitPath);
+        const junitFile = Gio.File.new_for_commandline_arg(junitPath);
 
         // Since people might want their report dir structure to mirror
         // their test dir structure, we shall be kind and try to create any
@@ -34,12 +34,12 @@ function run(_jasmine, argv, timeout = -1) {
             // ignore error if directory already exists
         }
 
-        let rawStream = junitFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
-        let junitStream = new Gio.DataOutputStream({
+        const rawStream = junitFile.replace(null, false, Gio.FileCreateFlags.NONE, null);
+        const junitStream = new Gio.DataOutputStream({
             base_stream: rawStream,
         });
 
-        let junitReporter = new JUnitReporter.JUnitReporter({
+        const junitReporter = new JUnitReporter.JUnitReporter({
             timerFactory: Timer.createDefaultTimer,
             print(str) {
                 junitStream.put_string(str, null);
@@ -50,7 +50,7 @@ function run(_jasmine, argv, timeout = -1) {
     }
 
     let timeoutId;
-    let reporterOptions = {
+    const reporterOptions = {
         show_colors: options.color,
         timerFactory: Timer.createDefaultTimer,
     };

@@ -59,10 +59,10 @@ describe('XML writer', function () {
     });
 
     it('prints multiple levels of indentation', function () {
-        let child = new XMLWriter.Node('child');
+        const child = new XMLWriter.Node('child');
         child.children.push(new XMLWriter.Node('descendant'));
         node.children.push(child);
-        let output = node.toString();
+        const output = node.toString();
         expect(output).toMatch('\n<node>\n');
         expect(output).toMatch('\n  <child>\n');
         expect(output).toMatch('\n    <descendant/>\n');
@@ -93,7 +93,7 @@ describe('XML writer', function () {
     it('prints child nodes and text content', function () {
         node.children.push(new XMLWriter.Node('child'));
         node.text = 'Other content';
-        let output = node.toString();
+        const output = node.toString();
         expect(output).toMatch('<child/>');
         expect(output).toMatch('Other content');
     });

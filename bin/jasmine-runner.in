@@ -15,14 +15,14 @@ const GLib = imports.gi.GLib;
 
 if (GLib.getenv('JASMINE_UNINSTALLED')) {
     // Trick to use the uninstalled copy of Jasmine when running "make check".
-    let srcdir = GLib.getenv('SRCDIR');
+    const srcdir = GLib.getenv('SRCDIR');
     globalThis.jasmineImporter = imports['.'];
     jasmineImporter.searchPath = [
         GLib.build_filenamev([srcdir, 'src']),
         GLib.build_filenamev([srcdir, 'lib']),
     ];
 } else {
-    let oldSearchPath = imports.searchPath.slice();  // make a copy
+    const oldSearchPath = imports.searchPath.slice();  // make a copy
     imports.searchPath.unshift('@datadir@');
     globalThis.jasmineImporter = imports['jasmine-gjs'];
     imports.searchPath = oldSearchPath;
@@ -35,7 +35,7 @@ const JasmineBoot = jasmineImporter.jasmineBoot;
 Timer.installAPI(globalThis);
 
 // Do not conflict with global "jasmine" object
-let _jasmine = new JasmineBoot.Jasmine();
+const _jasmine = new JasmineBoot.Jasmine();
 _jasmine.installAPI(globalThis);
 
 // Don't put any code after this; the return value is used as the exit code.

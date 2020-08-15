@@ -3,18 +3,18 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
-let JasmineBoot = jasmineImporter.jasmineBoot;
+const JasmineBoot = jasmineImporter.jasmineBoot;
 
 // This is in case we are running the tests from a build tree that is different
 // from the source tree, for example during 'make distcheck'.
-let envSrcdir = GLib.getenv('SRCDIR');
+const envSrcdir = GLib.getenv('SRCDIR');
 const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
 
-let customMatchers = {
+const customMatchers = {
     toMatchAllFiles() {
         return {
             compare(actual, expected) {
-                let result = {
+                const result = {
                     message: `Expected ${JSON.stringify(actual)} `,
                 };
                 if (actual.length !== expected.length) {
@@ -27,9 +27,9 @@ let customMatchers = {
 
                 let unexpectedFile;
                 result.pass = actual.every(path => {
-                    let actualFile = Gio.File.new_for_path(path);
-                    let retval = expected.some(expectedPath => {
-                        let expectedFile = Gio.File.new_for_path(expectedPath);
+                    const actualFile = Gio.File.new_for_path(path);
+                    const retval = expected.some(expectedPath => {
+                        const expectedFile = Gio.File.new_for_path(expectedPath);
                         return actualFile.equal(expectedFile);
                     });
                     if (!retval)
@@ -56,7 +56,7 @@ describe('Jasmine boot', function () {
     let testJasmine;
 
     beforeEach(function () {
-        let bootedJasmine = {
+        const bootedJasmine = {
             getEnv: jasmine.createSpy('getEnv').and.returnValue({
                 addReporter: jasmine.createSpy('addReporter'),
                 execute: jasmine.createSpy('execute'),
@@ -67,12 +67,12 @@ describe('Jasmine boot', function () {
             },
         };
 
-        let fakeJasmineRequireObj = {
+        const fakeJasmineRequireObj = {
             core: jasmine.createSpy('core').and.returnValue(bootedJasmine),
             interface: jasmine.createSpy('interface'),
         };
 
-        let fakeJasmineCore = {
+        const fakeJasmineCore = {
             getJasmineRequireObj() {
                 return fakeJasmineRequireObj;
             },
@@ -141,7 +141,7 @@ describe('Jasmine boot', function () {
     });
 
     it('adds the Jasmine path when adding a reporter', function () {
-        let fakeReporter = {};
+        const fakeReporter = {};
         testJasmine.addReporter(fakeReporter);
         expect(fakeReporter.jasmine_core_path).toMatch('fake/jasmine/path');
     });

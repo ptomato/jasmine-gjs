@@ -42,27 +42,27 @@ describe('Jasmine command', function () {
         it('loads the verbose reporter', function () {
             Command.run(fakeJasmine, ['--verbose']);
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            const reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
             expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
         });
 
         it('loads the TAP reporter', function () {
             Command.run(fakeJasmine, ['--tap']);
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            let reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            const reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
             expect(reporter.constructor).toBe(TapReporter.TapReporter);
         });
 
         it('loads the JUnit reporter alongside the usual reporter', function () {
             // Unfortunately /dev/null can't be opened as a GFile, so we need to
             // write to a temporary file.
-            let [tmpFile, stream] = Gio.File.new_tmp('junitreportXXXXXX');
-            let tmpPath = tmpFile.get_path();
+            const [tmpFile, stream] = Gio.File.new_tmp('junitreportXXXXXX');
+            const tmpPath = tmpFile.get_path();
             stream.close(null);
 
             Command.run(fakeJasmine, ['--junit', tmpPath]);
             expect(fakeJasmine.addReporter.calls.count()).toBe(2);
-            let reporters = fakeJasmine.addReporter.calls.allArgs().map(args => args[0].constructor);
+            const reporters = fakeJasmine.addReporter.calls.allArgs().map(args => args[0].constructor);
             expect(reporters).toContain(JUnitReporter.JUnitReporter);
 
             tmpFile.delete(null);
@@ -71,10 +71,10 @@ describe('Jasmine command', function () {
         });
 
         it('creates a directory for the report if necessary', function () {
-            let tmpDir = GLib.dir_make_tmp('junitreportXXXXXX');
-            let tmpFile =
+            const tmpDir = GLib.dir_make_tmp('junitreportXXXXXX');
+            const tmpFile =
                 Gio.File.new_for_path(tmpDir).get_child('dir').get_child('report.xml');
-            let tmpPath = tmpFile.get_path();
+            const tmpPath = tmpFile.get_path();
 
             Command.run(fakeJasmine, ['--junit', tmpPath]);
             expect(tmpFile.query_exists(null)).toBeTruthy();
@@ -87,12 +87,12 @@ describe('Jasmine command', function () {
         });
 
         it('uses the value of JASMINE_JUNIT_REPORTS_DIR', function () {
-            let oldPath = GLib.getenv('JASMINE_JUNIT_REPORTS_DIR');
-            let tmpDir = GLib.dir_make_tmp('junitreportXXXXXX');
+            const oldPath = GLib.getenv('JASMINE_JUNIT_REPORTS_DIR');
+            const tmpDir = GLib.dir_make_tmp('junitreportXXXXXX');
             GLib.setenv('JASMINE_JUNIT_REPORTS_DIR', tmpDir, true);
 
             Command.run(fakeJasmine, ['--junit', 'report.xml']);
-            let reportFile =
+            const reportFile =
                 Gio.File.new_for_path(tmpDir).get_child('report.xml');
             expect(reportFile.query_exists(null)).toBeTruthy();
 

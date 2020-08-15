@@ -18,9 +18,9 @@ var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleRep
         this._suiteCount = 0;
         this._activeSuites = [];
 
-        let properties = new XMLWriter.Node('properties');
+        const properties = new XMLWriter.Node('properties');
         properties.children = GLib.listenv().map(key => {
-            let property = new XMLWriter.Node('property');
+            const property = new XMLWriter.Node('property');
             property.attrs = {
                 name: key,
                 value: GLib.getenv(key),
@@ -31,9 +31,9 @@ var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleRep
     }
 
     jasmineDone() {
-        let failedAfterAlls = this._failedSuites.length;
+        const failedAfterAlls = this._failedSuites.length;
         if (failedAfterAlls > 0) {
-            let afterAllSuite = new XMLWriter.Node('testsuite');
+            const afterAllSuite = new XMLWriter.Node('testsuite');
             afterAllSuite.attrs = {
                 name: 'afterAll()',
                 tests: failedAfterAlls,
@@ -41,14 +41,14 @@ var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleRep
                 id: this._suiteCount++,
             };
             afterAllSuite.children = this._failedSuites.map(failure => {
-                let afterAllCase = new XMLWriter.Node('testcase');
+                const afterAllCase = new XMLWriter.Node('testcase');
                 afterAllCase.attrs = {
                     name: failure.description,
                     classname: 'AfterAll',
                     assertions: failure.failedExpectations.length,
                 };
                 afterAllCase.children = failure.failedExpectations.map(result => {
-                    let error = new XMLWriter.Node('error');
+                    const error = new XMLWriter.Node('error');
                     error.attrs = _parseExceptionMessage(result);
                     error.text = result.stack;
                     return error;
@@ -102,7 +102,7 @@ var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleRep
     specDone(result) {
         super.specDone(result);
 
-        let spec = new XMLWriter.Node('testcase');
+        const spec = new XMLWriter.Node('testcase');
         spec.attrs = {
             name: result.description,
             classname: this._currentSuite.attrs['name'],
@@ -152,7 +152,7 @@ var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleRep
 });
 
 function _parseExceptionMessage(expectation) {
-    let parse = expectation.message.split(':');
+    const parse = expectation.message.split(':');
     return {
         type: parse.length > 1 ? parse[0] : 'Error',
         message: expectation.message,

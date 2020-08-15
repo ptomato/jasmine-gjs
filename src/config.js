@@ -27,7 +27,7 @@ function loadConfig(options, defaultFile = 'jasmine.json') {
         return {};
 
     let config = {};
-    let configFile = Gio.File.new_for_commandline_arg(options.config || defaultFile);
+    const configFile = Gio.File.new_for_commandline_arg(options.config || defaultFile);
 
     try {
         let [, contents] = configFile.load_contents(null);
@@ -66,7 +66,7 @@ function loadConfig(options, defaultFile = 'jasmine.json') {
 }
 
 function optionsToArgs(options) {
-    let args = [options.color ? '--color' : '--no-color'];
+    const args = [options.color ? '--color' : '--no-color'];
     if (options.verbose)
         args.push('--verbose');
     if (options.tap)

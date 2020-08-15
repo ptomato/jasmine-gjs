@@ -39,7 +39,7 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
         if (result.status === 'disabled') {
             this._print('# Suite was disabled: %s\n'.format(result.fullName));
         } else {
-            let failures = result.failedExpectations.length;
+            const failures = result.failedExpectations.length;
             this._print('# Suite finished with %d %s: %s\n'.format(failures,
                 failures === 1 ? 'failure' : 'failures', result.fullName));
         }
@@ -54,11 +54,11 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
             this._print('ok');
         this._print(' %d - %s'.format(this._specCount, result.fullName));
         if (result.status === 'pending' || result.status === 'disabled') {
-            let reason = result.pendingReason || result.status;
+            const reason = result.pendingReason || result.status;
             this._print(` # SKIP ${reason}`);
         }
         if (result.status === 'failed' && result.failedExpectations) {
-            let messages = result.failedExpectations.map(r => _removeNewlines(r.message)).join(' ');
+            const messages = result.failedExpectations.map(r => _removeNewlines(r.message)).join(' ');
             this._print(' (%s)'.format(messages));
         }
         this._print('\n');
@@ -68,7 +68,7 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
             result.failedExpectations.forEach(failedExpectation => {
                 this._print('# Message: %s\n'.format(_removeNewlines(failedExpectation.message)));
                 this._print('# Stack:\n');
-                let stackTrace = this.filterStack(failedExpectation.stack).trim();
+                const stackTrace = this.filterStack(failedExpectation.stack).trim();
                 this._print(stackTrace.split('\n').map(str => `#   ${str}`).join('\n'));
                 this._print('\n');
             });
@@ -77,6 +77,6 @@ var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporte
 });
 
 function _removeNewlines(str) {
-    let allNewlines = /\n/g;
+    const allNewlines = /\n/g;
     return str.replace(allNewlines, '\\n');
 }

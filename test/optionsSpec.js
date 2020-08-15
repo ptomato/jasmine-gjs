@@ -7,29 +7,29 @@ const Options = jasmineImporter.options;
 
 describe('Argument parser', function () {
     it('stores the given value for a "store" argument', function () {
-        let [files, namespace] = Options.parseOptions(['--junit', 'file.txt']);
+        const [files, namespace] = Options.parseOptions(['--junit', 'file.txt']);
         expect(files).toEqual([]);
         expect(namespace['junit']).toEqual('file.txt');
     });
 
     it('stores the value from "const" for a "store" argument if none given', function () {
-        let [files, namespace] = Options.parseOptions(['--junit']);
+        const [files, namespace] = Options.parseOptions(['--junit']);
         expect(files).toEqual([]);
         expect(namespace['junit']).toEqual('report.xml');
     });
 
     it('stores values in the order they are given on the command line', function () {
-        let [, namespace] = Options.parseOptions(['--no-color', '--color']);
+        const [, namespace] = Options.parseOptions(['--no-color', '--color']);
         expect(namespace['color']).toBe(true);
     });
 
     it('stores the given value for an "append" argument', function () {
-        let [, namespace] = Options.parseOptions(['--exclude', 'file.js']);
+        const [, namespace] = Options.parseOptions(['--exclude', 'file.js']);
         expect(namespace['exclude']).toEqual(['file.js']);
     });
 
     it('stores multiple values for an "append" argument appearing multiple times', function () {
-        let [, namespace] = Options.parseOptions([
+        const [, namespace] = Options.parseOptions([
             '--exclude', 'file.js',
             '--exclude', 'file2.js',
         ]);
@@ -37,7 +37,7 @@ describe('Argument parser', function () {
     });
 
     it('does not modify the list of arguments passed in', function () {
-        let args = ['arg1', 'arg2', 'arg3'];
+        const args = ['arg1', 'arg2', 'arg3'];
         Options.parseOptions(args);
         expect(args.length).toBe(3);
     });
