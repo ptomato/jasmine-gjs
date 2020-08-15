@@ -107,6 +107,12 @@ rules:
   no-prototype-builtins: 'off'
   no-restricted-properties:
     - error
+    - object: imports
+      property: format
+      message: Use template strings
+    - object: Lang
+      property: copyProperties
+      message: Use Object.assign()
     - object: Lang
       property: bind
       message: Use arrow notation or Function.prototype.bind()
