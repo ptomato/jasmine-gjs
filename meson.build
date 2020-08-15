@@ -3,7 +3,7 @@ project('jasmine-gjs', version: '2.2.1', license: 'MIT',
 
 gjs_dep = dependency('gjs-1.0', required: false)
 if gjs_dep.found()
-    gjs = gjs_dep.get_pkgconfig_variable('gjs_console')
+    gjs = find_program(gjs_dep.get_pkgconfig_variable('gjs_console'))
 else
     gjs = find_program('gjs', 'gjs-console')
 endif
