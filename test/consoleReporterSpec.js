@@ -8,13 +8,13 @@ describe('Console reporter base class', function () {
 
     beforeEach(function () {
         timerSpies = {};
-        let timerSpy = (id) => {
+        let timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
         reporter = new ConsoleReporter.ConsoleReporter({
             timerFactory: timerSpy,
-            jasmineCorePath: jasmineCorePath,
+            jasmineCorePath,
         });
     });
 
@@ -29,10 +29,10 @@ describe('Console reporter base class', function () {
 
     it('purges Jasmine internals from stack traces', function () {
         let fakeStack = [
-            'foo' + jasmineCorePath,
-            'bar ' + jasmineCorePath,
+            `foo${jasmineCorePath}`,
+            `bar ${jasmineCorePath}`,
             'line of useful stack trace',
-            'baz ' + jasmineCorePath,
+            `baz ${jasmineCorePath}`,
         ].join('\n');
         let stackTrace = reporter.filterStack(fakeStack);
         expect(stackTrace).toMatch('line of useful stack trace');
@@ -83,7 +83,7 @@ describe('Console reporter base class', function () {
                 done();
             });
             reporter.specDone({status: 'passed'});
-            reporter.suiteDone({failedExpectations: [{ message: 'bananas' }] });
+            reporter.suiteDone({failedExpectations: [{message: 'bananas'}]});
             reporter.jasmineDone();
         });
     });

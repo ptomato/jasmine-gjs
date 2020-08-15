@@ -10,20 +10,20 @@ describe('Verbose console reporter', function () {
         out = (function () {
             let output = '';
             return {
-                print: function (str) {
+                print(str) {
                     output += str;
                 },
-                getOutput: function () {
+                getOutput() {
                     return output;
                 },
-                clear: function () {
+                clear() {
                     output = '';
-                }
+                },
             };
-        }());
+        })();
 
         timerSpies = {};
-        timerSpy = (id) => {
+        timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
@@ -35,7 +35,7 @@ describe('Verbose console reporter', function () {
         });
 
         // disable indentation for test purposes
-        spyOn(Utils, 'indent').and.callFake((str) => str);
+        spyOn(Utils, 'indent').and.callFake(str => str);
     });
 
     it('reports that the suite has started to the console', function () {
@@ -292,11 +292,11 @@ describe('Verbose console reporter', function () {
     it('displays all afterAll exceptions', function () {
         reporter.suiteDone({
             status: 'failed',
-            failedExpectations: [{ message: 'After All Exception' }],
+            failedExpectations: [{message: 'After All Exception'}],
         });
         reporter.suiteDone({
             status: 'failed',
-            failedExpectations: [{ message: 'Some Other Exception' }],
+            failedExpectations: [{message: 'Some Other Exception'}],
         });
         reporter.jasmineDone();
 

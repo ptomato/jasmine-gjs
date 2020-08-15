@@ -19,7 +19,7 @@ var Jasmine = new Lang.Class({
             ''),
     },
 
-    _init: function (props={}) {
+    _init(props = {}) {
         let jasmineCore;
         if (props.hasOwnProperty('jasmineCore')) {
             jasmineCore = props.jasmineCore;
@@ -47,23 +47,23 @@ var Jasmine = new Lang.Class({
         return this._jasmine.version;
     },
 
-    addReporter: function (reporter) {
+    addReporter(reporter) {
         reporter.jasmine_core_path = this._jasmineCoreFile.get_parent().get_path();
         this.env.addReporter(reporter);
         this._reportersCount++;
     },
 
-    _addSpecFile: function (file) {
+    _addSpecFile(file) {
         let absolutePath = file.get_path();
-        let shouldSkip = this.exclusions.some((pattern) => {
+        let shouldSkip = this.exclusions.some(pattern => {
             // Match globs against the absolute path
             if (GLib.pattern_match_simple(pattern, absolutePath))
                 return true;
             // Also match if the string matches at the end
-            if (GLib.pattern_match_simple('*/' + pattern, absolutePath))
+            if (GLib.pattern_match_simple(`*/${pattern}`, absolutePath))
                 return true;
             // Also match if the string matches the path at the end
-            return GLib.pattern_match_simple('*/' + pattern,
+            return GLib.pattern_match_simple(`*/${pattern}`,
                 file.get_parent().get_path());
         });
         if (shouldSkip)
@@ -72,8 +72,8 @@ var Jasmine = new Lang.Class({
             this.specFiles.push(absolutePath);
     },
 
-    addSpecFiles: function (filePaths) {
-        filePaths.forEach((filePath) => {
+    addSpecFiles(filePaths) {
+        filePaths.forEach(filePath => {
             let file = Gio.File.new_for_path(filePath);
             let type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
 
@@ -90,7 +90,7 @@ var Jasmine = new Lang.Class({
         });
     },
 
-    loadSpecs: function () {
+    loadSpecs() {
         let oldSearchPath = imports.searchPath.slice();  // make a copy
         this.specFiles.forEach(function (file) {
             let modulePath = GLib.path_get_dirname(file);
@@ -101,7 +101,7 @@ var Jasmine = new Lang.Class({
         });
     },
 
-    execute: function (files) {
+    execute(files) {
         if (files && files.length > 0)
             this.addSpecFiles(files);
 
@@ -110,7 +110,7 @@ var Jasmine = new Lang.Class({
     },
 
     // Install Jasmine API on the global object
-    installAPI: function (global) {
+    installAPI(global) {
         Lang.copyProperties(this._jasmineInterface, global);
     },
 });
@@ -127,11 +127,9 @@ function recurseDirectory(directory, func) {
         let filename = info.get_name();
         let file = enumerator.get_container().get_child(filename);
 
-        if (info.get_file_type() === Gio.FileType.DIRECTORY) {
+        if (info.get_file_type() === Gio.FileType.DIRECTORY)
             recurseDirectory(file, func);
-        } else {
-            if (filename.endsWith('.js'))
-                func(file);
-        }
+        else if (filename.endsWith('.js'))
+            func(file);
     }
 }

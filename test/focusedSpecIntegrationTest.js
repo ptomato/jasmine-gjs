@@ -29,7 +29,7 @@ describe('Focused specs', function () {
     });
 
     fdescribe('another focused describe', function () {
-        fit("is focused and will run", function () {
+        fit('is focused and will run', function () {
             expect(true).toBeTruthy();
         });
 

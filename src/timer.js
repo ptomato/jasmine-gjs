@@ -27,10 +27,10 @@ function installAPI(global) {
 function createDefaultTimer() {
     let startTime, elapsedTime;
     return {
-        start: function () {
+        start() {
             startTime = GLib.get_monotonic_time();
         },
-        elapsed: function () {
+        elapsed() {
             if (!elapsedTime)
                 elapsedTime = (GLib.get_monotonic_time() - startTime) / 1000;
             return elapsedTime;

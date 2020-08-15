@@ -9,20 +9,20 @@ describe('Default console reporter', function () {
         out = (function () {
             let output = '';
             return {
-                print: function (str) {
+                print(str) {
                     output += str;
                 },
-                getOutput: function () {
+                getOutput() {
                     return output;
                 },
-                clear: function () {
+                clear() {
                     output = '';
-                }
+                },
             };
-        }());
+        })();
 
         timerSpies = {};
-        let timerSpy = (id) => {
+        let timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
@@ -124,7 +124,7 @@ describe('Default console reporter', function () {
                 expected: false,
                 actual: true,
                 stack: 'fakeStack\nfakeStack',
-            }]
+            }],
         });
 
         out.clear();
@@ -138,7 +138,7 @@ describe('Default console reporter', function () {
         beforeEach(function () {
             reporter = new ConsoleReporter.DefaultReporter({
                 print: out.print,
-                showColors: true
+                showColors: true,
             });
         });
 
@@ -164,8 +164,8 @@ describe('Default console reporter', function () {
     });
 
     it('displays all afterAll exceptions', function () {
-        reporter.suiteDone({ failedExpectations: [{ message: 'After All Exception' }] });
-        reporter.suiteDone({ failedExpectations: [{ message: 'Some Other Exception' }] });
+        reporter.suiteDone({failedExpectations: [{message: 'After All Exception'}]});
+        reporter.suiteDone({failedExpectations: [{message: 'Some Other Exception'}]});
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/After All Exception/);

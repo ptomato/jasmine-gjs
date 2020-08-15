@@ -9,7 +9,7 @@ const System = imports.system;
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
 
-function run(_jasmine, argv, timeout=-1) {
+function run(_jasmine, argv, timeout = -1) {
     let [files, options] = Options.parseOptions(argv);
 
     if (options.exclude)
@@ -21,8 +21,7 @@ function run(_jasmine, argv, timeout=-1) {
         let junitPath = options.junit;
         if (!GLib.path_is_absolute(junitPath) &&
             GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') !== null)
-            junitPath = GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') + '/' +
-                junitPath;
+            junitPath = `${GLib.getenv('JASMINE_JUNIT_REPORTS_DIR')}/${junitPath}`;
         let junitFile = Gio.File.new_for_commandline_arg(junitPath);
 
         // Since people might want their report dir structure to mirror
@@ -43,7 +42,7 @@ function run(_jasmine, argv, timeout=-1) {
 
         let junitReporter = new JUnitReporter.JUnitReporter({
             timerFactory: Timer.createDefaultTimer,
-            print: function (str) {
+            print(str) {
                 junitStream.put_string(str, null);
             },
         });

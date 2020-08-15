@@ -1,0 +1,3 @@
+# Copied from Jasmine, use the original project's coding style
+lib/jasmine.js
+test/jasmineIntegrationTest.js

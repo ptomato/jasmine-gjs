@@ -9,17 +9,17 @@ describe('The TAP reporter', function () {
         out = (function () {
             let output = '';
             return {
-                print: function (str) {
+                print(str) {
                     output += str;
                 },
-                getOutput: function () {
+                getOutput() {
                     return output;
                 },
-                clear: function () {
+                clear() {
                     output = '';
-                }
+                },
             };
-        }());
+        })();
 
         reporter = new TapReporter.TapReporter({
             print: out.print,
@@ -27,7 +27,7 @@ describe('The TAP reporter', function () {
     });
 
     it('outputs a test plan', function () {
-        reporter.jasmineStarted({ totalSpecsDefined: 1 });
+        reporter.jasmineStarted({totalSpecsDefined: 1});
         reporter.specStarted({});
         reporter.specDone({
             fullName: 'foo',
@@ -39,7 +39,7 @@ describe('The TAP reporter', function () {
     });
 
     it('includes the total number of specs in the test plan', function () {
-        reporter.jasmineStarted({ totalSpecsDefined: 2 });
+        reporter.jasmineStarted({totalSpecsDefined: 2});
         reporter.specStarted({});
         reporter.specDone({
             fullName: 'foo',
@@ -56,7 +56,7 @@ describe('The TAP reporter', function () {
     });
 
     it('outputs an empty test plan if there were no specs', function () {
-        reporter.jasmineStarted({ totalSpecsDefined: 0 });
+        reporter.jasmineStarted({totalSpecsDefined: 0});
         reporter.jasmineDone();
 
         expect(out.getOutput()).toMatch(/1..0/);
@@ -245,7 +245,7 @@ describe('The TAP reporter', function () {
         reporter.suiteDone({
             status: 'failed',
             fullName: 'A suite',
-            failedExpectations: [{ message: 'An afterAll exception' }],
+            failedExpectations: [{message: 'An afterAll exception'}],
         });
         reporter.jasmineDone();
         expect(out.getOutput()).toMatch(/^not ok.*An afterAll exception/m);
