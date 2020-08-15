@@ -1,8 +1,7 @@
 /* exported configToArgs, loadConfig, prepareLauncher */
 
 const Format = imports.format;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 
 String.prototype.format = Format.format;
 

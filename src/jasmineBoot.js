@@ -1,8 +1,7 @@
 /* global jasmineImporter */
 /* exported Jasmine */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 const Lang = imports.lang;
 
 var Jasmine = class Jasmine {

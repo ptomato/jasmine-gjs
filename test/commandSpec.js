@@ -1,7 +1,6 @@
 /* global jasmineImporter */
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 const Mainloop = imports.mainloop;
 
 const Command = jasmineImporter.command;
@@ -42,14 +41,14 @@ describe('Jasmine command', function () {
         it('loads the verbose reporter', function () {
             Command.run(fakeJasmine, ['--verbose']);
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            const reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            const [reporter] = fakeJasmine.addReporter.calls.argsFor(0);
             expect(reporter.constructor).toBe(VerboseReporter.VerboseReporter);
         });
 
         it('loads the TAP reporter', function () {
             Command.run(fakeJasmine, ['--tap']);
             expect(fakeJasmine.addReporter).toHaveBeenCalled();
-            const reporter = fakeJasmine.addReporter.calls.argsFor(0)[0];
+            const [reporter] = fakeJasmine.addReporter.calls.argsFor(0);
             expect(reporter.constructor).toBe(TapReporter.TapReporter);
         });
 

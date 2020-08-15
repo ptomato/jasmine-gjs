@@ -1,6 +1,6 @@
 /* global jasmineImporter */
 
-const GLib = imports.gi.GLib;
+const {GLib} = imports.gi;
 
 const Utils = jasmineImporter.utils;
 

@@ -174,7 +174,7 @@ describe('The TAP reporter', function () {
 
         it('outputs messages on the test line', function () {
             const output = out.getOutput();
-            const testLine = output.split('\n')[0];
+            const [testLine] = output.split('\n');
             expect(testLine).toMatch(/^not ok.*Expected the earth and the sky\./);
             expect(testLine).toMatch(/^not ok.*Expectations exceeded\./);
         });
@@ -206,7 +206,7 @@ describe('The TAP reporter', function () {
         });
 
         it('prints no newlines on the test line', function () {
-            const testLine = out.getOutput().split('\n')[0];
+            const [testLine] = out.getOutput().split('\n');
             expect(testLine).toMatch(/^not ok.*A message.*on two lines/);
         });
 
