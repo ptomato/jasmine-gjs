@@ -22,7 +22,7 @@ describe('Default console reporter', function () {
         })();
 
         timerSpies = {};
-        let timerSpy = id => {
+        const timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };

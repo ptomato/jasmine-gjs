@@ -173,14 +173,14 @@ describe('The TAP reporter', function () {
         });
 
         it('outputs messages on the test line', function () {
-            let output = out.getOutput();
-            let testLine = output.split('\n')[0];
+            const output = out.getOutput();
+            const testLine = output.split('\n')[0];
             expect(testLine).toMatch(/^not ok.*Expected the earth and the sky\./);
             expect(testLine).toMatch(/^not ok.*Expectations exceeded\./);
         });
 
         it('outputs messages and stack traces as diagnostic lines', function () {
-            let diagnostics = out.getOutput().split('\n').slice(1);
+            const diagnostics = out.getOutput().split('\n').slice(1);
             expect(diagnostics).toMatch(/^#.*Expected the earth and the sky\./m);
             expect(diagnostics).toMatch(/^#.*Expectations exceeded\./m);
             expect(diagnostics).toMatch(/^#.*line 1/m);
@@ -206,12 +206,12 @@ describe('The TAP reporter', function () {
         });
 
         it('prints no newlines on the test line', function () {
-            let testLine = out.getOutput().split('\n')[0];
+            const testLine = out.getOutput().split('\n')[0];
             expect(testLine).toMatch(/^not ok.*A message.*on two lines/);
         });
 
         it('prints no newlines in the diagnostics', function () {
-            let diagnostics = out.getOutput().split('\n').slice(1);
+            const diagnostics = out.getOutput().split('\n').slice(1);
             expect(diagnostics).not.toMatch(/^[^#]/);
         });
     });

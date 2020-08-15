@@ -164,7 +164,7 @@ rules:
   object-shorthand: error
   operator-assignment: error
   operator-linebreak: error
-  # prefer-const: error
+  prefer-const: error
   # prefer-destructuring: error
   prefer-numeric-literals: error
   prefer-promise-reject-errors: error

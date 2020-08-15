@@ -7,10 +7,10 @@ const Lang = imports.lang;
 
 var Jasmine = class Jasmine {
     constructor({jasmineCore} = {jasmineCore: jasmineImporter.jasmine}) {
-        let jasmineCorePath = jasmineCore.__file__;
+        const jasmineCorePath = jasmineCore.__file__;
         this._jasmineCoreFile = Gio.File.new_for_path(jasmineCorePath);
 
-        let jasmineRequire = jasmineCore.getJasmineRequireObj();
+        const jasmineRequire = jasmineCore.getJasmineRequireObj();
         this._jasmine = jasmineRequire.core(jasmineRequire);
         this.env = this._jasmine.getEnv();
         this._jasmineInterface = jasmineRequire.interface(this._jasmine, this.env);
@@ -31,8 +31,8 @@ var Jasmine = class Jasmine {
     }
 
     _addSpecFile(file) {
-        let absolutePath = file.get_path();
-        let shouldSkip = this.exclusions.some(pattern => {
+        const absolutePath = file.get_path();
+        const shouldSkip = this.exclusions.some(pattern => {
             // Match globs against the absolute path
             if (GLib.pattern_match_simple(pattern, absolutePath))
                 return true;
@@ -51,8 +51,8 @@ var Jasmine = class Jasmine {
 
     addSpecFiles(filePaths) {
         filePaths.forEach(filePath => {
-            let file = Gio.File.new_for_path(filePath);
-            let type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
+            const file = Gio.File.new_for_path(filePath);
+            const type = file.query_file_type(Gio.FileQueryInfoFlags.NONE, null);
 
             switch (type) {
             case Gio.FileType.REGULAR:
@@ -68,10 +68,10 @@ var Jasmine = class Jasmine {
     }
 
     loadSpecs() {
-        let oldSearchPath = imports.searchPath.slice();  // make a copy
+        const oldSearchPath = imports.searchPath.slice();  // make a copy
         this.specFiles.forEach(function (file) {
-            let modulePath = GLib.path_get_dirname(file);
-            let moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
+            const modulePath = GLib.path_get_dirname(file);
+            const moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
             imports.searchPath.unshift(modulePath);
             void imports[moduleName];
             imports.searchPath = oldSearchPath;
@@ -93,7 +93,7 @@ var Jasmine = class Jasmine {
 };
 
 function recurseDirectory(directory, func) {
-    let enumerator = directory.enumerate_children('standard::*',
+    const enumerator = directory.enumerate_children('standard::*',
         Gio.FileQueryInfoFlags.NONE, null);
 
     let info;
@@ -101,8 +101,8 @@ function recurseDirectory(directory, func) {
         // COMPAT: use the following on GLib >= 2.36:
         // let file = enumerator.get_child(info);
         // let filename = file.get_basename();
-        let filename = info.get_name();
-        let file = enumerator.get_container().get_child(filename);
+        const filename = info.get_name();
+        const file = enumerator.get_container().get_child(filename);
 
         if (info.get_file_type() === Gio.FileType.DIRECTORY)
             recurseDirectory(file, func);

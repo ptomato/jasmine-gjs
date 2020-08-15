@@ -83,7 +83,7 @@ var ConsoleReporter = GObject.registerClass({
     static getStdout() {
         if (!this._stdout) {
             const FD_STDOUT = 1;
-            let fdstream = new Gio.UnixOutputStream({
+            const fdstream = new Gio.UnixOutputStream({
                 fd: FD_STDOUT,
                 close_fd: false,
             });
@@ -214,7 +214,7 @@ var DefaultReporter = GObject.registerClass(class DefaultReporter extends Consol
         }
 
         this._print('\n');
-        let seconds = Math.round(this.elapsedTime('main')) / 1000;
+        const seconds = Math.round(this.elapsedTime('main')) / 1000;
         this._print('\nFinished in %f s\n'.format(seconds));
 
         this._failedSuites.forEach(this._printSuiteFailureDetails, this);
@@ -243,7 +243,7 @@ var DefaultReporter = GObject.registerClass(class DefaultReporter extends Consol
     _printSpecFailureDetails(result, index) {
         this._print('\n%d) %s\n'.format(index + 1, result.fullName));
         result.failedExpectations.forEach(failedExpectation => {
-            let report = `Message:
+            const report = `Message:
 ${this._color(failedExpectation.message, RED)}
 Stack:
 ${this.filterStack(failedExpectation.stack)}

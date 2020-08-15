@@ -13,7 +13,7 @@ function Node(name) {
 
 function _attrsToString(attrs) {
     return Object.keys(attrs).map(key => {
-        let value = attrs[key].toString();
+        const value = attrs[key].toString();
         return ` ${key}="${GLib.markup_escape_text(value, -1)}"`;
     }).join('');
 }
@@ -22,9 +22,9 @@ function _prettyprint(node) {
     if (node.children.length === 0 && node.text.length === 0)
         return `<${node.name}${_attrsToString(node.attrs)}/>\n`;
 
-    let elementTop = `<${node.name}${_attrsToString(node.attrs)}>\n`;
-    let elementBottom = `</${node.name}>\n`;
-    let children = node.children.map(_prettyprint).join('');
+    const elementTop = `<${node.name}${_attrsToString(node.attrs)}>\n`;
+    const elementBottom = `</${node.name}>\n`;
+    const children = node.children.map(_prettyprint).join('');
     let text = GLib.markup_escape_text(node.text, -1).trim();
     if (text.length !== 0)
         text += '\n';

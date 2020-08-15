@@ -4,11 +4,11 @@ const ConsoleReporter = jasmineImporter.consoleReporter;
 
 describe('Console reporter base class', function () {
     let reporter, timerSpies;
-    let jasmineCorePath = 'path/to/jasmine/core/jasmine.js';
+    const jasmineCorePath = 'path/to/jasmine/core/jasmine.js';
 
     beforeEach(function () {
         timerSpies = {};
-        let timerSpy = id => {
+        const timerSpy = id => {
             timerSpies[id] = jasmine.createSpyObj('timer', ['start', 'elapsed']);
             return timerSpies[id];
         };
@@ -28,13 +28,13 @@ describe('Console reporter base class', function () {
     });
 
     it('purges Jasmine internals from stack traces', function () {
-        let fakeStack = [
+        const fakeStack = [
             `foo${jasmineCorePath}`,
             `bar ${jasmineCorePath}`,
             'line of useful stack trace',
             `baz ${jasmineCorePath}`,
         ].join('\n');
-        let stackTrace = reporter.filterStack(fakeStack);
+        const stackTrace = reporter.filterStack(fakeStack);
         expect(stackTrace).toMatch('line of useful stack trace');
         expect(stackTrace).not.toMatch(jasmineCorePath);
     });
@@ -85,7 +85,7 @@ describe('Console reporter base class', function () {
     });
 
     it('times individual suites', function () {
-        let suiteInfo = {id: 'foo'};
+        const suiteInfo = {id: 'foo'};
         reporter.suiteStarted(suiteInfo);
         expect(timerSpies['suite:foo'].start).toHaveBeenCalled();
 
@@ -95,7 +95,7 @@ describe('Console reporter base class', function () {
     });
 
     it('times individual specs', function () {
-        let specInfo = {
+        const specInfo = {
             id: 'foo',
             status: 'passed',
         };

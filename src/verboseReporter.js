@@ -22,7 +22,7 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
     jasmineDone() {
         this._print('\n');
         this._failedSpecs.forEach(this._printSpecFailureDetails, this);
-        let seconds = Math.round(this.elapsedTime('main')) / 1000;
+        const seconds = Math.round(this.elapsedTime('main')) / 1000;
 
         this._print(this._color('  %d passing'.format(this._passingCount), GREEN));
         this._print(' (%f s)\n'.format(seconds));

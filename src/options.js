@@ -54,12 +54,12 @@ const ARGS = {
 
 function parseOptions(argv) {
     argv = argv.slice();  // Make a copy
-    let namespace = {};
-    let files = [];
+    const namespace = {};
+    const files = [];
 
     Object.keys(ARGS).forEach(function (argName) {
-        let argInfo = ARGS[argName];
-        let dest = argInfo.dest || argName;
+        const argInfo = ARGS[argName];
+        const dest = argInfo.dest || argName;
         if (typeof argInfo.default !== 'undefined')
             namespace[dest] = argInfo.default;
     });
@@ -71,14 +71,14 @@ function parseOptions(argv) {
             continue;
         }
 
-        let argName = argvElement.slice(2);
+        const argName = argvElement.slice(2);
         if (!(argName in ARGS)) {
             printerr('warning: Unknown argument "%s"'.format(argName));
             continue;
         }
 
-        let argInfo = ARGS[argName];
-        let dest = argInfo.dest || argName;
+        const argInfo = ARGS[argName];
+        const dest = argInfo.dest || argName;
         let value;
         switch (argInfo.action) {
         case 'help':

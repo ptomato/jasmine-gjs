@@ -7,7 +7,7 @@ const System = imports.system;
 let runnerPath = '@pkglibexecdir@/jasmine-runner';
 if (GLib.getenv('JASMINE_UNINSTALLED')) {
     // Trick to use the uninstalled copy of Jasmine when running "make check".
-    let srcdir = GLib.getenv('SRCDIR');
+    const srcdir = GLib.getenv('SRCDIR');
     imports.searchPath.unshift(GLib.build_filenamev([srcdir, 'src']));
     const builddir = GLib.getenv('BUILDDIR');
     runnerPath = GLib.build_filenamev([builddir, 'jasmine-runner']);
@@ -18,21 +18,21 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
 const Config = imports.config;
 const Options = imports.options;
 
-let [files, options] = Options.parseOptions(ARGV);
+const [files, options] = Options.parseOptions(ARGV);
 
 if (options.version) {
     print('Jasmine @PACKAGE_VERSION@');
     System.exit(0);
 }
 
-let config = Config.loadConfig(options);
+const config = Config.loadConfig(options);
 
 // Launch Jasmine in a subprocess so we can control the environment
-let launcher = new Gio.SubprocessLauncher();
+const launcher = new Gio.SubprocessLauncher();
 Config.prepareLauncher(launcher, config);
-let args = Config.configToArgs(config, files, options);
+const args = Config.configToArgs(config, files, options);
 args.unshift(runnerPath);  // argv[0]
-let process = launcher.spawnv(args);
+const process = launcher.spawnv(args);
 process.wait(null);
 
 // Don't put any code after this; the return value is used as the exit code.
