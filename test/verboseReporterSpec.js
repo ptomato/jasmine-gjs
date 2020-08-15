@@ -262,6 +262,7 @@ describe('Verbose console reporter', function () {
                 status: 'passed',
             });
 
+            // eslint-disable-next-line no-control-regex
             expect(out.getOutput()).toMatch(/\x1b\[33m\(50 ms\)\x1b\[0m/);
         });
 
@@ -274,6 +275,7 @@ describe('Verbose console reporter', function () {
                 status: 'passed',
             });
 
+            // eslint-disable-next-line no-control-regex
             expect(out.getOutput()).toMatch(/\x1b\[31m\(80 ms\)\x1b\[0m/);
         });
 
@@ -285,6 +287,7 @@ describe('Verbose console reporter', function () {
                 description: 'a pending spec',
                 pendingReason: 'it was not ready',
             });
+            // eslint-disable-next-line no-control-regex
             expect(out.getOutput()).toMatch(/\x1b\[33m\(it was not ready\)\x1b\[0m/);
         });
     });
