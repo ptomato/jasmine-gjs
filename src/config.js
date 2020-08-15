@@ -13,7 +13,7 @@ function _makePathsAbsolute(configFile, paths) {
 // Make it legal to specify "some_option": "single_value" in the config file as
 // well as "some_option": ["multiple", "values"]
 function ensureArray(option) {
-    if (!(option instanceof Array))
+    if (!Array.isArray(option))
         return [option];
     return option;
 }
