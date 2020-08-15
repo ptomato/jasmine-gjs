@@ -2,13 +2,13 @@
 
 ## Updating to a new upstream release ##
 
-- [ ] Bump version in `configure.ac`.
-- [ ] Change upstream Jasmine version in the `$(srcdir)/lib/jasmine.js` rule in `Makefile.am`.
+- [ ] Bump version in `meson.build`.
+- [ ] Change upstream Jasmine version in the `lib/update-jasmine.sh` script.
 - [ ] Delete `lib/jasmine.js`.
-- [ ] Run `make` to regenerate `lib/jasmine.js` from the new upstream version.
+- [ ] Run `cd lib; ./update-jasmine.sh` to regenerate `lib/jasmine.js` from the new upstream version.
 - [ ] If making a new major release, update `test/jasmineIntegrationTest.js` and `test/focusedSpecIntegrationTest.js` from `https://github.com/jasmine/jasmine.github.io/tree/master/<VERSION>/src`. Currently we use `introduction.js`, `custom_equality.js`, `custom_matcher.js`, and `focused_specs.js`, but there may be new features that should be included as well. Strip the documentation comments and the weird indentation.
 - [ ] If making a new major release, see if there are any new features that we can use to improve jasmine-gjs's own tests.
-- [ ] Run `make distcheck`.
+- [ ] Run `meson test`.
 - [ ] Make a commit.
 
 ## Packaging: RPM ##
@@ -16,7 +16,7 @@
 - [ ] Update the version number in `jasmine-gjs.spec`.
 - [ ] Add a changelog entry in `jasmine-gjs.spec`.
 - [ ] Make any other necessary changes to `jasmine-gjs.spec`.
-- [ ] Run `make distcheck`
+- [ ] Run `meson test`
 - [ ] Copy `jasmine-gjs-<VERSION>.tar.xz` to `rpmbuild/SOURCES`.
 - [ ] Copy `jasmine-gjs.spec` to `rpmbuild/SPECS`.
 - [ ] Run `rpmbuild -ba /path/to/rpmbuild/SPECS/jasmine-gjs.spec` to ensure that everything builds OK.
