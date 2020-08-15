@@ -4,7 +4,6 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Mainloop = imports.mainloop;
-const System = imports.system;
 
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
