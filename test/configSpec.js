@@ -78,11 +78,8 @@ describe('Loading configuration', function () {
 
 describe('Configuration options to arguments', function () {
     it('lets command line arguments override config options', function () {
-        // COMPAT: spread operator in function args requires mozjs 27. This should read:
-        // let args = Config.configToArgs({ options: '--color' },
-        //   ...Options.parseOptions(['--no-color']));
-        const args = Config.configToArgs.apply(null, [{options: '--color'},
-            ...Options.parseOptions(['--no-color'])]);
+        const args = Config.configToArgs({options: '--color'},
+            ...Options.parseOptions(['--no-color']));
         expect(args.indexOf('--no-color')).toBeGreaterThan(args.indexOf('--color'));
     });
 
@@ -115,14 +112,13 @@ describe('Configuration options to arguments', function () {
     });
 
     it('adds exclusions from the command line', function () {
-        const args = Config.configToArgs.apply(null, [{},
-            ...Options.parseOptions(['--exclude', 'a.js'])]);
+        const args = Config.configToArgs({}, ...Options.parseOptions(['--exclude', 'a.js']));
         expect(args.join(' ')).toMatch('--exclude a.js');
     });
 
     it('combines exclusions from the command line and the config file', function () {
-        const args = Config.configToArgs.apply(null, [{exclude: 'b.js'},
-            ...Options.parseOptions(['--exclude', 'a.js'])]);
+        const args = Config.configToArgs({exclude: 'b.js'},
+            ...Options.parseOptions(['--exclude', 'a.js']));
         expect(args.join(' ')).toMatch('--exclude a.js');
         expect(args.join(' ')).toMatch('--exclude b.js');
     });
@@ -156,8 +152,7 @@ describe('Configuration options to arguments', function () {
     });
 
     it('passes the arguments on to the subprocess', function () {
-        const args = Config.configToArgs.apply(null, [{},
-            ...Options.parseOptions(['--color', 'spec.js'])]);
+        const args = Config.configToArgs({}, ...Options.parseOptions(['--color', 'spec.js']));
         expect(args).toContain('--color', 'spec.js');
     });
 
