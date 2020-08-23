@@ -1,5 +1,5 @@
 {
-    "exclude": ["test/fixtures", "test/focusedSpecIntegrationTest.js"],
+    "exclude": ["test/fixtures/*", "test/focusedSpecIntegrationTest.js"],
     "spec_files": "test",
     "options": "--verbose"
 }

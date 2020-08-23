@@ -113,10 +113,23 @@ describe('Jasmine boot', function () {
         expect(testJasmine.specFiles).toEqual([]);
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/someSpec.js`,
             `${SRCDIR}test/fixtures/otherSpec.js`,
+            `${SRCDIR}test/fixtures/path1/test.js`,
+            `${SRCDIR}test/fixtures/path2/test.js`,
+            `${SRCDIR}test/fixtures/someSpec.js`,
         ]);
         expect(testJasmine.specFiles.every(path => path.indexOf('notASpec.txt') === -1)).toBe(true);
+    });
+
+    it('adds spec files in different directories with the same name', function () {
+        testJasmine.addSpecFiles([
+            `${SRCDIR}test/fixtures/path1`,
+            `${SRCDIR}test/fixtures/path2`,
+        ]);
+        expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}test/fixtures/path1/test.js`,
+            `${SRCDIR}test/fixtures/path2/test.js`,
+        ]);
     });
 
     it('respects excluded files', function () {
@@ -124,13 +137,18 @@ describe('Jasmine boot', function () {
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
             `${SRCDIR}test/fixtures/someSpec.js`,
+            `${SRCDIR}test/fixtures/path1/test.js`,
+            `${SRCDIR}test/fixtures/path2/test.js`,
         ]);
     });
 
-    it('matches when the paths match', function () {
+    it('matches at the end of the containing path', function () {
         testJasmine.exclusions = ['test/fixtures'];
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
-        expect(testJasmine.specFiles).toMatchAllFiles([]);
+        expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}test/fixtures/path1/test.js`,
+            `${SRCDIR}test/fixtures/path2/test.js`,
+        ]);
     });
 
     it('can handle globs in excluded files', function () {
@@ -143,5 +161,14 @@ describe('Jasmine boot', function () {
         const fakeReporter = {};
         testJasmine.addReporter(fakeReporter);
         expect(fakeReporter.jasmine_core_path).toMatch('fake/jasmine/path');
+    });
+
+    it('imports spec files in different directories with the same name', function () {
+        testJasmine.addSpecFiles([
+            `${SRCDIR}test/fixtures/path1`,
+            `${SRCDIR}test/fixtures/path2`,
+        ]);
+        expect(() => testJasmine.loadSpecs()).toThrowError(Error,
+            'Catch this error to ensure this file is loaded');
     });
 });
