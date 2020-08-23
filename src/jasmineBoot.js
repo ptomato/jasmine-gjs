@@ -67,12 +67,21 @@ var Jasmine = class Jasmine {
 
     loadSpecs() {
         const oldSearchPath = imports.searchPath.slice();  // make a copy
+        let specImporter = imports['.'];
         this.specFiles.forEach(function (file) {
             const modulePath = GLib.path_get_dirname(file);
             const moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
+
+            // Backwards compatibility - let specs import modules from their own
+            // directories
             imports.searchPath.unshift(modulePath);
-            void imports[moduleName];
+            specImporter.searchPath.unshift(modulePath);
+            void specImporter[moduleName];
             imports.searchPath = oldSearchPath;
+
+            // Make a new copy of the importer in case we need to import another
+            // spec with the same filename, so it is not cached
+            specImporter = specImporter['.'];
         });
     }
 

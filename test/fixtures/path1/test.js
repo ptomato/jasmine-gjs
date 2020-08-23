@@ -1,0 +1,1 @@
+describe('A suite', function () {});
