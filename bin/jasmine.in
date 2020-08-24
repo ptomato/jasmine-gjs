@@ -1,6 +1,6 @@
 #!/usr/bin/env gjs
 
-const {Gio, GLib} = imports.gi;
+const {GLib} = imports.gi;
 const System = imports.system;
 
 let runnerPath = '@pkglibexecdir@/jasmine-runner';
@@ -27,8 +27,7 @@ if (options.version) {
 const config = Config.loadConfig(options);
 
 // Launch Jasmine in a subprocess so we can control the environment
-const launcher = new Gio.SubprocessLauncher();
-Config.prepareLauncher(launcher, config);
+const launcher = Config.prepareLauncher(config, options);
 let args = Config.configToArgs(config, files, options);
 args.unshift(runnerPath);  // argv[0]
 args = Config.wrapArgs(args, config, options);

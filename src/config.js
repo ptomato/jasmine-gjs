@@ -108,7 +108,11 @@ function configToArgs(config, specFiles = [], options = {}) {
     return retval;
 }
 
-function prepareLauncher(launcher, config) {
+function prepareLauncher(config, options = {}) {
+    let flags = Gio.SubprocessFlags.NONE;
+    if (options.debug)
+        flags |= Gio.SubprocessFlags.STDIN_INHERIT;
+    const launcher = new Gio.SubprocessLauncher({flags});
     if (config.environment) {
         Object.keys(config.environment).forEach(key => {
             if (config.environment[key] === null)
@@ -117,6 +121,7 @@ function prepareLauncher(launcher, config) {
                 launcher.setenv(key, config.environment[key], true);
         });
     }
+    return launcher;
 }
 
 function wrapArgs(args, config, options = {}) {
@@ -124,5 +129,10 @@ function wrapArgs(args, config, options = {}) {
         args.unshift(...options.interpreter.split(' '));
     else if (config.interpreter)
         args.unshift(...config.interpreter.split(' '));
+    if (options.debug) {
+        if (!options.interpreter && !config.interpreter)
+            args.unshift('gjs');
+        args.unshift(...options.debug.split(' '));
+    }
     return args;
 }
