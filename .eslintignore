@@ -1,3 +1,6 @@
 # Copied from Jasmine, use the original project's coding style
 lib/jasmine.js
 test/jasmineIntegrationTest.js
+
+# Deliberate syntax error
+test/fixtures/syntaxErrorSpec.js

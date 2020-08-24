@@ -117,6 +117,7 @@ describe('Jasmine boot', function () {
             `${SRCDIR}test/fixtures/path1/test.js`,
             `${SRCDIR}test/fixtures/path2/test.js`,
             `${SRCDIR}test/fixtures/someSpec.js`,
+            `${SRCDIR}test/fixtures/syntaxErrorSpec.js`,
         ]);
         expect(testJasmine.specFiles.every(path => path.indexOf('notASpec.txt') === -1)).toBe(true);
     });
@@ -133,7 +134,7 @@ describe('Jasmine boot', function () {
     });
 
     it('respects excluded files', function () {
-        testJasmine.exclusions = ['otherSpec.js'];
+        testJasmine.exclusions = ['otherSpec.js', 'syntaxErrorSpec.js'];
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
             `${SRCDIR}test/fixtures/someSpec.js`,
@@ -170,5 +171,10 @@ describe('Jasmine boot', function () {
         ]);
         expect(() => testJasmine.loadSpecs()).toThrowError(Error,
             'Catch this error to ensure this file is loaded');
+    });
+
+    it('does not bail out altogether if one of the specs has a syntax error', function () {
+        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures/syntaxErrorSpec.js`]);
+        expect(() => testJasmine.loadSpecs()).not.toThrow();
     });
 });

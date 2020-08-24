@@ -76,7 +76,20 @@ var Jasmine = class Jasmine {
             // directories
             imports.searchPath.unshift(modulePath);
             specImporter.searchPath.unshift(modulePath);
-            void specImporter[moduleName];
+            try {
+                void specImporter[moduleName];
+            } catch (err) {
+                if (!(err instanceof SyntaxError))
+                    throw err;
+                // Fake failing suite, to log a failure but continue on with
+                // other specs
+                globalThis.describe(file, function () {
+                    globalThis.it('did not import correctly', function () {
+                        const {fileName, lineNumber, columnNumber, message} = err;
+                        globalThis.fail(`${fileName}:${lineNumber}:${columnNumber}: ${message}`);
+                    });
+                });
+            }
             imports.searchPath = oldSearchPath;
 
             // Make a new copy of the importer in case we need to import another
