@@ -54,6 +54,7 @@ var Jasmine = class Jasmine {
 
             switch (type) {
             case Gio.FileType.REGULAR:
+            case Gio.FileType.UNKNOWN:
                 this._addSpecFile(file);
                 break;
             case Gio.FileType.DIRECTORY:
@@ -79,14 +80,20 @@ var Jasmine = class Jasmine {
             try {
                 void specImporter[moduleName];
             } catch (err) {
-                if (!(err instanceof SyntaxError))
+                if (!(err instanceof SyntaxError || err.name === 'ImportError'))
                     throw err;
                 // Fake failing suite, to log a failure but continue on with
                 // other specs
                 globalThis.describe(file, function () {
                     globalThis.it('did not import correctly', function () {
-                        const {fileName, lineNumber, columnNumber, message} = err;
-                        globalThis.fail(`${fileName}:${lineNumber}:${columnNumber}: ${message}`);
+                        let failureMessage;
+                        if (err instanceof SyntaxError) {
+                            const {fileName, lineNumber, columnNumber, message} = err;
+                            failureMessage = `${fileName}:${lineNumber}:${columnNumber}: ${message}`;
+                        } else {
+                            failureMessage = err.message;
+                        }
+                        globalThis.fail(failureMessage);
                     });
                 });
             }
