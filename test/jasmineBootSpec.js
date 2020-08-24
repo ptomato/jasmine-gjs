@@ -83,10 +83,12 @@ describe('Jasmine boot', function () {
         jasmine.addMatchers(customMatchers);
     });
 
-    it('ignores a nonexistent spec file', function () {
+    it('adds a nonexistent spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles(['non/existent/file.js']);
-        expect(testJasmine.specFiles).toEqual([]);
+        testJasmine.addSpecFiles([`${SRCDIR}non/existent/file.js`]);
+        expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}non/existent/file.js`,
+        ]);
     });
 
     it('adds a real spec file', function () {
@@ -175,6 +177,11 @@ describe('Jasmine boot', function () {
 
     it('does not bail out altogether if one of the specs has a syntax error', function () {
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures/syntaxErrorSpec.js`]);
+        expect(() => testJasmine.loadSpecs()).not.toThrow();
+    });
+
+    it('does not bail out altogether if one of the specs does not exist', function () {
+        testJasmine.addSpecFiles(['non/existent/file.js']);
         expect(() => testJasmine.loadSpecs()).not.toThrow();
     });
 });
