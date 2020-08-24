@@ -206,3 +206,41 @@ describe('Manipulating the environment', function () {
         expect(launcher.unsetenv).toHaveBeenCalledWith('MY_VARIABLE');
     });
 });
+
+describe('Manipulating the launcher command line', function () {
+    let args;
+
+    beforeEach(function () {
+        args = ['jasmine-runner', '--verbose', 'foo.js'];
+    });
+
+    it('executes jasmine-runner with a different interpreter binary', function () {
+        args = Config.wrapArgs(args, {
+            interpreter: '/path/to/custom/gjs',
+        });
+        expect(args).toEqual(['/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('allows adding arguments to the interpreter', function () {
+        args = Config.wrapArgs(args, {
+            interpreter: 'gjs -d',
+        });
+        expect(args).toEqual(['gjs', '-d', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('executes jasmine-runner with a different interpreter binary from the command line', function () {
+        args = Config.wrapArgs(args, {}, {
+            interpreter: '/path/to/custom/gjs',
+        });
+        expect(args).toEqual(['/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('gives the interpreter specified on the command line priority', function () {
+        args = Config.wrapArgs(args, {
+            interpreter: '/path/to/other/gjs',
+        }, {
+            interpreter: '/path/to/custom/gjs',
+        });
+        expect(args).toEqual(['/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+});

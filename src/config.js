@@ -1,4 +1,4 @@
-/* exported configToArgs, loadConfig, prepareLauncher */
+/* exported configToArgs, loadConfig, prepareLauncher, wrapArgs */
 
 const {Gio, GLib} = imports.gi;
 
@@ -49,6 +49,7 @@ function loadConfig(options, defaultFile = 'jasmine.json') {
         'environment',
         'exclude',
         'include_paths',
+        'interpreter',
         'options',
         'spec_files',
     ];
@@ -116,4 +117,12 @@ function prepareLauncher(launcher, config) {
                 launcher.setenv(key, config.environment[key], true);
         });
     }
+}
+
+function wrapArgs(args, config, options = {}) {
+    if (options.interpreter)
+        args.unshift(...options.interpreter.split(' '));
+    else if (config.interpreter)
+        args.unshift(...config.interpreter.split(' '));
+    return args;
 }

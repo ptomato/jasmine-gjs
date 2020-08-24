@@ -47,6 +47,10 @@ const ARGS = {
         help: 'do not execute the given spec (may include wildcards)',
         action: 'append',
     },
+    'interpreter': {
+        help: 'run with the given program instead of /usr/bin/env gjs',
+        action: 'store',
+    },
 };
 
 function parseOptions(argv) {
