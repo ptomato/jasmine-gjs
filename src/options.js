@@ -51,6 +51,12 @@ const ARGS = {
         help: 'run with the given program instead of /usr/bin/env gjs',
         action: 'store',
     },
+    'debug': {
+        help: 'run with a debugger [gdb --args]',
+        action: 'store',
+        nargs: '?',
+        const: 'gdb --args',
+    },
 };
 
 function parseOptions(argv) {

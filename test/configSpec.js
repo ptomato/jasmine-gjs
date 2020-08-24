@@ -182,28 +182,22 @@ describe('Configuration options to arguments', function () {
 });
 
 describe('Manipulating the environment', function () {
-    let launcher;
-
-    beforeEach(function () {
-        launcher = jasmine.createSpyObj('launcher', ['setenv', 'unsetenv']);
-    });
-
     it('sets environment variables in the launcher', function () {
-        Config.prepareLauncher(launcher, {
+        const launcher = Config.prepareLauncher({
             environment: {
                 'MY_VARIABLE': 'my_value',
             },
         });
-        expect(launcher.setenv).toHaveBeenCalledWith('MY_VARIABLE', 'my_value', true);
+        expect(launcher.getenv('MY_VARIABLE')).toEqual('my_value');
     });
 
     it('unsets environment variables with null values', function () {
-        Config.prepareLauncher(launcher, {
+        const launcher = Config.prepareLauncher({
             environment: {
                 'MY_VARIABLE': null,
             },
         });
-        expect(launcher.unsetenv).toHaveBeenCalledWith('MY_VARIABLE');
+        expect(launcher.getenv('MY_VARIABLE')).toBeNull();
     });
 });
 
@@ -242,5 +236,29 @@ describe('Manipulating the launcher command line', function () {
             interpreter: '/path/to/custom/gjs',
         });
         expect(args).toEqual(['/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('executes jasmine-runner with a debugger', function () {
+        args = Config.wrapArgs(args, {}, {
+            debug: 'gdb --args',
+        });
+        expect(args).toEqual(['gdb', '--args', 'gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('does not pass the gjs interpreter to the debugger if a custom one is configured', function () {
+        args = Config.wrapArgs(args, {
+            interpreter: '/path/to/custom/gjs',
+        }, {
+            debug: 'lldb --',
+        });
+        expect(args).toEqual(['lldb', '--', '/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+    });
+
+    it('does not pass the gjs interpreter to the debugger if a custom one is given on the command line', function () {
+        args = Config.wrapArgs(args, {}, {
+            debug: 'lldb --',
+            interpreter: '/path/to/custom/gjs',
+        });
+        expect(args).toEqual(['lldb', '--', '/path/to/custom/gjs', 'jasmine-runner', '--verbose', 'foo.js']);
     });
 });
