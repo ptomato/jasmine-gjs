@@ -1,9 +1,9 @@
 // This suite is Jasmine's documentation suite, exercising all of Jasmine's
 // functionality to make sure that the GJS test runner has hooked everything up
 // correctly. It's taken from the following pages:
-//    http://jasmine.github.io/2.2/introduction.html
-//    http://jasmine.github.io/2.2/custom_equality.html
-//    http://jasmine.github.io/2.2/custom_matcher.html
+//    https://jasmine.github.io/2.3/introduction.html
+//    https://jasmine.github.io/2.3/custom_equality.html
+//    https://jasmine.github.io/2.3/custom_matcher.html
 //
 // Note: the "long asynchronous specs" suite near the bottom takes 9 seconds to
 // run. It is marked pending by default. To run this suite anyway, define an
@@ -117,11 +117,20 @@ describe('Jasmine integration test', function () {
             expect(foo).not.toBeFalsy();
         });
 
-        it("The 'toContain' matcher is for finding an item in an Array", function () {
-            var a = ["foo", "bar", "baz"];
+        describe("The 'toContain' matcher", function () {
+            it("works for finding an item in an Array", function () {
+                var a = ["foo", "bar", "baz"];
 
-            expect(a).toContain("bar");
-            expect(a).not.toContain("quux");
+                expect(a).toContain("bar");
+                expect(a).not.toContain("quux");
+            });
+
+            it("also works for finding a substring", function () {
+                var a = "foo bar baz";
+
+                expect(a).toContain("bar");
+                expect(a).not.toContain("quux");
+            });
         });
 
         it("The 'toBeLessThan' matcher is for mathematical comparisons", function () {
@@ -153,11 +162,15 @@ describe('Jasmine integration test', function () {
                 return 1 + 2;
             };
             var bar = function () {
-                return a + 1;  // jshint ignore:line
+                return a + 1;
+            };
+            var baz = function () {
+                throw 'what';
             };
 
             expect(foo).not.toThrow();
             expect(bar).toThrow();
+            expect(baz).toThrow('what');
         });
 
         it("The 'toThrowError' matcher is for testing a specific thrown exception", function () {
@@ -169,6 +182,20 @@ describe('Jasmine integration test', function () {
             expect(foo).toThrowError(/bar/);
             expect(foo).toThrowError(TypeError);
             expect(foo).toThrowError(TypeError, "foo bar baz");
+        });
+    });
+
+    describe("A spec using the fail function", function () {
+        var foo = function (x, callBack) {
+            if (x) {
+                callBack();
+            }
+        };
+
+        it("should not call the callBack", function () {
+            foo(false, function () {
+                fail("Callback has been called");
+            });
         });
     });
 
@@ -360,7 +387,7 @@ describe('Jasmine integration test', function () {
             expect(foo.getBar).toHaveBeenCalled();
         });
 
-        it("should not effect other functions", function () {
+        it("should not affect other functions", function () {
             expect(bar).toEqual(123);
         });
 
@@ -392,7 +419,7 @@ describe('Jasmine integration test', function () {
             expect(foo.getBar).toHaveBeenCalled();
         });
 
-        it("should not effect other functions", function () {
+        it("should not affect other functions", function () {
             expect(bar).toEqual(123);
         });
 
@@ -414,7 +441,7 @@ describe('Jasmine integration test', function () {
                 }
             };
 
-            spyOn(foo, "getBar").and.callFake(function () {
+            spyOn(foo, "getBar").and.callFake(function (args, can, be, received) {
                 return 1001;
             });
 
@@ -426,7 +453,7 @@ describe('Jasmine integration test', function () {
             expect(foo.getBar).toHaveBeenCalled();
         });
 
-        it("should not effect other functions", function () {
+        it("should not affect other functions", function () {
             expect(bar).toEqual(123);
         });
 
@@ -816,6 +843,7 @@ describe('Jasmine integration test', function () {
                 var baseTime = new Date(2013, 9, 23);
                 // If you do not provide a base time to `mockDate` it will use the current date.
                 jasmine.clock().mockDate(baseTime);
+
                 jasmine.clock().tick(50);
                 expect(new Date().getTime()).toEqual(baseTime.getTime() + 50);
             });
@@ -855,6 +883,25 @@ describe('Jasmine integration test', function () {
                 done();
             }, 1000);
         });
+
+        describe("A spec using done.fail", function() {
+            var foo = function(x, callBack1, callBack2) {
+                if (x) {
+                    setTimeout(callBack1, 0);
+                } else {
+                    setTimeout(callBack2, 0);
+                }
+            };
+
+            it("should not call the second callBack", function(done) {
+                foo(true,
+                    done,
+                    function() {
+                        done.fail("Second callback has been called");
+                    }
+                );
+            });
+        });
     });
 
     describe("custom equality", function () {
@@ -862,7 +909,6 @@ describe('Jasmine integration test', function () {
             if (typeof first == "string" && typeof second == "string") {
                 return first[0] == second[1];
             }
-            return undefined;
         };
 
         beforeEach(function () {
