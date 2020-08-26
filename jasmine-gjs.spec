@@ -1,16 +1,17 @@
 Name: jasmine-gjs
-Version: 2.2.1
+Version: 2.3.0
 Release: 1%{?dist}
 Summary: A behavior-driven development framework for GJS
 
 License: MIT
 URL: https://github.com/ptomato/jasmine-gjs
-Source0: http://ptomato.name/downloads/jasmine-gjs-2.2.1.tar.xz
+Source0: http://ptomato.name/downloads/jasmine-gjs-2.3.0.tar.xz
 
 BuildArch: noarch
-BuildRequires: gjs >= 1.40
+BuildRequires: gjs >= 1.58.0
 BuildRequires: gobject-introspection
-Requires: gjs >= 1.40
+BuildRequires: meson >= 0.50.0
+Requires: gjs >= 1.58.0
 Requires: gobject-introspection
 
 %description
@@ -22,21 +23,16 @@ be displayed in your terminal.
 
 
 %build
-%configure
-make %{?_smp_mflags}
+%meson
+%meson_build
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-%make_install
+%meson_install
 
 
 %check
-make check
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
+%meson_test
 
 
 %files
@@ -45,10 +41,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc COPYING
 %doc %{_mandir}/man1/jasmine.1.gz
 %{_bindir}/jasmine
+%{_libexecdir}/%{name}/
 %{_datadir}/%{name}/
 
 
 %changelog
+* Mon Aug 24 2020 Philip Chimento <philip.chimento@gmail.com> - 2.3.0-1
+- Update to version 2.3.0.
 * Tue Jun 30 2015 Philip Chimento <philip.chimento@gmail.com> - 2.2.1-1
 - Update to version 2.2.1.
 * Sun May 17 2015 Philip Chimento <philip.chimento@gmail.com> - 2.2.0-1
