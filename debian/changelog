@@ -1,3 +1,12 @@
+jasmine-gjs (2.3.0-1) unstable; urgency=low
+
+  * Upgrade to 2.3.0
+  * control: Bump GJS requirement to 1.58.0
+  * control, rules: Meson build system
+  * control: Update to modern versions of standards and debhelper-compat
+
+ -- Philip Chimento <philip.chimento@gmail.com>  Tue, 25 Aug 2020 22:19:41 -0700
+
 jasmine-gjs (2.2.1-1) unstable; urgency=low
 
   * Upgrade to 2.2.1

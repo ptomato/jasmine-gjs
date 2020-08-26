@@ -2,11 +2,11 @@ Source: jasmine-gjs
 Section: devel
 Priority: optional
 Maintainer: Philip Chimento <philip.chimento@gmail.com>
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper-compat (= 12),
                gir1.2-glib-2.0,
                gjs (>= 1.58.0),
                meson (>= 0.50.0)
-Standards-Version: 3.9.5
+Standards-Version: 4.5.0
 Homepage: https://github.com/ptomato/jasmine-gjs
 
 Package: jasmine-gjs
