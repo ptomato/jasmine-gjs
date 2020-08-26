@@ -1,4 +1,4 @@
-project('jasmine-gjs', version: '2.3.0', license: 'MIT',
+project('jasmine-gjs', version: '2.3.4', license: 'MIT',
     meson_version: '>= 0.50.0')
 
 gjs_dep = dependency('gjs-1.0', required: false)
