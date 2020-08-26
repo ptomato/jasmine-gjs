@@ -23,8 +23,8 @@ describe('Ensure array', function () {
 describe('Loading configuration', function () {
     beforeEach(function () {
         // suppress messages
-        spyOn(globalThis, 'print');
-        spyOn(globalThis, 'printerr');
+        spyOn(window, 'print');
+        spyOn(window, 'printerr');
     });
 
     it('loads from a file', function () {
@@ -73,7 +73,7 @@ describe('Loading configuration', function () {
 
     it('warns about unrecognized config options', function () {
         Config.loadConfig({config: `${SRCDIR}test/fixtures/jasmine.json`});
-        expect(globalThis.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
+        expect(window.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
     });
 });
 
