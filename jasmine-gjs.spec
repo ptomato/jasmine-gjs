@@ -46,7 +46,7 @@ be displayed in your terminal.
 
 
 %changelog
-* Mon Aug 26 2020 Andy Holmes <andrew.g.r.holmes@gmail.com> - 2.3.4-1
+* Wed Aug 26 2020 Andy Holmes <andrew.g.r.holmes@gmail.com> - 2.3.4-1
 - Update to version 2.3.4.
 * Mon Aug 24 2020 Philip Chimento <philip.chimento@gmail.com> - 2.3.0-1
 - Update to version 2.3.0.
