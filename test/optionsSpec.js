@@ -41,4 +41,9 @@ describe('Argument parser', function () {
         Options.parseOptions(args);
         expect(args.length).toBe(3);
     });
+
+    it('does not treat a short option as a file', function () {
+        const [files] = Options.parseOptions(['-c', 'file.js']);
+        expect(files).toEqual(['file.js']);
+    });
 });
