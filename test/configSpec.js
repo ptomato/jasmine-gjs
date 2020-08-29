@@ -84,23 +84,6 @@ describe('Configuration options to arguments', function () {
         expect(args.indexOf('--no-color')).toBeGreaterThan(args.indexOf('--color'));
     });
 
-    it('adds one search path', function () {
-        const args = Config.configToArgs({include_paths: '/a'});
-        expect(args.join(' ')).toMatch('-I /a');
-    });
-
-    it('adds multiple search paths', function () {
-        const args = Config.configToArgs({include_paths: ['/a', '/b']});
-        expect(args.join(' ')).toMatch('-I /a');
-        expect(args.join(' ')).toMatch('-I /b');
-    });
-
-    it('adds search paths in the right order', function () {
-        const args = Config.configToArgs({include_paths: ['/a', '/b']});
-        const argstring = args.join(' ');
-        expect(argstring.indexOf('-I /a')).toBeLessThan(argstring.indexOf('-I /b'));
-    });
-
     it('adds one exclusion path', function () {
         const args = Config.configToArgs({exclude: 'a'});
         expect(args.join(' ')).toMatch('--exclude a');
@@ -160,13 +143,10 @@ describe('Configuration options to arguments', function () {
     it('passes the config file on to the subprocess as arguments', function () {
         const args = Config.configToArgs({
             environment: {},
-            include_paths: ['/path1', '/path2'],
             options: ['--color'],
             exclude: ['nonspec*.js'],
             spec_files: ['a.js', 'b.js'],
         }, [], {});
-        expect(args.join(' ')).toMatch('-I /path1');
-        expect(args.join(' ')).toMatch('-I /path2');
         expect(args.join(' ')).toMatch(/--exclude nonspec\*\.js/);
         expect(args).toContain('--color', 'a.js', 'b.js');
     });
@@ -178,6 +158,14 @@ describe('Configuration options to arguments', function () {
         }, ['spec1.js']);
         expect(args).toContain('spec1.js');
         expect(args).not.toContain('spec2.js');
+    });
+
+    it('does not pass include paths as -I arguments', function () {
+        const args = Config.configToArgs({
+            environment: {},
+            include_paths: ['/path1', '/path2'],
+        }, [], {});
+        expect(args.join(' ')).not.toMatch(/-I/);
     });
 });
 
@@ -198,6 +186,27 @@ describe('Manipulating the environment', function () {
             },
         });
         expect(launcher.getenv('MY_VARIABLE')).toBeNull();
+    });
+
+    it('adds one search path', function () {
+        const launcher = Config.prepareLauncher({include_paths: '/a'});
+        expect(launcher.getenv('GJS_PATH')).toEqual('/a');
+    });
+
+    it('adds multiple search paths in the right order', function () {
+        const launcher = Config.prepareLauncher({include_paths: ['/a', '/b']});
+        expect(launcher.getenv('GJS_PATH')).toEqual('/a:/b');
+    });
+
+    it('adds search paths with a lower priority than existing search paths', function () {
+        const oldPath = GLib.getenv('GJS_PATH');
+        GLib.setenv('GJS_PATH', '/a:/b', /* overwrite = */ true);
+        const launcher = Config.prepareLauncher({include_paths: ['/c', '/d']});
+        expect(launcher.getenv('GJS_PATH')).toEqual('/a:/b:/c:/d');
+        if (oldPath)
+            GLib.setenv('GJS_PATH', oldPath, /* overwrite = */ true);
+        else
+            GLib.unsetenv('GJS_PATH');
     });
 });
 

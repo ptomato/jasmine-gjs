@@ -115,6 +115,8 @@ describe('Jasmine boot', function () {
         expect(testJasmine.specFiles).toEqual([]);
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}test/fixtures/include/module.js`,
+            `${SRCDIR}test/fixtures/include/spec.js`,
             `${SRCDIR}test/fixtures/otherSpec.js`,
             `${SRCDIR}test/fixtures/path1/test.js`,
             `${SRCDIR}test/fixtures/path2/test.js`,
@@ -139,6 +141,8 @@ describe('Jasmine boot', function () {
         testJasmine.exclusions = ['otherSpec.js', 'syntaxErrorSpec.js'];
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}test/fixtures/include/module.js`,
+            `${SRCDIR}test/fixtures/include/spec.js`,
             `${SRCDIR}test/fixtures/someSpec.js`,
             `${SRCDIR}test/fixtures/path1/test.js`,
             `${SRCDIR}test/fixtures/path2/test.js`,
@@ -149,6 +153,8 @@ describe('Jasmine boot', function () {
         testJasmine.exclusions = ['test/fixtures'];
         testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
+            `${SRCDIR}test/fixtures/include/module.js`,
+            `${SRCDIR}test/fixtures/include/spec.js`,
             `${SRCDIR}test/fixtures/path1/test.js`,
             `${SRCDIR}test/fixtures/path2/test.js`,
         ]);

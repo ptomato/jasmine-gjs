@@ -83,12 +83,6 @@ function optionsToArgs(options) {
 
 function configToArgs(config, specFiles = [], options = {}) {
     let retval = [];
-    if (config.include_paths) {
-        ensureArray(config.include_paths).forEach(path => {
-            retval.push('-I');
-            retval.push(path);
-        });
-    }
     if (config.exclude) {
         ensureArray(config.exclude).forEach(exclude => {
             retval.push('--exclude');
@@ -120,6 +114,13 @@ function prepareLauncher(config, options = {}) {
             else
                 launcher.setenv(key, config.environment[key], true);
         });
+    }
+    if (config.include_paths) {
+        const existingPaths = launcher.getenv('GJS_PATH');
+        const paths = ensureArray(config.include_paths).slice();
+        if (existingPaths)
+            paths.unshift(existingPaths);
+        launcher.setenv('GJS_PATH', paths.join(':'), /* overwrite = */ true);
     }
     return launcher;
 }
