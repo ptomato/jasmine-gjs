@@ -73,14 +73,18 @@ function parseOptions(argv) {
 
     let argvElement;
     while ((argvElement = argv.shift())) {
-        if (!argvElement.startsWith('--')) {
+        if (!argvElement.startsWith('-')) {
             files.push(argvElement);
             continue;
         }
 
+        if (!argvElement.startsWith('--')) {
+            printerr(`warning: Unknown argument "${argvElement}"`);
+            continue;
+        }
         const argName = argvElement.slice(2);
         if (!(argName in ARGS)) {
-            printerr(`warning: Unknown argument "${argName}"`);
+            printerr(`warning: Unknown argument "${argvElement}"`);
             continue;
         }
 
