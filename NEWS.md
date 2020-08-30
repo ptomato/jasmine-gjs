@@ -5,6 +5,7 @@
 - Fixed a regression in 2.3.0 which caused include paths in the config file to be treated as additional spec paths.
 - The TAP reporter now outputs the test plan at the beginning instead of the end, as it should.
 - The internal copy of the Jasmine library has been updated to version 2.3.4, which brings in the minor bugfixes from 2.3.1, 2.3.2, and 2.3.3 as well.
+- Thanks to Andy Holmes for contributing.
 
 ## 2.3.0 - August 25, 2020
 

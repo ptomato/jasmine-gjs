@@ -54,4 +54,4 @@
 - [ ] Back in the `jasmine-gjs` repository, run `git tag <VERSION>`; version is just dotted numbers, e.g. `2.2.1`, no `v` or `Version`.
 - [ ] Push the tag to GitHub.
 - [ ] Copy the release notes from `NEWS.md` into https://github.com/ptomato/jasmine-gjs/releases
-- [ ] Attach the tarball to the release notes.
+- [ ] Attach the tarball and the sha256sum from the `meson-dist` directory to the release notes.
