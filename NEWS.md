@@ -1,5 +1,24 @@
 # Release Notes
 
+## 2.3.0 - August 25, 2020
+
+- Added a `--debug` command line flag which will run the tests under GDB or the debugger of your choice.
+- Added an `--interpreter` command line flag which allows using a different interpreter than whichever copy of `gjs` is in your path.
+- Fixed several bugs around the loading of spec files.
+- Improved error messages.
+- Jasmine GJS now depends on GJS 1.58.0.
+- The internal copy of the Jasmine library has been updated to 2.3.0, which brings:
+  - `done.fail()` for asynchronous specs.
+  - `toContain()` can be used for finding substrings.
+  - `toThrow()` can be used to check that a particular value was thrown.
+- Thanks to Niv Sardi, Bart Libert and Andy Holmes for contributing.
+
+## 2.2.1 - June 30, 2015
+
+- We now use `/usr/bin/env` to locate jasmine-gjs which allows Jasmine to be used with a development version of GJS. (Thanks to Sam Spilsbury)
+- We don't exit with `System.exit()` on success, because that bypasses the GJS interpreter shutdown actions. (Thanks to Sam Spilsbury)
+- The internal copy of the Jasmine library has been updated to version 2.2.1, which is a minor bugfix release.
+
 ## 2.2.0 - May 17, 2015
 
 - You can now specify file patterns to exclude using the `--exclude`

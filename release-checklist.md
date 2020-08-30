@@ -13,6 +13,7 @@
 - [ ] If making a new major release, see if there are any new features that we can use to improve jasmine-gjs's own tests.
 - [ ] Run `meson test`.
 - [ ] Make a commit.
+- [ ] Write release notes in `NEWS.md`.
 
 ## Packaging: RPM ##
 
@@ -52,5 +53,5 @@
 - [ ] Make a commit.
 - [ ] Back in the `jasmine-gjs` repository, run `git tag <VERSION>`; version is just dotted numbers, e.g. `2.2.1`, no `v` or `Version`.
 - [ ] Push the tag to GitHub.
-- [ ] Write [release notes](https://github.com/ptomato/jasmine-gjs/releases).
+- [ ] Copy the release notes from `NEWS.md` into https://github.com/ptomato/jasmine-gjs/releases
 - [ ] Attach the tarball to the release notes.
