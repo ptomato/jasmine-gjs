@@ -1,3 +1,9 @@
+jasmine-gjs (2.4.1-1) unstable; urgency=low
+
+  * Upgrade to 2.4.1
+
+ -- Andy Holmes <andrew.g.r.holmes@gmail.com>  Sat, 29 Aug 2020 19:46:28 -0700
+
 jasmine-gjs (2.3.4-1) unstable; urgency=low
 
   * Upgrade to 2.3.4
