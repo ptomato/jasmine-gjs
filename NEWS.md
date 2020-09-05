@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.6.4 - September 10, 2020
+
+- The internal copy of the Jasmine library has been updated to version 2.6.4, which brings:
+  - Add `toBeNegativeInfinity()`, `toBePositiveInfinity()`, `toHaveBeenCalledBefore()` matchers
+  - Add `spyOnProperty()` for get/set accessors
+  - Add support for ES6 sets to `toContain()` and `toEqual()`
+  - Bug fixes included in 2.6.0, 2.6.1, 2.6.2, 2.6.3 and 2.6.4
+- Thanks to Andy Holmes for contributing.
+
 ## 2.5.2 - September 10, 2020
 
 - The internal copy of the Jasmine library has been updated to version 2.5.2, which brings:
