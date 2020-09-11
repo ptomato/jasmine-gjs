@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.5.2 - September 4, 2020
+
+- The internal copy of the Jasmine library has been updated to version 2.5.2, which brings:
+  - Add `toBeGreaterThanOrEqual()` and `toBeLessThanOrEqual()` matchers
+  - Bug fixes included in 2.5.0, 2.5.1 and 2.5.2
+- Thanks to Andy Holmes for contributing.
+
 ## 2.4.1 - Sepetember 4, 2020
 
 - The internal copy of the Jasmine library has been updated to version 2.4.1, which brings:
