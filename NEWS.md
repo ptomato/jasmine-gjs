@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.6.4 - September 10, 2020
+## 2.6.4 - September 13, 2020
 
 - The internal copy of the Jasmine library has been updated to version 2.6.4, which brings:
   - Add `toBeNegativeInfinity()`, `toBePositiveInfinity()`, `toHaveBeenCalledBefore()` matchers
