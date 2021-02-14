@@ -28,7 +28,7 @@ var ConsoleReporter = GObject.registerClass({
         'jasmine-core-path': GObject.ParamSpec.string('jasmine-core-path',
             'Jasmine core path',
             'Path to Jasmine core module for stack trace purposes',
-            GObject.ParamFlags.READWRITE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            GObject.ParamFlags.READWRITE,
             '/nowhere'),
     },
 
