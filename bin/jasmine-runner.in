@@ -29,10 +29,7 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
 }
 
 const Command = jasmineImporter.command;
-const Timer = jasmineImporter.timer;
 const JasmineBoot = jasmineImporter.jasmineBoot;
-
-Timer.installAPI(globalThis);
 
 // Do not conflict with global "jasmine" object
 const _jasmine = new JasmineBoot.Jasmine();
