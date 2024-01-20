@@ -16,7 +16,7 @@ function _clearTimeoutInternal(id) {
 }
 
 // Installs the browser setTimeout/setInterval API on the given object. (Pass
-// window to get these available globally.)
+// globalThis to get these available globally.)
 function installAPI(global) {
     global.setTimeout = _setTimeoutInternal.bind(undefined, GLib.SOURCE_REMOVE);
     global.setInterval = _setTimeoutInternal.bind(undefined, GLib.SOURCE_CONTINUE);
