@@ -1,11 +1,10 @@
-/* global jasmineImporter */
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
-
-const Command = jasmineImporter.command;
-const JUnitReporter = jasmineImporter.junitReporter;
-const TapReporter = jasmineImporter.tapReporter;
-const VerboseReporter = jasmineImporter.verboseReporter;
+import * as Command from '../src/command.js';
+import * as JUnitReporter from '../src/junitReporter.js';
+import * as TapReporter from '../src/tapReporter.js';
+import * as VerboseReporter from '../src/verboseReporter.js';
 
 const {mainloop} = Command;
 

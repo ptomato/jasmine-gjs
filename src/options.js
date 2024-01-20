@@ -1,6 +1,4 @@
-/* exported parseOptions */
-
-const System = imports.system;
+import * as System from 'system';
 
 const ARGS = {
     'help': {
@@ -63,7 +61,7 @@ const ARGS = {
     },
 };
 
-function parseOptions(argv) {
+export function parseOptions(argv) {
     argv = argv.slice();  // Make a copy
     const namespace = {};
     const files = [];

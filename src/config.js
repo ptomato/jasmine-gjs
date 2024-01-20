@@ -1,6 +1,5 @@
-/* exported configToArgs, loadConfig, prepareLauncher, wrapArgs */
-
-const {Gio, GLib} = imports.gi;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 function _makePathsAbsolute(configFile, paths) {
     return paths.map(path => {
@@ -12,13 +11,13 @@ function _makePathsAbsolute(configFile, paths) {
 
 // Make it legal to specify "some_option": "single_value" in the config file as
 // well as "some_option": ["multiple", "values"]
-function ensureArray(option) {
+export function ensureArray(option) {
     if (!Array.isArray(option))
         return [option];
     return option;
 }
 
-function loadConfig(options, defaultFile = 'jasmine.json') {
+export function loadConfig(options, defaultFile = 'jasmine.json') {
     if (options['no-config'])
         return {};
 
@@ -83,7 +82,7 @@ function optionsToArgs(options) {
     return args;
 }
 
-function configToArgs(config, specFiles = [], options = {}) {
+export function configToArgs(config, specFiles = [], options = {}) {
     let retval = [];
     if (config.exclude) {
         ensureArray(config.exclude).forEach(exclude => {
@@ -104,7 +103,7 @@ function configToArgs(config, specFiles = [], options = {}) {
     return retval;
 }
 
-function prepareLauncher(config, options = {}) {
+export function prepareLauncher(config, options = {}) {
     let flags = Gio.SubprocessFlags.NONE;
     if (options.debug)
         flags |= Gio.SubprocessFlags.STDIN_INHERIT;
@@ -127,7 +126,7 @@ function prepareLauncher(config, options = {}) {
     return launcher;
 }
 
-function wrapArgs(args, config, options = {}) {
+export function wrapArgs(args, config, options = {}) {
     if (options.interpreter)
         args.unshift(...options.interpreter.split(' '));
     else if (config.interpreter)

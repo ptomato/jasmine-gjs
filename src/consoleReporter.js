@@ -1,9 +1,7 @@
-/* global jasmineImporter */
-/* exported DefaultReporter */
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 
-const {Gio, GObject} = imports.gi;
-
-const {indenter} = jasmineImporter.utils;
+import {indenter} from './utils.js';
 
 const YELLOW = '\x1b[33m';
 const GREEN = '\x1b[32m';
@@ -19,7 +17,7 @@ function createNoopTimer() {
     };
 }
 
-var ConsoleReporter = GObject.registerClass({
+export const ConsoleReporter = GObject.registerClass({
     Properties: {
         'show-colors': GObject.ParamSpec.boolean('show-colors', 'Show colors',
             'Whether to print color output',
@@ -186,7 +184,7 @@ var ConsoleReporter = GObject.registerClass({
 
 // This reporter has very nearly the same behaviour to Jasmine's default console
 // reporter.
-var DefaultReporter = GObject.registerClass(class DefaultReporter extends ConsoleReporter {
+export const DefaultReporter = GObject.registerClass(class DefaultReporter extends ConsoleReporter {
     jasmineStarted(info) {
         super.jasmineStarted(info);
         this._print('Started\n');

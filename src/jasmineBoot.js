@@ -1,9 +1,9 @@
 /* global jasmineImporter */
-/* exported Jasmine */
 
-const {Gio, GLib} = imports.gi;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-var Jasmine = class Jasmine {
+export const Jasmine = class Jasmine {
     constructor({jasmineCore} = {jasmineCore: jasmineImporter.jasmine}) {
         const jasmineCorePath = jasmineCore.__file__;
         this._jasmineCoreFile = Gio.File.new_for_path(jasmineCorePath);

@@ -1,6 +1,4 @@
-/* exported indenter */
-
-var indenter = {
+export const indenter = {
     indent(str, spaces) {
         return str.split('\n').map(line => {
             if (line === '')

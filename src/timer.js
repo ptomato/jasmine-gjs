@@ -1,9 +1,7 @@
-/* exported createDefaultTimer */
-
-const {GLib} = imports.gi;
+import GLib from 'gi://GLib';
 
 // Measures elapsed time in milliseconds.
-function createDefaultTimer() {
+export function createDefaultTimer() {
     let startTime, elapsedTime;
     return {
         start() {

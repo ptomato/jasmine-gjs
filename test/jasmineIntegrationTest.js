@@ -11,7 +11,7 @@
 
 /* global setInterval, setTimeout */
 
-const GLib = imports.gi.GLib;
+import GLib from 'gi://GLib';
 
 describe('Jasmine integration test', function () {
     describe("A suite", function () {

@@ -1,7 +1,5 @@
-/* global jasmineImporter */
-
-const VerboseReporter = jasmineImporter.verboseReporter;
-const {indenter} = jasmineImporter.utils;
+import * as VerboseReporter from '../src/verboseReporter.js';
+import {indenter} from '../src/utils.js';
 
 describe('Verbose console reporter', function () {
     let out, reporter, timerSpy, timerSpies;

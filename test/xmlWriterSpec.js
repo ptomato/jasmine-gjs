@@ -1,6 +1,4 @@
-/* global jasmineImporter */
-
-const XMLWriter = jasmineImporter.xmlWriter;
+import * as XMLWriter from '../src/xmlWriter.js';
 
 describe('XML writer', function () {
     let node;
