@@ -11,6 +11,9 @@ var Jasmine = class Jasmine {
         const jasmineRequire = jasmineCore.getJasmineRequireObj();
         this._jasmine = jasmineRequire.core(jasmineRequire);
         this.env = this._jasmine.getEnv();
+        this.env.configure({
+            random: false,
+        });
         this._jasmineInterface = jasmineRequire.interface(this._jasmine, this.env);
 
         this.exclusions = [];

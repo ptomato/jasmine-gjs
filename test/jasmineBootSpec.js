@@ -59,6 +59,7 @@ describe('Jasmine boot', function () {
             getEnv: jasmine.createSpy('getEnv').and.returnValue({
                 addReporter: jasmine.createSpy('addReporter'),
                 execute: jasmine.createSpy('execute'),
+                configure: jasmine.createSpy('configure'),
             }),
             Timer: jasmine.createSpy('Timer'),
             Expectation: {
