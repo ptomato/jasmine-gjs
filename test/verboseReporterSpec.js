@@ -1,7 +1,7 @@
 /* global jasmineImporter */
 
 const VerboseReporter = jasmineImporter.verboseReporter;
-const Utils = jasmineImporter.utils;
+const {indenter} = jasmineImporter.utils;
 
 describe('Verbose console reporter', function () {
     let out, reporter, timerSpy, timerSpies;
@@ -35,7 +35,7 @@ describe('Verbose console reporter', function () {
         });
 
         // disable indentation for test purposes
-        spyOn(Utils, 'indent').and.callFake(str => str);
+        spyOn(indenter, 'indent').and.callFake(str => str);
     });
 
     it('reports that the suite has started to the console', function () {

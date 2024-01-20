@@ -3,7 +3,7 @@
 
 const {GLib} = imports.gi;
 
-const Utils = jasmineImporter.utils;
+const {indenter} = jasmineImporter.utils;
 
 var Node = class Node {
     constructor(name) {
@@ -36,6 +36,6 @@ function _prettyprint(node) {
     if (text.length !== 0)
         text += '\n';
 
-    return elementTop + Utils.indent(children, 2) + Utils.indent(text, 2) +
+    return elementTop + indenter.indent(children, 2) + indenter.indent(text, 2) +
         elementBottom;
 }

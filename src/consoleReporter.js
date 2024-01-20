@@ -3,7 +3,7 @@
 
 const {Gio, GObject} = imports.gi;
 
-const Utils = jasmineImporter.utils;
+const {indenter} = jasmineImporter.utils;
 
 const YELLOW = '\x1b[33m';
 const GREEN = '\x1b[32m';
@@ -243,7 +243,7 @@ ${this._color(failedExpectation.message, RED)}
 Stack:
 ${this.filterStack(failedExpectation.stack)}
 `;
-            this._print(Utils.indent(report, 2));
+            this._print(indenter.indent(report, 2));
         });
     }
 
