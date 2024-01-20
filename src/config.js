@@ -132,7 +132,7 @@ function wrapArgs(args, config, options = {}) {
         args.unshift(...config.interpreter.split(' '));
     if (options.debug) {
         if (!options.interpreter && !config.interpreter)
-            args.unshift('gjs');
+            args.unshift('gjs', '-m');
         args.unshift(...options.debug.split(' '));
     }
     return args;

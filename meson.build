@@ -71,6 +71,6 @@ test_env.set('BUILDDIR', meson.current_build_dir())
 test_env.set('JASMINE_UNINSTALLED', 'yes')
 foreach t : tests
     test_file = files('test/@0@.js'.format(t))
-    test(t, gjs, args: ['jasmine', test_file, '--tap', '--no-config'],
+    test(t, gjs, args: ['-m', 'jasmine', test_file, '--tap', '--no-config'],
         env: test_env, protocol: 'tap')
 endforeach
