@@ -69,10 +69,11 @@ var Jasmine = class Jasmine {
         });
     }
 
-    loadSpecs() {
-        const oldSearchPath = imports.searchPath.slice();  // make a copy
-        let specImporter = imports['.'];
-        this.specFiles.forEach(function (file) {
+    async loadSpecs() {
+        await Promise.all(this.specFiles.map(async file => {
+            const oldSearchPath = imports.searchPath.slice();  // make a copy
+            let specImporter = imports['.'];
+
             const modulePath = GLib.path_get_dirname(file);
             const moduleName = GLib.path_get_basename(file).slice(0, -3);  // .js
 
@@ -80,8 +81,9 @@ var Jasmine = class Jasmine {
             // directories
             imports.searchPath.unshift(modulePath);
             specImporter.searchPath.unshift(modulePath);
+
             try {
-                void specImporter[moduleName];
+                await specImporter[moduleName];
             } catch (err) {
                 if (!(err instanceof SyntaxError || err.name === 'ImportError'))
                     throw err;
@@ -105,14 +107,14 @@ var Jasmine = class Jasmine {
             // Make a new copy of the importer in case we need to import another
             // spec with the same filename, so it is not cached
             specImporter = specImporter['.'];
-        });
+        }));
     }
 
-    execute(files) {
+    async execute(files) {
         if (files && files.length > 0)
             this.addSpecFiles(files);
 
-        this.loadSpecs();
+        await this.loadSpecs();
         this.env.execute();
     }
 

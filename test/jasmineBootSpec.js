@@ -178,7 +178,7 @@ describe('Jasmine boot', function () {
             `${SRCDIR}test/fixtures/path1`,
             `${SRCDIR}test/fixtures/path2`,
         ]);
-        expect(() => testJasmine.loadSpecs()).toThrowError(Error,
+        expectAsync(testJasmine.loadSpecs()).toBeRejectedWithError(Error,
             'Catch this error to ensure this file is loaded');
     });
 
