@@ -1,12 +1,13 @@
 /* global jasmineImporter */
 
 const {Gio, GLib} = imports.gi;
-const Mainloop = imports.mainloop;
 
 const Command = jasmineImporter.command;
 const JUnitReporter = jasmineImporter.junitReporter;
 const TapReporter = jasmineImporter.tapReporter;
 const VerboseReporter = jasmineImporter.verboseReporter;
+
+const {mainloop} = Command;
 
 describe('Jasmine command', function () {
     let fakeJasmine;
@@ -17,7 +18,7 @@ describe('Jasmine command', function () {
 
     beforeEach(function () {
         fakeJasmine = jasmine.createSpyObj('jasmine', ['addReporter', 'configureDefaultReporter', 'execute']);
-        spyOn(Mainloop, 'run');  // stub out system behaviour
+        spyOn(mainloop, 'run');  // stub out system behaviour
     });
 
     describe('running specs', function () {
@@ -107,7 +108,7 @@ describe('Jasmine command', function () {
         it('executes the Jasmine suite', function (done) {
             expect(Command.run(fakeJasmine, [])).toEqual(0);
             // fakeJasmine.execute() is started in idle
-            Mainloop.idle_add(function () {
+            GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
                 expect(fakeJasmine.execute).toHaveBeenCalled();
                 done();
             });
@@ -115,7 +116,7 @@ describe('Jasmine command', function () {
 
         it('runs the specified specs', function (done) {
             Command.run(fakeJasmine, ['spec/some/fileSpec.js', '--no-color']);
-            Mainloop.idle_add(function () {
+            GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
                 expect(fakeJasmine.execute).toHaveBeenCalledWith(['spec/some/fileSpec.js']);
                 done();
             });

@@ -1,11 +1,12 @@
 /* global jasmineImporter */
-/* exported run */
+/* exported run, mainloop */
 
 const {Gio, GLib} = imports.gi;
-const Mainloop = imports.mainloop;
 
 const Options = jasmineImporter.options;
 const Timer = jasmineImporter.timer;
+
+var mainloop = GLib.MainLoop.new(null, false);
 
 function run(_jasmine, argv, timeout = -1) {
     const [files, options] = Options.parseOptions(argv);
@@ -66,31 +67,31 @@ function run(_jasmine, argv, timeout = -1) {
         const ConsoleReporter = jasmineImporter.consoleReporter;
         reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
     }
-    reporter.connect('started', () => Mainloop.source_remove(timeoutId));
+    reporter.connect('started', () => GLib.source_remove(timeoutId));
     reporter.connect('complete', (_, success) => {
         if (!success)
             exitCode = 1;
-        Mainloop.quit('jasmine');
+        mainloop.quit();
     });
     _jasmine.addReporter(reporter);
 
     // This works around a limitation in GJS 1.40 where exceptions occurring
     // during module import are swallowed.
     if (timeout !== -1) {
-        timeoutId = Mainloop.timeout_add_seconds(timeout, function () {
+        timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, timeout, function () {
             if (options.tap)
                 print('Bail out! Test suite failed to start within 10 seconds');
             else
                 printerr('Test suite failed to start within 10 seconds');
             exitCode = 1;
-            Mainloop.quit('jasmine');
+            mainloop.quit();
         });
     }
 
     // This should start after the main loop starts, otherwise we will hit
     // Mainloop.run() only after several tests have already run. For consistency
     // we should guarantee that there is a main loop running during the tests.
-    Mainloop.idle_add(function () {
+    GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
         try {
             _jasmine.execute(files);
         } catch (e) {
@@ -103,12 +104,12 @@ function run(_jasmine, argv, timeout = -1) {
                 printerr(e.stack);
             }
             exitCode = 1;
-            Mainloop.quit('jasmine');
+            mainloop.quit();
         }
         return GLib.SOURCE_REMOVE;
     });
 
     // _jasmine.execute() queues up all the tests and runs them asynchronously.
-    Mainloop.run('jasmine');
+    mainloop.run();
     return exitCode;
 }
