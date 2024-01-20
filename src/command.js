@@ -8,7 +8,7 @@ const Timer = jasmineImporter.timer;
 
 var mainloop = GLib.MainLoop.new(null, false);
 
-function run(_jasmine, argv, timeout = -1) {
+async function run(_jasmine, argv, timeout = -1) {
     const [files, options] = Options.parseOptions(argv);
 
     if (options.exclude)
@@ -110,6 +110,6 @@ function run(_jasmine, argv, timeout = -1) {
     });
 
     // _jasmine.execute() queues up all the tests and runs them asynchronously.
-    mainloop.run();
+    await mainloop.runAsync();
     return exitCode;
 }

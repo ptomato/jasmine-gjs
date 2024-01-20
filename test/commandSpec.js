@@ -18,7 +18,7 @@ describe('Jasmine command', function () {
 
     beforeEach(function () {
         fakeJasmine = jasmine.createSpyObj('jasmine', ['addReporter', 'configureDefaultReporter', 'execute']);
-        spyOn(mainloop, 'run');  // stub out system behaviour
+        spyOn(mainloop, 'runAsync');  // stub out system behaviour
     });
 
     describe('running specs', function () {
@@ -106,7 +106,7 @@ describe('Jasmine command', function () {
         });
 
         it('executes the Jasmine suite', function (done) {
-            expect(Command.run(fakeJasmine, [])).toEqual(0);
+            expectAsync(Command.run(fakeJasmine, [])).toBeResolvedTo(0);
             // fakeJasmine.execute() is started in idle
             GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
                 expect(fakeJasmine.execute).toHaveBeenCalled();
