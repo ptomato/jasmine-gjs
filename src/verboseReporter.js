@@ -4,7 +4,7 @@
 const {GObject} = imports.gi;
 
 const {ConsoleReporter} = jasmineImporter.consoleReporter;
-const Utils = jasmineImporter.utils;
+const {indenter} = jasmineImporter.utils;
 
 const GRAY = '\x1b[38;5;246m';
 const YELLOW = '\x1b[33m';
@@ -39,14 +39,14 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
 
     suiteStarted(result) {
         super.suiteStarted(result);
-        this._print(Utils.indent(this._color(result.description, GRAY),
+        this._print(indenter.indent(this._color(result.description, GRAY),
             this._suiteLevel * 2));
         this._print('\n');
     }
 
     suiteDone(result) {
         if (result.status === 'disabled') {
-            this._print(Utils.indent(`${this._color('(disabled)', YELLOW)}\n`,
+            this._print(indenter.indent(`${this._color('(disabled)', YELLOW)}\n`,
                 this._suiteLevel * 2 + 2));
         }
 
@@ -71,7 +71,7 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
             failed: `${this._failureCount})`,
             disabled: 'x',
         };
-        this._print(Utils.indent(this._color(symbols[result.status],
+        this._print(indenter.indent(this._color(symbols[result.status],
             colors[result.status]), this._suiteLevel * 2 + 2));
         this._print(` ${result.description}`);
         if (result.time > 75)
@@ -87,9 +87,9 @@ var VerboseReporter = GObject.registerClass(class VerboseReporter extends Consol
         this._print(this._color(`${index + 1}) ${result.fullName}\n\n`, RED));
 
         result.failedExpectations.forEach(failedExpectation => {
-            this._print(Utils.indent(this._color(failedExpectation.message, GRAY), 2));
+            this._print(indenter.indent(this._color(failedExpectation.message, GRAY), 2));
             this._print('\n');
-            this._print(Utils.indent(this.filterStack(failedExpectation.stack), 4));
+            this._print(indenter.indent(this.filterStack(failedExpectation.stack), 4));
             this._print('\n\n');
         });
     }
