@@ -87,8 +87,8 @@ var Jasmine = class Jasmine {
                     throw err;
                 // Fake failing suite, to log a failure but continue on with
                 // other specs
-                window.describe(file, function () {
-                    window.it('did not import correctly', function () {
+                globalThis.describe(file, function () {
+                    globalThis.it('did not import correctly', function () {
                         let failureMessage;
                         if (err instanceof SyntaxError) {
                             const {fileName, lineNumber, columnNumber, message} = err;
@@ -96,7 +96,7 @@ var Jasmine = class Jasmine {
                         } else {
                             failureMessage = err.message;
                         }
-                        window.fail(failureMessage);
+                        globalThis.fail(failureMessage);
                     });
                 });
             }
