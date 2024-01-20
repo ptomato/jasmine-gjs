@@ -92,9 +92,7 @@ async function run(_jasmine, argv, timeout = -1) {
     // Mainloop.run() only after several tests have already run. For consistency
     // we should guarantee that there is a main loop running during the tests.
     GLib.idle_add(GLib.PRIORITY_DEFAULT, function () {
-        try {
-            _jasmine.execute(files);
-        } catch (e) {
+        _jasmine.execute(files).catch(e => {
             if (options.tap) {
                 // "Bail out!" has a special meaning to TAP harnesses
                 print('Bail out! Exception occurred inside Jasmine:', e);
@@ -105,7 +103,7 @@ async function run(_jasmine, argv, timeout = -1) {
             }
             exitCode = 1;
             mainloop.quit();
-        }
+        });
         return GLib.SOURCE_REMOVE;
     });
 
