@@ -24,6 +24,8 @@ jasmine_runner = configure_file(configuration: config,
     input: 'bin/jasmine-runner.in', output: 'jasmine-runner', install: true,
     install_dir: pkglibexecdir)
 
+meson.override_find_program('jasmine', jasmine)
+
 # Source code and Jasmine library
 
 install_data(
