@@ -47,6 +47,10 @@ const ARGS = {
         help: 'do not execute the given spec (may include wildcards)',
         action: 'append',
     },
+    'module': {
+        help: 'execute specs as module',
+        action: 'store_true',
+    },
     'interpreter': {
         help: 'run with the given program instead of /usr/bin/env gjs',
         action: 'store',

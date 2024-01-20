@@ -18,6 +18,7 @@ var Jasmine = class Jasmine {
 
         this.exclusions = [];
         this.specFiles = [];
+        this.module = false;
         this._reportersCount = 0;
     }
 
@@ -83,7 +84,10 @@ var Jasmine = class Jasmine {
             specImporter.searchPath.unshift(modulePath);
 
             try {
-                await specImporter[moduleName];
+                if (this.module)
+                    await import(`file://${file}`);
+                else
+                    await specImporter[moduleName];
             } catch (err) {
                 if (!(err instanceof SyntaxError || err.name === 'ImportError'))
                     throw err;

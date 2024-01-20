@@ -14,6 +14,9 @@ async function run(_jasmine, argv, timeout = -1) {
     if (options.exclude)
         _jasmine.exclusions = options.exclude;
 
+    if (options.module)
+        _jasmine.module = true;
+
     if (options.junit) {
         const JUnitReporter = jasmineImporter.junitReporter;
 
