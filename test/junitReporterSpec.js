@@ -1,9 +1,7 @@
-/* global jasmineImporter */
+import GLib from 'gi://GLib';
 
-const {GLib} = imports.gi;
-
-const JUnitReporter = jasmineImporter.junitReporter;
-const XMLWriter = jasmineImporter.xmlWriter;
+import * as JUnitReporter from '../src/junitReporter.js';
+import * as XMLWriter from '../src/xmlWriter.js';
 
 const SUITE_INFO = {
     id: 'foo',

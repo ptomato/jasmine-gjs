@@ -2,15 +2,13 @@
 // See http://llg.cubic.org/docs/junit/
 // Unfortunately, the JUnit format is woefully underspecified.
 
-/* global jasmineImporter */
-/* exported JUnitReporter */
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 
-const {GLib, GObject} = imports.gi;
+import {ConsoleReporter} from './consoleReporter.js';
+import * as XMLWriter from './xmlWriter.js';
 
-const {ConsoleReporter} = jasmineImporter.consoleReporter;
-const XMLWriter = jasmineImporter.xmlWriter;
-
-var JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleReporter {
+export const JUnitReporter = GObject.registerClass(class JUnitReporter extends ConsoleReporter {
     jasmineStarted(info) {
         this._currentSuite = null;
         super.jasmineStarted(info);

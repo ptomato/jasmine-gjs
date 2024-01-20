@@ -1,9 +1,8 @@
-/* global jasmineImporter */
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
-
-const Config = jasmineImporter.config;
-const Options = jasmineImporter.options;
+import * as Config from '../src/config.js';
+import * as Options from '../src/options.js';
 
 // This is in case we are running the tests from a build tree that is different
 // from the source tree, for example during 'meson test'.

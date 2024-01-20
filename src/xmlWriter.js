@@ -1,11 +1,8 @@
-/* global jasmineImporter */
-/* exported Node */
+import GLib from 'gi://GLib';
 
-const {GLib} = imports.gi;
+import {indenter} from './utils.js';
 
-const {indenter} = jasmineImporter.utils;
-
-var Node = class Node {
+export const Node = class Node {
     constructor(name) {
         this.name = name;
         this.attrs = {};

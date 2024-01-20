@@ -1,6 +1,4 @@
-/* global jasmineImporter */
-
-const {indenter} = jasmineImporter.utils;
+import {indenter} from '../src/utils.js';
 
 describe('Indent', function () {
     it('prepends spaces to a string', function () {

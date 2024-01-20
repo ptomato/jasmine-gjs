@@ -2,7 +2,7 @@
 
 /* global jasmineImporter */
 
-const {GLib} = imports.gi;
+import GLib from 'gi://GLib';
 
 // Create a separate GJS importer object for Jasmine modules, so that Jasmine's
 // modules are not exposed to test code (e.g. client code might have its own
@@ -13,23 +13,25 @@ const {GLib} = imports.gi;
 // registers a GType, and we cannot register two GTypes with the same name in
 // the same process.
 
+let base;
 if (GLib.getenv('JASMINE_UNINSTALLED')) {
     // Trick to use the uninstalled copy of Jasmine when running "make check".
     const srcdir = GLib.getenv('SRCDIR');
     globalThis.jasmineImporter = imports['.'];
     jasmineImporter.searchPath = [
-        GLib.build_filenamev([srcdir, 'src']),
         GLib.build_filenamev([srcdir, 'lib']),
     ];
+    base = `file://${GLib.build_filenamev([srcdir, 'src'])}`;
 } else {
     const oldSearchPath = imports.searchPath.slice();  // make a copy
     imports.searchPath.unshift('@datadir@');
     globalThis.jasmineImporter = imports['jasmine-gjs'];
     imports.searchPath = oldSearchPath;
+    base = 'file://@datadir@/jasmine-gjs';
 }
 
-const Command = jasmineImporter.command;
-const JasmineBoot = jasmineImporter.jasmineBoot;
+const Command = await import(`${base}/command.js`);
+const JasmineBoot = await import(`${base}/jasmineBoot.js`);
 
 // Do not conflict with global "jasmine" object
 const _jasmine = new JasmineBoot.Jasmine();

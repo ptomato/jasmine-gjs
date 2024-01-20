@@ -1,14 +1,11 @@
 // Reporter that outputs according to the Test Anything Protocol
 // See http://testanything.org/tap-specification.html
 
-/* global jasmineImporter */
-/* exported TapReporter */
+import GObject from 'gi://GObject';
 
-const {GObject} = imports.gi;
+import {ConsoleReporter} from './consoleReporter.js';
 
-const {ConsoleReporter} = jasmineImporter.consoleReporter;
-
-var TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporter {
+export const TapReporter = GObject.registerClass(class TapReporter extends ConsoleReporter {
     jasmineStarted(info) {
         super.jasmineStarted(info);
         this._print(`1..${info.totalSpecsDefined}\n`);

@@ -1,10 +1,7 @@
-/* global jasmineImporter */
-/* exported VerboseReporter */
+import GObject from 'gi://GObject';
 
-const {GObject} = imports.gi;
-
-const {ConsoleReporter} = jasmineImporter.consoleReporter;
-const {indenter} = jasmineImporter.utils;
+import {ConsoleReporter} from './consoleReporter.js';
+import {indenter} from './utils.js';
 
 const GRAY = '\x1b[38;5;246m';
 const YELLOW = '\x1b[33m';
@@ -13,7 +10,7 @@ const RED = '\x1b[31m';
 
 // This reporter, activated with --verbose on the command line, behaves very
 // similarly to Mocha's nicely formatted reporter.
-var VerboseReporter = GObject.registerClass(class VerboseReporter extends ConsoleReporter {
+export const VerboseReporter = GObject.registerClass(class VerboseReporter extends ConsoleReporter {
     jasmineStarted(info) {
         super.jasmineStarted(info);
         this._print('Started\n\n');

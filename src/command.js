@@ -1,14 +1,16 @@
-/* global jasmineImporter */
-/* exported run, mainloop */
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
-const {Gio, GLib} = imports.gi;
+import * as Options from './options.js';
+import * as Timer from './timer.js';
+import * as JUnitReporter from './junitReporter.js';
+import * as VerboseReporter from './verboseReporter.js';
+import * as TapReporter from './tapReporter.js';
+import * as ConsoleReporter from './consoleReporter.js';
 
-const Options = jasmineImporter.options;
-const Timer = jasmineImporter.timer;
+export const mainloop = GLib.MainLoop.new(null, false);
 
-var mainloop = GLib.MainLoop.new(null, false);
-
-async function run(_jasmine, argv, timeout = -1) {
+export async function run(_jasmine, argv, timeout = -1) {
     const [files, options] = Options.parseOptions(argv);
 
     if (options.exclude)
@@ -18,8 +20,6 @@ async function run(_jasmine, argv, timeout = -1) {
         _jasmine.module = true;
 
     if (options.junit) {
-        const JUnitReporter = jasmineImporter.junitReporter;
-
         let junitPath = options.junit;
         if (!GLib.path_is_absolute(junitPath) &&
             GLib.getenv('JASMINE_JUNIT_REPORTS_DIR') !== null)
@@ -60,16 +60,13 @@ async function run(_jasmine, argv, timeout = -1) {
     let exitCode = 0;
 
     let reporter;
-    if (options.verbose) {
-        const VerboseReporter = jasmineImporter.verboseReporter;
+    if (options.verbose)
         reporter = new VerboseReporter.VerboseReporter(reporterOptions);
-    } else if (options.tap) {
-        const TapReporter = jasmineImporter.tapReporter;
+    else if (options.tap)
         reporter = new TapReporter.TapReporter(reporterOptions);
-    } else {
-        const ConsoleReporter = jasmineImporter.consoleReporter;
+    else
         reporter = new ConsoleReporter.DefaultReporter(reporterOptions);
-    }
+
     reporter.connect('started', () => GLib.source_remove(timeoutId));
     reporter.connect('complete', (_, success) => {
         if (!success)
