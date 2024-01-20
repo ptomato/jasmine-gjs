@@ -36,4 +36,4 @@ const _jasmine = new JasmineBoot.Jasmine();
 _jasmine.installAPI(globalThis);
 
 // Don't put any code after this; the return value is used as the exit code.
-Command.run(_jasmine, ARGV, 10);
+await Command.run(_jasmine, ARGV, 10);
