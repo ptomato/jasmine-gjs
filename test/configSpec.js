@@ -251,7 +251,7 @@ describe('Manipulating the launcher command line', function () {
         args = Config.wrapArgs(args, {}, {
             debug: 'gdb --args',
         });
-        expect(args).toEqual(['gdb', '--args', 'gjs', 'jasmine-runner', '--verbose', 'foo.js']);
+        expect(args).toEqual(['gdb', '--args', 'gjs', '-m', 'jasmine-runner', '--verbose', 'foo.js']);
     });
 
     it('does not pass the gjs interpreter to the debugger if a custom one is configured', function () {
