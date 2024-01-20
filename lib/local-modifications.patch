@@ -1,34 +1,34 @@
---- lib/jasmine.js.orig	2020-08-24 22:31:16.866022768 -0700
-+++ lib/jasmine.js	2020-08-24 22:31:16.878022764 -0700
+--- jasmine.js.orig	2024-01-20 15:06:20.821078800 +0100
++++ jasmine.js	2024-01-20 15:07:10.360495593 +0100
 @@ -1,3 +1,4 @@
 +/* jscs:disable */
  /*
- Copyright (c) 2008-2015 Pivotal Labs
+ Copyright (c) 2008-2021 Pivotal Labs
  
-@@ -143,7 +144,7 @@
+@@ -319,7 +320,7 @@
    };
  
-   j$.isDomNode = function(obj) {
--    return obj.nodeType > 0;
-+    return obj.nodeType && obj.nodeType > 0;
+   j$.isAsymmetricEqualityTester_ = function(obj) {
+-    return obj ? j$.isA_('Function', obj.asymmetricMatch) : false;
++    return obj?.asymmetricMatch ? j$.isA_('Function', obj.asymmetricMatch) : false;
    };
  
-   j$.fnNameFor = function(func) {
-@@ -206,7 +207,7 @@
-   };
- 
+   j$.getType_ = function(value) {
+@@ -581,7 +582,7 @@
+    * @return {Boolean}
+    */
    j$.isSpy = function(putativeSpy) {
 -    if (!putativeSpy) {
 +    if (!putativeSpy || !putativeSpy.and) {
        return false;
      }
-     return putativeSpy.and instanceof j$.SpyStrategy &&
-@@ -2594,7 +2595,7 @@
-   };
+     return (
+@@ -2249,7 +2250,7 @@
+     };
  
-   function isAsymmetric(obj) {
--    return obj && j$.isA_('Function', obj.asymmetricMatch);
-+    return obj && obj.asymmetricMatch && j$.isA_('Function', obj.asymmetricMatch);
-   }
- 
-   function asymmetricMatch(a, b) {
+     this.describe = function(description, specDefinitions) {
+-      ensureIsNotNested('describe');
++      //ensureIsNotNested('describe');
+       ensureIsFunction(specDefinitions, 'describe');
+       var suite = suiteFactory(description);
+       if (specDefinitions.length > 0) {

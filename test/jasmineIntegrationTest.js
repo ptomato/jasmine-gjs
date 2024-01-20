@@ -647,7 +647,7 @@ describe('Jasmine integration test', function () {
         });
 
         it("is named, which helps in error reporting", function () {
-            expect(whatAmI.and.identity()).toEqual('whatAmI');
+            expect(whatAmI.and.identity).toEqual('whatAmI');
         });
 
         it("tracks that the spy was called", function () {
