@@ -66,6 +66,8 @@ function optionsToArgs(options) {
     const args = [options.color ? '--color' : '--no-color'];
     if (options.verbose)
         args.push('--verbose');
+    if (options.module)
+        args.push('--module');
     if (options.tap)
         args.push('--tap');
     if (options.junit) {
@@ -130,6 +132,8 @@ function wrapArgs(args, config, options = {}) {
         args.unshift(...options.interpreter.split(' '));
     else if (config.interpreter)
         args.unshift(...config.interpreter.split(' '));
+    else if (options.module)
+        args.push('--module');
     if (options.debug) {
         if (!options.interpreter && !config.interpreter)
             args.unshift('gjs', '-m');
