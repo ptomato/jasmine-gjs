@@ -41,6 +41,7 @@ install_data(
     'src/utils.js',
     'src/verboseReporter.js',
     'src/xmlWriter.js',
+    install_dir: join_paths(get_option('datadir'), meson.project_name()),
 )
 
 # Documentation
