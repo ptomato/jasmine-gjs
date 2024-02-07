@@ -3,17 +3,11 @@
 import GLib from 'gi://GLib';
 import * as System from 'system';
 
-let runnerPath = '@pkglibexecdir@/jasmine-runner';
-let base;
-if (GLib.getenv('JASMINE_UNINSTALLED')) {
-    // Trick to use the uninstalled copy of Jasmine when running "make check".
-    const srcdir = GLib.getenv('SRCDIR');
-    base = `file://${GLib.build_filenamev([srcdir, 'src'])}`;
-    const builddir = GLib.getenv('BUILDDIR');
-    runnerPath = GLib.build_filenamev([builddir, 'jasmine-runner']);
-} else {
-    base = 'file://@pkgdatadir@';
-}
+const pkglibexecdir = GLib.getenv('TEST_PKGLIBEXECDIR') ?? '@pkglibexecdir@';
+const pkgdatadir = GLib.getenv('TEST_PKGDATADIR') ?? '@pkgdatadir@';
+
+const runnerPath = `${pkglibexecdir}/jasmine-runner`;
+const base = `file://${pkgdatadir}`;
 
 const Config = await import(`${base}/config.js`);
 const Options = await import(`${base}/options.js`);

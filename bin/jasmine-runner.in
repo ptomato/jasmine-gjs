@@ -4,6 +4,9 @@
 
 import GLib from 'gi://GLib';
 
+const pkgdatadir = GLib.getenv('TEST_PKGDATADIR') ?? '@pkgdatadir@';
+const jasmineMod = GLib.getenv('TEST_JASMINE_MOD') ?? '@jasmine_mod@';
+
 // Create a separate GJS importer object for Jasmine modules, so that Jasmine's
 // modules are not exposed to test code (e.g. client code might have its own
 // Utils module.)
@@ -13,22 +16,12 @@ import GLib from 'gi://GLib';
 // registers a GType, and we cannot register two GTypes with the same name in
 // the same process.
 
-let base;
-if (GLib.getenv('JASMINE_UNINSTALLED')) {
-    // Trick to use the uninstalled copy of Jasmine when running "make check".
-    const srcdir = GLib.getenv('SRCDIR');
-    globalThis.jasmineImporter = imports['.'];
-    jasmineImporter.searchPath = [
-        GLib.build_filenamev([srcdir, 'lib']),
-    ];
-    base = `file://${GLib.build_filenamev([srcdir, 'src'])}`;
-} else {
-    const oldSearchPath = imports.searchPath.slice();  // make a copy
-    imports.searchPath.unshift(GLib.path_get_dirname('@pkgdatadir@'));
-    globalThis.jasmineImporter = imports['@jasmine_mod@'];
-    imports.searchPath = oldSearchPath;
-    base = 'file://@pkgdatadir@';
-}
+const oldSearchPath = imports.searchPath.slice();  // make a copy
+imports.searchPath.unshift(GLib.path_get_dirname(pkgdatadir));
+globalThis.jasmineImporter = imports[jasmineMod];
+imports.searchPath = oldSearchPath;
+
+const base = `file://${pkgdatadir}`;
 
 const Command = await import(`${base}/command.js`);
 const JasmineBoot = await import(`${base}/jasmineBoot.js`);
