@@ -12,7 +12,7 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
     const builddir = GLib.getenv('BUILDDIR');
     runnerPath = GLib.build_filenamev([builddir, 'jasmine-runner']);
 } else {
-    base = 'file://@datadir@/jasmine-gjs';
+    base = 'file://@pkgdatadir@';
 }
 
 const Config = await import(`${base}/config.js`);
