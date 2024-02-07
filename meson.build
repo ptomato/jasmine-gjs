@@ -19,9 +19,15 @@ uninstalled_jasmine_mod = 'lib'
 # Executables
 
 config = configuration_data()
-config.set('pkgdatadir', join_paths(get_option('prefix'), pkgdatadir))
-config.set('pkglibexecdir', join_paths(get_option('prefix'), pkglibexecdir))
-config.set('jasmine_mod', jasmine_mod)
+if meson.is_subproject()
+    config.set('pkgdatadir', uninstalled_pkgdatadir)
+    config.set('pkglibexecdir', uninstalled_pkglibexecdir)
+    config.set('jasmine_mod', uninstalled_jasmine_mod)
+else
+    config.set('pkgdatadir', join_paths(get_option('prefix'), pkgdatadir))
+    config.set('pkglibexecdir', join_paths(get_option('prefix'), pkglibexecdir))
+    config.set('jasmine_mod', jasmine_mod)
+endif
 config.set('PACKAGE_VERSION', meson.project_version())
 
 jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
