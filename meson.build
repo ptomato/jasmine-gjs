@@ -12,6 +12,10 @@ pkglibexecdir = join_paths(get_option('libexecdir'), meson.project_name())
 pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
 jasmine_mod = meson.project_name()
 
+uninstalled_pkglibexecdir = meson.current_build_dir()
+uninstalled_pkgdatadir = join_paths(meson.current_source_dir(), 'src')
+uninstalled_jasmine_mod = 'lib'
+
 # Executables
 
 config = configuration_data()
@@ -72,9 +76,9 @@ tests = [
     'xmlWriterSpec',
 ]
 test_env = environment()
-test_env.set('SRCDIR', meson.current_source_dir())
-test_env.set('BUILDDIR', meson.current_build_dir())
-test_env.set('JASMINE_UNINSTALLED', 'yes')
+test_env.set('TEST_PKGDATADIR', uninstalled_pkgdatadir)
+test_env.set('TEST_PKGLIBEXECDIR', uninstalled_pkglibexecdir)
+test_env.set('TEST_JASMINE_MOD', uninstalled_jasmine_mod)
 foreach t : tests
     test_file = files('test/@0@.js'.format(t))
     test(t, gjs, args: ['-m', jasmine, test_file, '--module', '--tap', '--no-config'],
