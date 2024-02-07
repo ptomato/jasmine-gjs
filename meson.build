@@ -25,36 +25,41 @@ config.set('jasmine_mod', jasmine_mod)
 config.set('PACKAGE_VERSION', meson.project_version())
 
 jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
-    output: 'jasmine', install: true, install_dir: 'bin')
+    output: 'jasmine', install: not meson.is_subproject(), install_dir: 'bin')
 
 jasmine_runner = configure_file(configuration: config,
-    input: 'bin/jasmine-runner.in', output: 'jasmine-runner', install: true,
+    input: 'bin/jasmine-runner.in', output: 'jasmine-runner',
+    install: not meson.is_subproject(),
     install_dir: pkglibexecdir)
 
 meson.override_find_program('jasmine', jasmine)
 
 # Source code and Jasmine library
 
-install_data(
-    'lib/jasmine.js',
-    'src/command.js',
-    'src/config.js',
-    'src/consoleReporter.js',
-    'src/jasmineBoot.js',
-    'src/junitReporter.js',
-    'src/options.js',
-    'src/tapReporter.js',
-    'src/timer.js',
-    'src/utils.js',
-    'src/verboseReporter.js',
-    'src/xmlWriter.js',
-    install_dir: pkgdatadir,
-)
+if not meson.is_subproject()
+    install_data(
+        'lib/jasmine.js',
+        'src/command.js',
+        'src/config.js',
+        'src/consoleReporter.js',
+        'src/jasmineBoot.js',
+        'src/junitReporter.js',
+        'src/options.js',
+        'src/tapReporter.js',
+        'src/timer.js',
+        'src/utils.js',
+        'src/verboseReporter.js',
+        'src/xmlWriter.js',
+        install_dir: pkgdatadir,
+    )
+endif
 
 # Documentation
 
-install_data('jasmine.man', rename: 'jasmine.1',
-    install_dir: join_paths(get_option('datadir'), 'man', 'man1'))
+if not meson.is_subproject()
+    install_data('jasmine.man', rename: 'jasmine.1',
+        install_dir: join_paths(get_option('datadir'), 'man', 'man1'))
+endif
 
 # Tests
 
