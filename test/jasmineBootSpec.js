@@ -3,10 +3,8 @@ import GLib from 'gi://GLib';
 
 import * as JasmineBoot from '../src/jasmineBoot.js';
 
-// This is in case we are running the tests from a build tree that is different
-// from the source tree, for example during 'make distcheck'.
-const envSrcdir = GLib.getenv('SRCDIR');
-const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
+const [testFile] = GLib.filename_from_uri(import.meta.url);
+const testDir = GLib.path_get_dirname(testFile);
 
 const customMatchers = {
     toMatchAllFiles() {
@@ -85,84 +83,84 @@ describe('Jasmine boot', function () {
 
     it('adds a nonexistent spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles([`${SRCDIR}non/existent/file.js`]);
+        testJasmine.addSpecFiles([`${testDir}/non/existent/file.js`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}non/existent/file.js`,
+            `${testDir}/non/existent/file.js`,
         ]);
     });
 
     it('adds a real spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures/someSpec.js`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures/someSpec.js`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/someSpec.js`,
+            `${testDir}/fixtures/someSpec.js`,
         ]);
     });
 
     it('adds more than one spec file', function () {
         expect(testJasmine.specFiles).toEqual([]);
         testJasmine.addSpecFiles([
-            `${SRCDIR}test/fixtures/someSpec.js`,
-            `${SRCDIR}test/fixtures/otherSpec.js`,
+            `${testDir}/fixtures/someSpec.js`,
+            `${testDir}/fixtures/otherSpec.js`,
         ]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/someSpec.js`,
-            `${SRCDIR}test/fixtures/otherSpec.js`,
+            `${testDir}/fixtures/someSpec.js`,
+            `${testDir}/fixtures/otherSpec.js`,
         ]);
     });
 
     it('adds a whole directory of spec files', function () {
         expect(testJasmine.specFiles).toEqual([]);
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/include/module.js`,
-            `${SRCDIR}test/fixtures/include/spec.js`,
-            `${SRCDIR}test/fixtures/otherSpec.js`,
-            `${SRCDIR}test/fixtures/path1/test.js`,
-            `${SRCDIR}test/fixtures/path2/test.js`,
-            `${SRCDIR}test/fixtures/someSpec.js`,
-            `${SRCDIR}test/fixtures/syntaxErrorSpec.js`,
+            `${testDir}/fixtures/include/module.js`,
+            `${testDir}/fixtures/include/spec.js`,
+            `${testDir}/fixtures/otherSpec.js`,
+            `${testDir}/fixtures/path1/test.js`,
+            `${testDir}/fixtures/path2/test.js`,
+            `${testDir}/fixtures/someSpec.js`,
+            `${testDir}/fixtures/syntaxErrorSpec.js`,
         ]);
         expect(testJasmine.specFiles.every(path => path.indexOf('notASpec.txt') === -1)).toBe(true);
     });
 
     it('adds spec files in different directories with the same name', function () {
         testJasmine.addSpecFiles([
-            `${SRCDIR}test/fixtures/path1`,
-            `${SRCDIR}test/fixtures/path2`,
+            `${testDir}/fixtures/path1`,
+            `${testDir}/fixtures/path2`,
         ]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/path1/test.js`,
-            `${SRCDIR}test/fixtures/path2/test.js`,
+            `${testDir}/fixtures/path1/test.js`,
+            `${testDir}/fixtures/path2/test.js`,
         ]);
     });
 
     it('respects excluded files', function () {
         testJasmine.exclusions = ['otherSpec.js', 'syntaxErrorSpec.js'];
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/include/module.js`,
-            `${SRCDIR}test/fixtures/include/spec.js`,
-            `${SRCDIR}test/fixtures/someSpec.js`,
-            `${SRCDIR}test/fixtures/path1/test.js`,
-            `${SRCDIR}test/fixtures/path2/test.js`,
+            `${testDir}/fixtures/include/module.js`,
+            `${testDir}/fixtures/include/spec.js`,
+            `${testDir}/fixtures/someSpec.js`,
+            `${testDir}/fixtures/path1/test.js`,
+            `${testDir}/fixtures/path2/test.js`,
         ]);
     });
 
     it('matches at the end of the containing path', function () {
         testJasmine.exclusions = ['test/fixtures'];
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([
-            `${SRCDIR}test/fixtures/include/module.js`,
-            `${SRCDIR}test/fixtures/include/spec.js`,
-            `${SRCDIR}test/fixtures/path1/test.js`,
-            `${SRCDIR}test/fixtures/path2/test.js`,
+            `${testDir}/fixtures/include/module.js`,
+            `${testDir}/fixtures/include/spec.js`,
+            `${testDir}/fixtures/path1/test.js`,
+            `${testDir}/fixtures/path2/test.js`,
         ]);
     });
 
     it('can handle globs in excluded files', function () {
         testJasmine.exclusions = ['*.js'];
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures`]);
         expect(testJasmine.specFiles).toMatchAllFiles([]);
     });
 
@@ -174,15 +172,15 @@ describe('Jasmine boot', function () {
 
     it('imports spec files in different directories with the same name', function () {
         testJasmine.addSpecFiles([
-            `${SRCDIR}test/fixtures/path1`,
-            `${SRCDIR}test/fixtures/path2`,
+            `${testDir}/fixtures/path1`,
+            `${testDir}/fixtures/path2`,
         ]);
         expectAsync(testJasmine.loadSpecs()).toBeRejectedWithError(Error,
             'Catch this error to ensure this file is loaded');
     });
 
     it('does not bail out altogether if one of the specs has a syntax error', function () {
-        testJasmine.addSpecFiles([`${SRCDIR}test/fixtures/syntaxErrorSpec.js`]);
+        testJasmine.addSpecFiles([`${testDir}/fixtures/syntaxErrorSpec.js`]);
         expect(() => testJasmine.loadSpecs()).not.toThrow();
     });
 

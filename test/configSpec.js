@@ -4,10 +4,8 @@ import GLib from 'gi://GLib';
 import * as Config from '../src/config.js';
 import * as Options from '../src/options.js';
 
-// This is in case we are running the tests from a build tree that is different
-// from the source tree, for example during 'meson test'.
-const envSrcdir = GLib.getenv('SRCDIR');
-const SRCDIR = envSrcdir ? `${envSrcdir}/` : '';
+const [testFile] = GLib.filename_from_uri(import.meta.url);
+const testDir = GLib.path_get_dirname(testFile);
 
 describe('Ensure array', function () {
     it('does not change an array', function () {
@@ -27,7 +25,7 @@ describe('Loading configuration', function () {
     });
 
     it('loads from a file', function () {
-        const config = Config.loadConfig({config: `${SRCDIR}test/fixtures/jasmine.json`});
+        const config = Config.loadConfig({config: `${testDir}/fixtures/jasmine.json`});
         expect(config.a).toEqual('b');
         expect(config.c).toEqual('d');
     });
@@ -35,7 +33,7 @@ describe('Loading configuration', function () {
     it("doesn't load the file if no-config specified", function () {
         const config = Config.loadConfig({
             'no-config': true,
-            config: `${SRCDIR}test/fixtures/jasmine.json`,
+            config: `${testDir}/fixtures/jasmine.json`,
         });
         const keys = Object.keys(config);
         expect(keys).not.toContain('a');
@@ -43,7 +41,7 @@ describe('Loading configuration', function () {
     });
 
     it('loads the default file if none given', function () {
-        const config = Config.loadConfig({}, `${SRCDIR}test/fixtures/jasmine.json`);
+        const config = Config.loadConfig({}, `${testDir}/fixtures/jasmine.json`);
         expect(config.a).toEqual('b');
         expect(config.c).toEqual('d');
     });
@@ -58,20 +56,20 @@ describe('Loading configuration', function () {
 
     it('errors out if the file is invalid', function () {
         expect(() => Config.loadConfig({
-            config: `${SRCDIR}test/fixtures/invalid.json`,
+            config: `${testDir}/fixtures/invalid.json`,
         })).toThrow();
     });
 
     it("resolves paths relative to the config file's location", function () {
-        const config = Config.loadConfig({config: `${SRCDIR}test/fixtures/path.json`});
-        const location = Gio.File.new_for_path(`${SRCDIR}test/fixtures`);
+        const config = Config.loadConfig({config: `${testDir}/fixtures/path.json`});
+        const location = Gio.File.new_for_path(`${testDir}/fixtures`);
 
         expect(config.include_paths).toContain(location.get_path());
         expect(config.spec_files).toContain(location.get_child('someSpec.js').get_path());
     });
 
     it('warns about unrecognized config options', function () {
-        Config.loadConfig({config: `${SRCDIR}test/fixtures/jasmine.json`});
+        Config.loadConfig({config: `${testDir}/fixtures/jasmine.json`});
         expect(globalThis.printerr).toHaveBeenCalledWith(jasmine.stringMatching(/^warning: /));
     });
 });
