@@ -9,12 +9,15 @@ else
 endif
 
 pkglibexecdir = join_paths(get_option('libexecdir'), meson.project_name())
+pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
+jasmine_mod = meson.project_name()
 
 # Executables
 
 config = configuration_data()
-config.set('datadir', join_paths(get_option('prefix'), get_option('datadir')))
+config.set('pkgdatadir', join_paths(get_option('prefix'), pkgdatadir))
 config.set('pkglibexecdir', join_paths(get_option('prefix'), pkglibexecdir))
+config.set('jasmine_mod', jasmine_mod)
 config.set('PACKAGE_VERSION', meson.project_version())
 
 jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
@@ -41,7 +44,7 @@ install_data(
     'src/utils.js',
     'src/verboseReporter.js',
     'src/xmlWriter.js',
-    install_dir: join_paths(get_option('datadir'), meson.project_name()),
+    install_dir: pkgdatadir,
 )
 
 # Documentation

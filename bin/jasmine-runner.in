@@ -24,10 +24,10 @@ if (GLib.getenv('JASMINE_UNINSTALLED')) {
     base = `file://${GLib.build_filenamev([srcdir, 'src'])}`;
 } else {
     const oldSearchPath = imports.searchPath.slice();  // make a copy
-    imports.searchPath.unshift('@datadir@');
-    globalThis.jasmineImporter = imports['jasmine-gjs'];
+    imports.searchPath.unshift(GLib.path_get_dirname('@pkgdatadir@'));
+    globalThis.jasmineImporter = imports['@jasmine_mod@'];
     imports.searchPath = oldSearchPath;
-    base = 'file://@datadir@/jasmine-gjs';
+    base = 'file://@pkgdatadir@';
 }
 
 const Command = await import(`${base}/command.js`);
