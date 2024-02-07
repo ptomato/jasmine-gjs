@@ -75,12 +75,14 @@ tests = [
     'verboseReporterSpec',
     'xmlWriterSpec',
 ]
-test_env = environment()
-test_env.set('TEST_PKGDATADIR', uninstalled_pkgdatadir)
-test_env.set('TEST_PKGLIBEXECDIR', uninstalled_pkglibexecdir)
-test_env.set('TEST_JASMINE_MOD', uninstalled_jasmine_mod)
-foreach t : tests
-    test_file = files('test/@0@.js'.format(t))
-    test(t, gjs, args: ['-m', jasmine, test_file, '--module', '--tap', '--no-config'],
-        env: test_env, protocol: 'tap')
-endforeach
+if not meson.is_subproject()
+    test_env = environment()
+    test_env.set('TEST_PKGDATADIR', uninstalled_pkgdatadir)
+    test_env.set('TEST_PKGLIBEXECDIR', uninstalled_pkglibexecdir)
+    test_env.set('TEST_JASMINE_MOD', uninstalled_jasmine_mod)
+    foreach t : tests
+        test_file = files('test/@0@.js'.format(t))
+        test(t, gjs, args: ['-m', jasmine, test_file, '--module', '--tap', '--no-config'],
+            env: test_env, protocol: 'tap')
+    endforeach
+endif
