@@ -3,6 +3,7 @@
 /* global jasmineImporter */
 
 import GLib from 'gi://GLib';
+import System from 'system';
 
 const pkgdatadir = GLib.getenv('TEST_PKGDATADIR') ?? '@pkgdatadir@';
 const jasmineMod = GLib.getenv('TEST_JASMINE_MOD') ?? '@jasmine_mod@';
@@ -30,5 +31,4 @@ const JasmineBoot = await import(`${base}/jasmineBoot.js`);
 const _jasmine = new JasmineBoot.Jasmine();
 _jasmine.installAPI(globalThis);
 
-// Don't put any code after this; the return value is used as the exit code.
-await Command.run(_jasmine, ARGV, 10);
+System.exit(await Command.run(_jasmine, ARGV, 10));

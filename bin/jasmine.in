@@ -1,7 +1,7 @@
 #!/usr/bin/env -S gjs -m
 
 import GLib from 'gi://GLib';
-import * as System from 'system';
+import System from 'system';
 
 const pkglibexecdir = GLib.getenv('TEST_PKGLIBEXECDIR') ?? '@pkglibexecdir@';
 const pkgdatadir = GLib.getenv('TEST_PKGDATADIR') ?? '@pkgdatadir@';
@@ -29,9 +29,7 @@ args = Config.wrapArgs(args, config, options);
 const process = launcher.spawnv(args);
 process.wait(null);
 
-// Don't put any code after this; the return value is used as the exit code.
-(function () {
-    if (process.get_if_exited())
-        return process.get_exit_status();
-    return 1;
-})();
+if (process.get_if_exited())
+    System.exit(process.get_exit_status());
+
+System.exit(1);
