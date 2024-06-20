@@ -8,6 +8,11 @@ const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
 const NORMAL = '\x1b[0m';
 
+let GioUnix = null;
+try {
+    GioUnix = (await import('gi://GioUnix')).default;
+} catch (e) {}
+
 function createNoopTimer() {
     return {
         start() {},
@@ -76,8 +81,11 @@ export const ConsoleReporter = GObject.registerClass({
     // everything)
     static getStdout() {
         if (!this._stdout) {
+            const UnixOutputStream = GioUnix
+                ? GioUnix.OutputStream
+                : Gio.UnixOutputStream;
             const FD_STDOUT = 1;
-            const fdstream = new Gio.UnixOutputStream({
+            const fdstream = new UnixOutputStream({
                 fd: FD_STDOUT,
                 close_fd: false,
             });

@@ -8,10 +8,10 @@ URL: https://github.com/ptomato/jasmine-gjs
 Source0: https://github.com/ptomato/jasmine-gjs/releases/download/3.10.1/jasmine-gjs-3.10.1.tar.xz
 
 BuildArch: noarch
-BuildRequires: gjs >= 1.68.0
+BuildRequires: gjs >= 1.71.1
 BuildRequires: gobject-introspection
 BuildRequires: meson >= 0.58.0
-Requires: gjs >= 1.68.0
+Requires: gjs >= 1.71.1
 Requires: gobject-introspection
 
 %description
