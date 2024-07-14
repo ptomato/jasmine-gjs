@@ -181,11 +181,11 @@ describe('Jasmine boot', function () {
 
     it('does not bail out altogether if one of the specs has a syntax error', function () {
         testJasmine.addSpecFiles([`${testDir}/fixtures/syntaxErrorSpec.js`]);
-        expect(() => testJasmine.loadSpecs()).not.toThrow();
+        expectAsync(testJasmine.loadSpecs()).toBeResolved();
     });
 
     it('does not bail out altogether if one of the specs does not exist', function () {
         testJasmine.addSpecFiles(['non/existent/file.js']);
-        expect(() => testJasmine.loadSpecs()).not.toThrow();
+        expectAsync(testJasmine.loadSpecs()).toBeResolved();
     });
 });
