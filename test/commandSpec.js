@@ -17,6 +17,7 @@ describe('Jasmine command', function () {
 
     beforeEach(function () {
         fakeJasmine = jasmine.createSpyObj('jasmine', ['addReporter', 'configureDefaultReporter', 'execute']);
+        fakeJasmine.execute.and.resolveTo();
         spyOn(mainloop, 'runAsync');  // stub out system behaviour
     });
 
