@@ -1,5 +1,33 @@
 # Release Notes
 
+## 3.10.1 - July 14, 2024
+
+- The internal copy of the Jasmine library has been updaetd to version 3.10.1, which brings:
+  - Support for async before/it/after functions (2.7.0)
+  - Add `nothing()` matcher (2.8.0)
+  - Add `jasmine.arrayWithExactContents()` tester (2.8.0)
+  - Support for `jasmine.any(Symbol)` (2.9.0)
+  - `jasmine.any(Object)` no longer matches null (3.0)
+  - Add `jasmine.truthy()`, `jasmine.falsy()`, `jasmine.empty()`, and `jasmine.notEmpty()` testers (3.1.0)
+  - Add `spyOnAllFunctions()` (3.2.0)
+  - Add `expectAsync()`, and `toBeResolved()` and `toBeRejected()` matchers (3.2.0)
+  - Add `withContext()` for extra debugging information (3.3.0)
+  - Add `toBeRejectedWith()` matcher (3.3.0)
+  - Support for custom async matchers with `jasmine.addAsyncMatchers()` (3.5.0)
+  - Add `jasmine.setDefaultSpyStrategy()` (3.5.0)
+  - Add `jasmine.mapContaining()` and `jasmine.setContaining()` tester (3.5.0)
+  - Add `toBeTrue()` and `toBeFalse()` matchers (3.5.0)
+  - Add `toHaveBeenCalledOnceWith()` matcher (3.6.0)
+  - Add `toHaveSize()` matcher (3.6.0)
+  - Add `toBePending()` matcher (3.6.0)
+  - Add `already` property of async specs (3.8.0)
+  - Add `spy.calls.thisFor()` (3.8.0)
+  - Add `jasmine.stringContaining()` tester (3.10.0)
+  - All other bug fixes and improvements contained in the intervening versions; see Jasmine's release notes
+- It is now possible to use Jasmine GJS as a Meson subproject.
+- Jasmine GJS now depends on GJS 1.68.0.
+- Thanks to Florian Müllner and Martín Abente Lahaye for contributing.
+
 ## 2.6.4 - September 13, 2020
 
 - The internal copy of the Jasmine library has been updated to version 2.6.4, which brings:

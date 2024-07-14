@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: Philip Chimento <philip.chimento@gmail.com>
 Build-Depends: debhelper-compat (= 12),
                gir1.2-glib-2.0,
-               gjs (>= 1.58.0),
-               meson (>= 0.50.0)
+               gjs (>= 1.68.0),
+               meson (>= 0.58.0)
 Standards-Version: 4.5.0
 Homepage: https://github.com/ptomato/jasmine-gjs
 
@@ -13,7 +13,7 @@ Package: jasmine-gjs
 Architecture: all
 Depends: ${misc:Depends},
          gir1.2-glib-2.0,
-         gjs (>= 1.58.0)
+         gjs (>= 1.68.0)
 Description: Behavior-driven development framework for GJS
  This module allows you to run Jasmine specs for your GJS code. The output will
  be displayed in your terminal.
