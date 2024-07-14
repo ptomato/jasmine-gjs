@@ -7,9 +7,9 @@
 - [ ] Delete `lib/jasmine.js`.
 - [ ] Run `cd lib; ./update-jasmine.sh` to regenerate `lib/jasmine.js` from the new upstream version.
 - [ ] Resolve patch conflicts with the new upstream version if necessary.
-- [ ] If making a new major release, update `test/jasmineIntegrationTest.js` and `test/focusedSpecIntegrationTest.js` from `https://github.com/jasmine/jasmine.github.io/tree/master/_versions/<VERSION>/src`.
-      Currently we use `introduction.js`, `custom_equality.js`, `custom_matcher.js`, and `focused_specs.js`, but there may be new features that should be included as well.
-      Strip the documentation comments and the weird indentation.
+- [ ] If making a new major release, update `test/jasmineIntegrationTest.js` and `test/focusedSpecIntegrationTest.js` from the appropriate point in the history of `https://github.com/jasmine/jasmine.github.io/tree/d9b48e17/_tutorials/src`.
+      Currently we use `0_your_first_suite.js` and `custom_matcher.js`, but there may be new features that should be included as well.
+      Remove the browser feature detection and put the "long asynchronous suite" test inside a check for an environment variable.
 - [ ] If making a new major release, see if there are any new features that we can use to improve jasmine-gjs's own tests.
 - [ ] Run `meson test`.
 - [ ] Make a commit.

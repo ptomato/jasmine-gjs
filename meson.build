@@ -1,4 +1,4 @@
-project('jasmine-gjs', version: '3.10.1', license: 'MIT',
+project('jasmine-gjs', version: '3.99.1', license: 'MIT',
     meson_version: '>= 0.58.0')
 
 gjs_dep = dependency('gjs-1.0', required: false)
@@ -70,14 +70,15 @@ endif
 # Tests
 
 tests = [
+    '0_your_first_suite',
+    'custom_matcher',
+
     'commandSpec',
     'configSpec',
     'consoleReporterSpec',
     'defaultReporterSpec',
-    'focusedSpecIntegrationTest',
     'importerSpec',
     'jasmineBootSpec',
-    'jasmineIntegrationTest',
     'junitReporterSpec',
     'optionsSpec',
     'tapReporterSpec',
