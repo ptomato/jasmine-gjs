@@ -33,7 +33,7 @@ config.set('PACKAGE_VERSION', meson.project_version())
 jasmine = configure_file(configuration: config, input: 'bin/jasmine.in',
     output: 'jasmine', install: not meson.is_subproject(), install_dir: 'bin')
 
-jasmine_runner = configure_file(configuration: config,
+configure_file(configuration: config,
     input: 'bin/jasmine-runner.in', output: 'jasmine-runner',
     install: not meson.is_subproject(),
     install_dir: pkglibexecdir)
